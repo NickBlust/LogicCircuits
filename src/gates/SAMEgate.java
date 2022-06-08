@@ -4,7 +4,7 @@
 package gates;
 
 /**
- * @author Dominik Baumann
+ * @author Dominik Baumann, Philipp Grzywaczyk
  * TODO: class might be deprecated in the near future (replaced by FALSEgate and TRUEgate)
  * This gate returns its input value UNCHANGED!
  * Use this internally for user input.
@@ -14,6 +14,13 @@ public class SAMEgate extends Gate {
 	private boolean b = false;
 	public SAMEgate() {
 		inputs = new Gate[0];
+	}
+	
+	public Gate getInput(int i) {
+		try { return this.inputs[i];			
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 	
 	public SAMEgate(boolean a) { b = a;	}

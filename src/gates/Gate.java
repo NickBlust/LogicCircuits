@@ -7,7 +7,7 @@ package gates;
 // gate which just returns its value
 
 /** 
- * @author Dominik Baumann
+ * @author Dominik Baumann, Philipp Grzywaczyk
  * Abstract class for representing a generic logic gate.
  * Any gate needs to be able to compute its output value.
  * For the purpose of computing the output value, each gate can get
@@ -15,6 +15,7 @@ package gates;
  */
 public abstract class Gate {
 	Gate[] inputs;
+	public abstract Gate getInput(int i);
 	public abstract boolean output();
 	public abstract void setInput(Gate g, int i);
 }

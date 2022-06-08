@@ -4,7 +4,7 @@
 package gates;
 
 /**
- * @author Dominik Baumann
+ * @author Dominik Baumann, Philipp Grzywaczyk
  * This gate always returns false!
  * Use this internally for user input.
  */
@@ -14,6 +14,13 @@ public class FALSEgate extends Gate {
 		inputs = new Gate[0];
 	}
 		
+	public Gate getInput(int i) {
+		try { return this.inputs[i];			
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
+	
 	@Override
 	public boolean output() { return false;	}
 

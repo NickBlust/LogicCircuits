@@ -4,13 +4,20 @@
 package gates;
 
 /**
- * @author Dominik Baumann
+ * @author Dominik Baumann, Philipp Grzywaczyk
  *
  */
 public class XORgate extends Gate {
 
 	public XORgate() {
 		inputs = new Gate[2];
+	}
+	
+	public Gate getInput(int i) {
+		try { return this.inputs[i];			
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 	
 	@Override

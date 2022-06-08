@@ -4,13 +4,20 @@
 package gates;
 
 /**
- * @author Dominik Baumann
+ * @author Dominik Baumann, Philipp Grzywaczyk
  *
  */
 public class NOTgate extends Gate {
 
 	public NOTgate() {
 		inputs = new Gate[1];
+	}
+	
+	public Gate getInput(int i) {
+		try { return this.inputs[i];			
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 	
 	@Override

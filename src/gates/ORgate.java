@@ -4,7 +4,7 @@
 package gates;
 
 /**
- * @author Dominik Baumann
+ * @author Dominik Baumann, Philipp Grzywaczyk
  *
  */
 public class ORgate extends Gate {
@@ -12,6 +12,13 @@ public class ORgate extends Gate {
 	public ORgate() {
 		inputs = new Gate[2];
 		}
+	
+	public Gate getInput(int i) {
+		try { return this.inputs[i];			
+		} catch (NullPointerException e) {
+			return null;
+		}
+	}
 	
 	@Override
 	public boolean output() {
