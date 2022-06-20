@@ -4,6 +4,8 @@
 package logicCircuits;
 
 import gates.Gate;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,8 +20,7 @@ public class logicCircuit {
 	
 	public logicCircuit(int n, int m){
 		board = new Gate[n][m];
-		
-		
+		output_gates = new ArrayList<Gate>();
 	}
 	
 	public void addGate(Gate g, int pos1, int pos2) {
