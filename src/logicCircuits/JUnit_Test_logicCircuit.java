@@ -94,7 +94,18 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	 */
 	@Test
 	public void testUnconnectGate() {
-		fail("Not yet implemented");
+		logicCircuit circuit = new logicCircuit(50,50);
+		NORgate nor1 = new NORgate();
+		circuit.addGate(nor1, 34, 15);
+		ANDgate and1 = new ANDgate();
+		circuit.addGate(and1, 22, 32);
+		circuit.connectGates(34, 15, 22, 32, 1);
+		assertEquals(true, circuit.output_gates.contains(nor1));
+		assertEquals(false, circuit.output_gates.contains(and1));
+		assertEquals(and1, circuit.board[34][15].getInput(1));
+		circuit.unconnectGate(34, 15, 1);
+		assertEquals(null, circuit.board[34][15].getInput(1));
+		assertEquals(true, circuit.output_gates.contains(and1));
 	}
 
 	/**
@@ -102,7 +113,35 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	 */
 	@Test
 	public void testGet_circuit_output() {
-		fail("Not yet implemented");
+		logicCircuit circuit = new logicCircuit(50,50);
+		ANDgate and1 = new ANDgate();
+		ORgate or1 = new ORgate();
+		NOTgate not1 = new NOTgate();
+		NOTgate not2 = new NOTgate();
+		NOTgate not3 = new NOTgate();
+		TRUEgate input_t = new TRUEgate();
+		FALSEgate input_f = new FALSEgate();
+		
+		circuit.addGate(input_t, 0, 0);
+		circuit.addGate(input_f, 1, 0);
+		circuit.addGate(and1, 2, 2);
+		circuit.addGate(not1, 2, 4);
+		circuit.addGate(not2, 4, 2);
+		circuit.addGate(not3, 5, 2);
+		circuit.addGate(or1, 4, 4);
+		
+		circuit.connectGates(2, 4, 2, 2, 0);
+		circuit.connectGates(2, 2, 0, 0, 0);
+		circuit.connectGates(2, 2, 1, 0, 1);
+		circuit.connectGates(4, 2, 0, 0, 0);
+		circuit.connectGates(5, 2, 1, 0, 0);
+		circuit.connectGates(4, 4, 4, 2, 0);
+		circuit.connectGates(4, 4, 5, 2, 1);
+		
+		boolean[] out = circuit.get_circuit_output();
+		assertEquals(2, circuit.get_circuit_output().length);
+		assertEquals(out[0], out[1]);		
 	}
+	
 
 }
