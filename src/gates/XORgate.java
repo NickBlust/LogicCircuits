@@ -7,7 +7,7 @@ package gates;
  * @author Dominik Baumann, Philipp Grzywaczyk
  *
  */
-public class XORgate extends Gate {
+public class XORgate extends InputGate {
 
 	public XORgate() {
 		inputs = new Gate[2];

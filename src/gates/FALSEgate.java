@@ -10,15 +10,15 @@ package gates;
  */
 public class FALSEgate extends Gate {
 
-	public FALSEgate() {
-		inputs = new Gate[0];
-	}
+//	public FALSEgate() {
+//		inputs = new Gate[0];
+//	}
 		
-	public Gate getInput(int i) {
-		try { return this.inputs[i];			
-		} catch (NullPointerException e) {
-			return null;
-		}
+	public Gate getInput(int i) { return null; /* do nothing */
+//		try { return this.inputs[i];			
+//		} catch (NullPointerException e) {
+//			return null;
+//		}
 	}
 	
 	@Override

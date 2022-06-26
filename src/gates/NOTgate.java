@@ -7,7 +7,7 @@ package gates;
  * @author Dominik Baumann, Philipp Grzywaczyk
  *
  */
-public class NOTgate extends Gate {
+public class NOTgate extends InputGate {
 
 	public NOTgate() {
 		inputs = new Gate[1];

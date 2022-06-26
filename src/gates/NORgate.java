@@ -7,7 +7,7 @@ package gates;
  * @author Dominik Baumann, Philipp Grzywaczyk
  *
  */
-public class NORgate extends Gate {
+public class NORgate extends InputGate {
 
 	public NORgate() {
 		inputs = new Gate[2];

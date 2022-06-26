@@ -14,7 +14,6 @@ package gates;
  * one or more inputs from other gates
  */
 public abstract class Gate {
-	Gate[] inputs;
 	public abstract Gate getInput(int i);
 	public abstract boolean output();
 	public abstract void setInput(Gate g, int i);

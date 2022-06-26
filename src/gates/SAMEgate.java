@@ -1,7 +1,7 @@
 /**
  * 
  */
-package gates;
+//package gates;
 
 /**
  * @author Dominik Baumann, Philipp Grzywaczyk
@@ -9,6 +9,9 @@ package gates;
  * This gate returns its input value UNCHANGED!
  * Use this internally for user input.
  */
+
+/* DEPRECATED
+
 public class SAMEgate extends Gate {
 
 	private boolean b = false;
@@ -36,3 +39,4 @@ public class SAMEgate extends Gate {
 	public void setInput(Gate g, int i) { }
 
 }
+*/

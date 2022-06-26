@@ -14,7 +14,7 @@ import LogicBoard.BoardEditor.TileType;
 /**
  * The BoardGUI class is responsible for rendering graphics to the screen to display
  * the grid.
- * @author cmcgregor
+ * @author cmcgregor, Dominik Baumann
  */
 public class BoardGUI extends JFrame
 {
@@ -89,9 +89,17 @@ class Canvas extends JPanel {
      * Loads tiles images from a fixed folder location within the project directory
      */
     private void loadTileImages() {
-        try {
+        try { // Took code for generating the filePath from here: https://stackoverflow.com/a/15804263
+        	String absolutePath = new File(".").getAbsolutePath();
+        	System.out.println(absolutePath);// Shows you the path of your Project Folder
+        	int last = absolutePath.length()-1;
+        	absolutePath = absolutePath.substring(0, last);//Remove the dot at the end of path
+        	System.out.println(absolutePath);
+        	String filePath =  "bin\\Assets\\tileEmpty.png";//You know this
+        	System.out.println(absolutePath + filePath);//Get the full path.
+//            tileEmpty = ImageIO.read(new File("assets/tileEmpty.png"));
+        	tileEmpty = ImageIO.read(new File(absolutePath + filePath));
 
-            tileEmpty = ImageIO.read(new File("assets/tileEmpty.png"));
             assert tileEmpty.getHeight() == BoardGUI.TILE_HEIGHT &&
                     tileEmpty.getWidth() == BoardGUI.TILE_WIDTH;
 

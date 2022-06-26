@@ -7,7 +7,7 @@ package gates;
  * @author Dominik Baumann, Philipp Grzywaczyk
  *
  */
-public class NANDgate extends Gate {
+public class NANDgate extends InputGate {
 
 	public NANDgate() {
 		inputs = new Gate[2];

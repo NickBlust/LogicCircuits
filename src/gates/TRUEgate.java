@@ -9,16 +9,16 @@ package gates;
  * Use this internally for user input.
  */
 public class TRUEgate extends Gate {
-
-	public TRUEgate() {
-		inputs = new Gate[0];
-	}
 	
-	public Gate getInput(int i) {
-		try { return this.inputs[i];			
-		} catch (NullPointerException e) {
-			return null;
-		}
+//	public TRUEgate() {
+//	inputs = new Gate[0];
+//}
+	
+	public Gate getInput(int i) { return null; /* Do nothing. */
+//	try { return this.inputs[i];			
+//	} catch (NullPointerException e) {
+//		return null;
+//	}
 	}
 		
 	@Override
@@ -26,5 +26,4 @@ public class TRUEgate extends Gate {
 
 	@Override
 	public void setInput(Gate g, int i) { /*do nothing*/ }
-
 }

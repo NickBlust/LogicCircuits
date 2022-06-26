@@ -7,7 +7,7 @@ package gates;
  * @author Dominik Baumann, Philipp Grzywaczyk
  *
  */
-public class ANDgate extends Gate {
+public class ANDgate extends InputGate {
 
 	public ANDgate() {
 		inputs = new Gate[2];
