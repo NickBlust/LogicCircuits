@@ -4,11 +4,12 @@
 package gates;
 
 /**
+ * This gate returns true iff one input value is true and the other is false.
  * @author Dominik Baumann, Philipp Grzywaczyk
- *
  */
 public class XORgate extends InputGate {
 
+	/** By default, this gate uses two input values. */
 	public XORgate() {
 		inputs = new Gate[2];
 	}
@@ -23,7 +24,7 @@ public class XORgate extends InputGate {
 	@Override
 	public boolean output() {
 		try {
-			return !(inputs[0].output() && inputs[1].output());
+			return inputs[0].output() ^ inputs[1].output();
 		} catch (NullPointerException e) {
 			System.out.println("ERROR: Input gates not specified!");
 			return false;
@@ -35,5 +36,4 @@ public class XORgate extends InputGate {
 		if(i != 0 && i != 1) { return; }
 		inputs[i] = g;
 	}
-
 }

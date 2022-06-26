@@ -4,15 +4,17 @@
 package gates;
 
 /**
+ * This gate returns true iff all input values are false.
  * @author Dominik Baumann, Philipp Grzywaczyk
- *
  */
 public class NORgate extends InputGate {
 
+	/** By default, this gate uses two input values. */
 	public NORgate() {
 		inputs = new Gate[2];
 	}
 	
+	@Override
 	public Gate getInput(int i) {
 		try { return this.inputs[i];			
 		} catch (NullPointerException e) {
@@ -35,5 +37,4 @@ public class NORgate extends InputGate {
 		if(i != 0 && i != 1) { return; }
 		inputs[i] = g;
 	}
-
 }

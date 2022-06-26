@@ -91,12 +91,12 @@ class Canvas extends JPanel {
     private void loadTileImages() {
         try { // Took code for generating the filePath from here: https://stackoverflow.com/a/15804263
         	String absolutePath = new File(".").getAbsolutePath();
-        	System.out.println(absolutePath);// Shows you the path of your Project Folder
+//        	System.out.println(absolutePath);// Shows you the path of your Project Folder
         	int last = absolutePath.length()-1;
         	absolutePath = absolutePath.substring(0, last);//Remove the dot at the end of path
-        	System.out.println(absolutePath);
+//        	System.out.println(absolutePath);
         	String filePath =  "bin\\Assets\\tileEmpty.png";//You know this
-        	System.out.println(absolutePath + filePath);//Get the full path.
+//        	System.out.println(absolutePath + filePath);//Get the full path.
 //            tileEmpty = ImageIO.read(new File("assets/tileEmpty.png"));
         	tileEmpty = ImageIO.read(new File(absolutePath + filePath));
 

@@ -8,12 +8,13 @@ package gates;
  * This gate always returns false!
  * Use this internally for user input.
  */
-public class FALSEgate extends Gate {
+public class FALSEgate extends ConstGate {
 
-//	public FALSEgate() {
-//		inputs = new Gate[0];
-//	}
+	/** This gate uses no input values. */
+	public FALSEgate() {}
 		
+	/** Always returns null, as this gate has no input. */
+	@Override
 	public Gate getInput(int i) { return null; /* do nothing */
 //		try { return this.inputs[i];			
 //		} catch (NullPointerException e) {
@@ -21,10 +22,16 @@ public class FALSEgate extends Gate {
 //		}
 	}
 	
+	/** Always returns false.
+	 * @return false
+	 */
 	@Override
 	public boolean output() { return false;	}
 
+	/** This gate has no inputs => do nothing.
+	 * @param g (ignored)
+	 * @param i (ignored)
+	 */
 	@Override
 	public void setInput(Gate g, int i) { /*do nothing*/ }
-
 }

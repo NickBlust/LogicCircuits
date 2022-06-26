@@ -4,15 +4,17 @@
 package gates;
 
 /**
+ * This gate returns true iff its input is false.
  * @author Dominik Baumann, Philipp Grzywaczyk
- *
  */
 public class NOTgate extends InputGate {
 
+	/** By default, this gate uses one input value. */
 	public NOTgate() {
 		inputs = new Gate[1];
 	}
 	
+	@Override
 	public Gate getInput(int i) {
 		try { return this.inputs[i];			
 		} catch (NullPointerException e) {
@@ -35,5 +37,4 @@ public class NOTgate extends InputGate {
 		if(i != 0) { return; }
 		inputs[i] = g;
 	}
-
 }

@@ -4,11 +4,13 @@
 package gates;
 
 /**
+ * This gate returns true iff all input values are true.
  * @author Dominik Baumann, Philipp Grzywaczyk
- *
  */
 public class ANDgate extends InputGate {
 
+	
+	/** By default, this gate uses two input values. */
 	public ANDgate() {
 		inputs = new Gate[2];
 	}
@@ -35,5 +37,4 @@ public class ANDgate extends InputGate {
 		if(i != 0 && i != 1) { return; }
 		inputs[i] = g;
 	}
-
 }
