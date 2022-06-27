@@ -19,9 +19,9 @@ public class logicCircuit {
 	ArrayList<ArrayList<Gate> > board;
 	
 	public logicCircuit(int n, int m){
-		if (n <= 18 || m <= 25) {
-			n = 18;
-			m = 25;
+		if (n <= 2 || m <= 2) {
+			n = 2;
+			m = 2;
 		}
 		board = new ArrayList<ArrayList<Gate>>(m);
 		for (int i = 0; i < m; i++) {
