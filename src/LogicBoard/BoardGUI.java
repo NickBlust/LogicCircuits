@@ -1,17 +1,31 @@
 package LogicBoard;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
+
 import LogicBoard.BoardEditor.TileType;
 import javax.swing.JMenuItem;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 
 
 /**
@@ -63,35 +77,7 @@ public class BoardGUI extends JFrame
         setLocationRelativeTo(null);        //sets position of frame on screen
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        JMenuBar menuBar = new JMenuBar();
-        setJMenuBar(menuBar);
-        
-        JMenu fileMenu = new JMenu("File");
-        menuBar.add(fileMenu);
-        
-        JMenuItem menuItem_SaveToFile = new JMenuItem("Save Board to File");
-        fileMenu.add(menuItem_SaveToFile);
-        
-        JMenuItem menuItem_LoadFromFile = new JMenuItem("Load Board from File");
-        fileMenu.add(menuItem_LoadFromFile);
-        
-        JMenu editMenu = new JMenu("Edit");
-        menuBar.add(editMenu);
-        
-        JMenuItem menuItem_ResetBoard = new JMenuItem("Reset Board");
-        editMenu.add(menuItem_ResetBoard);
-        
-        JMenuItem menuItem_Evaluate = new JMenuItem("Evaluate");
-        editMenu.add(menuItem_Evaluate);
-        
-        JMenu helpMenu = new JMenu("About & Help");
-        menuBar.add(helpMenu);
-        
-        JMenuItem menuItem_About = new JMenuItem("About");
-        helpMenu.add(menuItem_About);
-        
-        JMenuItem menuItem_Help = new JMenuItem("Help");
-        helpMenu.add(menuItem_Help);
+        initMenuBar();
     }
 
      /**
@@ -102,6 +88,126 @@ public class BoardGUI extends JFrame
         canvas.update(tiles);
     }
 
+    private void initMenuBar() {
+    	menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+        
+        JMenu fileMenu = new JMenu("File");
+        menuBar.add(fileMenu);
+        
+        JMenuItem menuItem_SaveToFile = new JMenuItem("Save Board to File");
+        fileMenu.add(menuItem_SaveToFile);
+    	menuItem_SaveToFile.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		clickedSave();
+        	}
+        });
+    	
+        
+        JMenuItem menuItem_LoadFromFile = new JMenuItem("Load Board from File");
+        fileMenu.add(menuItem_LoadFromFile);
+        menuItem_LoadFromFile.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		clickedLoad();
+        	}
+        });
+        
+        JMenu editMenu = new JMenu("Edit");
+        menuBar.add(editMenu);
+        
+        JMenuItem menuItem_ResetBoard = new JMenuItem("Reset Board");
+        editMenu.add(menuItem_ResetBoard);
+        menuItem_ResetBoard.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		resetBoard();
+        	}
+        });
+        
+        
+        JMenuItem menuItem_Evaluate = new JMenuItem("Evaluate");
+        editMenu.add(menuItem_Evaluate);
+        menuItem_Evaluate.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		evaluateCircuits();
+        	}
+        });
+        
+        
+        JMenu helpMenu = new JMenu("About & Help");
+        menuBar.add(helpMenu);
+        
+        JMenuItem menuItem_About = new JMenuItem("About");
+        helpMenu.add(menuItem_About);
+        menuItem_About.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		EventQueue.invokeLater(new Runnable()
+                { @Override
+                    public void run() { showInformationAboutProgram(); } });
+        	}
+        });
+        
+        JMenuItem menuItem_Help = new JMenuItem("Help");
+        helpMenu.add(menuItem_Help);
+        menuItem_Help.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		EventQueue.invokeLater(new Runnable()
+                { @Override
+                    public void run() { openHelpMenu(); } }); }
+        });    
+    }
+    
+    private void clickedSave() {
+    	System.out.println("Clicked on Save");
+    }
+    
+    private void clickedLoad() {
+    	System.out.println("Clicked on Load");
+    }
+    
+    private void resetBoard() {
+    	System.out.println("Resetting Board");
+    }
+    
+    private void evaluateCircuits() {
+    	System.out.println("Evaluating all circuits on the board");
+    }
+    
+    private void showInformationAboutProgram() {
+        JFrame frame = new JFrame("About");
+        frame.setPreferredSize(new Dimension(400, 200));
+        
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        try 
+        { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
+        catch (Exception e) { e.printStackTrace(); }
+        
+        JTextArea textArea = new JTextArea("About");
+        textArea.setEditable(false);
+
+        frame.getContentPane().add(BorderLayout.CENTER, textArea);
+        frame.pack();
+        frame.setLocationByPlatform(true);
+        frame.setVisible(true);
+    }
+    
+    private void openHelpMenu() {
+        JFrame frame = new JFrame("Help");
+        frame.setPreferredSize(new Dimension(400, 200));
+        
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        try 
+        { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
+        catch (Exception e) { e.printStackTrace(); }
+        
+        JTextArea textArea = new JTextArea("Help");
+        textArea.setEditable(false);
+
+        frame.getContentPane().add(BorderLayout.CENTER, textArea);
+        frame.pack();
+        frame.setLocationByPlatform(true);
+        frame.setVisible(true);
+    }
+    
 /**
  * Internal class used to draw elements within a JPanel. The Canvas class loads
  * images from an asset folder inside the main project folder.
@@ -252,15 +358,4 @@ class Canvas extends JPanel {
         }
     }
 }
-
-//class MenuBar extends JMenuBar {
-//	public MenuBar() {
-//		this.add(new JMenu("File"));
-//	}
-//	
-//	@Override
-//	public void paintComponent(Graphics g) {
-//		super.paintComponent(g);
-//	}
-//}
 }
