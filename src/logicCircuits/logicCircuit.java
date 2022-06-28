@@ -40,6 +40,23 @@ public class logicCircuit {
 	public void addGate(Gate g, int pos1, int pos2) {
 		if (g == null) return;
 		if (!valid(pos1, pos2)) return;
+		if (pos1 >= board.size()) {
+			for (int i = board.size(); i <= pos1; i++) {
+				board.add(i, new ArrayList<Gate>());
+				for (int j = 0; j < board.get(0).size(); j++) {
+					board.get(i).add(j, null);
+				}
+			}
+		}
+		
+		if (pos2 >= board.get(pos1).size()) {
+			for (int i = 0; i < board.size(); i++) {
+				for (int j = board.get(pos1).size(); j <= pos2; j++) {
+					board.get(i).add(j, null);
+				}
+			}
+		}
+		
 		this.board.get(pos1).set(pos2, g);
 		output_gates.add(g);		
 	}
