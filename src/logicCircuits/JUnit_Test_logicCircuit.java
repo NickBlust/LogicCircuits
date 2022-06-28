@@ -40,10 +40,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 		int n = 50;
 		int m = 100;
 		logicCircuit circuit = new logicCircuit(n,m);
-		assertEquals(50, circuit.board.length);
-		assertEquals(100, circuit.board[13].length);
-		assertEquals(100, circuit.board[27].length);
-		assertEquals(100, circuit.board[2].length);
+		assertEquals(50, circuit.board.size());
 	}
 
 	/**
@@ -54,7 +51,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 		logicCircuit circuit = new logicCircuit(50,50);
 		ORgate or1 = new ORgate();
 		circuit.addGate(or1, 4, 3);
-		assertEquals(or1, circuit.board[4][3]);
+		assertEquals(or1, circuit.board.get(4).get(3));
 		assertEquals(true, circuit.output_gates.contains(or1));
 	}
 
@@ -66,10 +63,10 @@ public class JUnit_Test_logicCircuit extends TestCase {
 		logicCircuit circuit = new logicCircuit(50,50);
 		ANDgate and1 = new ANDgate();
 		circuit.addGate(and1, 7, 13);
-		assertEquals(and1, circuit.board[7][13]);
+		assertEquals(and1, circuit.board.get(7).get(13));
 		assertEquals(true, circuit.output_gates.contains(and1));
 		circuit.removeGate(7, 13);
-		assertEquals(null, circuit.board[7][13]);
+		assertEquals(null, circuit.board.get(7).get(13));
 		assertEquals(false, circuit.output_gates.contains(and1));
 	}
 
@@ -86,7 +83,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 		circuit.connectGates(4, 3, 7, 13, 0);
 		assertEquals(true, circuit.output_gates.contains(or1));
 		assertEquals(false, circuit.output_gates.contains(and1));
-		assertEquals(and1, circuit.board[4][3].getInput(0));		
+		assertEquals(and1, circuit.board.get(4).get(3).getInput(0));		
 	}
 
 	/**
@@ -102,9 +99,9 @@ public class JUnit_Test_logicCircuit extends TestCase {
 		circuit.connectGates(34, 15, 22, 32, 1);
 		assertEquals(true, circuit.output_gates.contains(nor1));
 		assertEquals(false, circuit.output_gates.contains(and1));
-		assertEquals(and1, circuit.board[34][15].getInput(1));
+		assertEquals(and1, circuit.board.get(34).get(15).getInput(1));
 		circuit.unconnectGate(34, 15, 1);
-		assertEquals(null, circuit.board[34][15].getInput(1));
+		assertEquals(null, circuit.board.get(34).get(15).getInput(1));
 		assertEquals(true, circuit.output_gates.contains(and1));
 	}
 
