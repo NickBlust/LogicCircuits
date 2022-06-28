@@ -21,14 +21,14 @@ public class BoardEditor
      * cause the display to draw incorrectly, and as a minimum the size of the
      * GUI would need to be adjusted.
      */
-    public static final int BOARD_WIDTH = 25;
+    public static final int BOARD_WIDTH = 10;
     
     /**
      * The height of the board, measured in tiles. Changing this may
      * cause the display to draw incorrectly, and as a minimum the size of the
      * GUI would need to be adjusted.
      */
-    public static final int BOARD_HEIGHT = 18;
+    public static final int BOARD_HEIGHT = 8;
 
     /**
      * The GUI associated with a BoardEditor object. This link allows the editor

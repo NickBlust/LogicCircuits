@@ -6,19 +6,14 @@ import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.*;
-import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 
 import gui.BoardEditor.TileType;
@@ -29,7 +24,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -57,8 +51,15 @@ public class BoardGUI extends JFrame
      * of the BoardGUI class.
      */
     Canvas canvas;
+    
+    /**
+     * The menu bar contains three menus:
+     * 1) "File": Save and load boards to and from a file.
+     * 2) "Edit": Reset the entire board or evaluate the truth values of all gates
+     *            on the board
+ 	 * 3) "Help": Retrieve information about this program and on how to use it.
+     */
     JMenuBar menuBar;
-//    MenuBar menuBar;
 
      /**
      * Constructor for the BoardGUI class. It calls the initGUI method to generate the
@@ -77,19 +78,13 @@ public class BoardGUI extends JFrame
     {
         getContentPane().add(canvas = new Canvas());
         
-        
-        
-        initButtons();
-//        menuBar = new JMenuBar();
-//        JMenu fileMenu = new JMenu("File"); 
-//        menuBar.add(fileMenu);
-//        add(menuBar = new MenuBar()); // add menu bar to this frame
         setTitle("Logic Circuits Simulator");
         setSize(816, 615); //Can be changed by user but must fit the measurements of the tile
         setLocationRelativeTo(null);        //sets position of frame on screen
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         initMenuBar();
+        initButtons();
     }
 
      /**
@@ -100,6 +95,91 @@ public class BoardGUI extends JFrame
         canvas.update(tiles);
     }
 
+    
+    /**
+     * Stores the current board in a .txt-file
+     */
+    private void clickedSave() { // TODO
+    	System.out.println("Clicked on Save");
+    	// format suggestion:
+    	// #row + " " + #columns + " " + numberOfTilesOnBoard
+    	// #rowOfThisTile + " " + #columnOfThisTile + " " + tileName
+    	// ... numberOfTilesOnBoard-many lines
+    	// #rowOfInput + " " + #columnOfInput + " " + #rowOfTarget + " " + #columnOfTarget + " " + #slotIDOnTarget
+    	// ... (iterate until file has no more nextLine)
+    }
+    
+    /**
+     * Load a board from a .txt-file
+     */
+    private void clickedLoad() { // TODO
+    	System.out.println("Clicked on Load");
+    }
+    
+    /**
+     * Delete all gates and connections on the board an in the model.
+     */
+    private void resetBoard() { // TODO
+    	System.out.println("Resetting Board");
+    }
+    
+    /**
+     * Evaluates the truth values of all gates and colors there output fields accordingly:
+     * 1) white: not yet evaluated
+     * 2) green: output evaluates to true
+     * 3) red:   output evaluates to false
+     */
+    private void evaluateCircuits() { // TODO
+    	System.out.println("Evaluating all circuits on the board");
+    }
+    
+    /**
+     * Displays a window with information about the program.
+     */
+    private void showInformationAboutProgram() {
+        JFrame frame = new JFrame("About");
+        frame.setPreferredSize(new Dimension(400, 200));
+        
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        try 
+        { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
+        catch (Exception e) { e.printStackTrace(); }
+        
+        JTextArea textArea = new JTextArea("About");
+        textArea.setEditable(false);
+
+        frame.getContentPane().add(BorderLayout.CENTER, textArea);
+        frame.pack();
+        frame.setLocationByPlatform(true);
+        frame.setVisible(true);
+    }
+    
+    
+    /**
+     * Displays a window with information on how to use the program.
+     */
+    private void openHelpMenu() {
+        JFrame frame = new JFrame("Help");
+        frame.setPreferredSize(new Dimension(400, 200));
+        
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        try 
+        { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
+        catch (Exception e) { e.printStackTrace(); }
+        
+        JTextArea textArea = new JTextArea("Help");
+        textArea.setEditable(false);
+
+        frame.getContentPane().add(BorderLayout.CENTER, textArea);
+        frame.pack();
+        frame.setLocationByPlatform(true);
+        frame.setVisible(true);
+    }
+
+    /**
+     * Sets up the menu bar and its menus.
+     * @author Dominik Baumann
+     */
     private void initMenuBar() {
     	menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -168,58 +248,11 @@ public class BoardGUI extends JFrame
         });    
     }
     
-    private void clickedSave() {
-    	System.out.println("Clicked on Save");
-    }
-    
-    private void clickedLoad() {
-    	System.out.println("Clicked on Load");
-    }
-    
-    private void resetBoard() {
-    	System.out.println("Resetting Board");
-    }
-    
-    private void evaluateCircuits() {
-    	System.out.println("Evaluating all circuits on the board");
-    }
-    
-    private void showInformationAboutProgram() {
-        JFrame frame = new JFrame("About");
-        frame.setPreferredSize(new Dimension(400, 200));
-        
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        try 
-        { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
-        catch (Exception e) { e.printStackTrace(); }
-        
-        JTextArea textArea = new JTextArea("About");
-        textArea.setEditable(false);
-
-        frame.getContentPane().add(BorderLayout.CENTER, textArea);
-        frame.pack();
-        frame.setLocationByPlatform(true);
-        frame.setVisible(true);
-    }
-    
-    private void openHelpMenu() {
-        JFrame frame = new JFrame("Help");
-        frame.setPreferredSize(new Dimension(400, 200));
-        
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        try 
-        { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
-        catch (Exception e) { e.printStackTrace(); }
-        
-        JTextArea textArea = new JTextArea("Help");
-        textArea.setEditable(false);
-
-        frame.getContentPane().add(BorderLayout.CENTER, textArea);
-        frame.pack();
-        frame.setLocationByPlatform(true);
-        frame.setVisible(true);
-    }
-    
+    /**
+     * Provide all buttons for gate / tile selection 
+     * in a scroll pane on the right-hand side of the main frame.
+     * @author Dominik Baumann
+     */
     private void initButtons() {
     	JPanel panel = new JPanel();
         getContentPane().add(panel, BorderLayout.EAST);
@@ -230,224 +263,205 @@ public class BoardGUI extends JFrame
         gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         panel.setLayout(gbl_panel);
         
-        JButton button_FALSE = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/FALSE.png")));
-        button_FALSE.setText("   FALSE");
-        GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-        gbc_btnNewButton.insets = new Insets(0, 0, 5, 0);
-        gbc_btnNewButton.gridx = 0;
-        gbc_btnNewButton.gridy = 0;
+        JScrollPane scroll = new JScrollPane(panel);
+        getContentPane().add(scroll, BorderLayout.EAST);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         
-        panel.add(button_FALSE, gbc_btnNewButton);
+        JButton button_FALSE = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/FALSE.png")));
+        button_FALSE.setText("   FALSE  ");
+        panel.add(button_FALSE, new GBConstraints(0, 0, 5));
+        
         
         JButton button_TRUE = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/TRUE.png")));
-        button_TRUE.setText("    TRUE");
-        GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-        gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 0);
-        gbc_btnNewButton_1.gridx = 0;
-        gbc_btnNewButton_1.gridy = 1;
-        panel.add(button_TRUE, gbc_btnNewButton_1);
+        button_TRUE.setText("    TRUE  ");
+        panel.add(button_TRUE, new GBConstraints(0, 1, 5));
         
         JButton button_AND = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/AND_White.png")));
-        button_AND.setText("     AND");
-        GridBagConstraints gbc_btnNewButton_2 = new GridBagConstraints();
-        gbc_btnNewButton_2.insets = new Insets(0, 0, 5, 0);
-        gbc_btnNewButton_2.gridx = 0;
-        gbc_btnNewButton_2.gridy = 2;
-        panel.add(button_AND, gbc_btnNewButton_2);
+        button_AND.setText("     AND  ");
+        panel.add(button_AND, new GBConstraints(0, 2, 5));
         
         JButton button_OR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/OR_White.png")));
-        button_OR.setText("      OR");        GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
-        gbc_btnNewButton_3.insets = new Insets(0, 0, 5, 0);
-        gbc_btnNewButton_3.gridx = 0;
-        gbc_btnNewButton_3.gridy = 3;
-        panel.add(button_OR, gbc_btnNewButton_3);
+        button_OR.setText("      OR  ");        GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
+        panel.add(button_OR, new GBConstraints(0, 3, 5));
         
         JButton button_NOT = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NOT_White.png")));
-        button_NOT.setText("     NOT");        GridBagConstraints gbc_btnNewButton_4 = new GridBagConstraints();
-        gbc_btnNewButton_4.insets = new Insets(0, 0, 5, 0);
-        gbc_btnNewButton_4.gridx = 0;
-        gbc_btnNewButton_4.gridy = 4;
-        panel.add(button_NOT, gbc_btnNewButton_4);
+        button_NOT.setText("     NOT  ");        GridBagConstraints gbc_btnNewButton_4 = new GridBagConstraints();
+        panel.add(button_NOT, new GBConstraints(0, 4, 5));
         
         JButton button_NOR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NOR_White.png")));
-        button_NOR.setText("     NOR");
+        button_NOR.setText("     NOR  ");
         GridBagConstraints gbc_btnNewButton_5 = new GridBagConstraints();
-        gbc_btnNewButton_5.insets = new Insets(0, 0, 5, 0);
-        gbc_btnNewButton_5.gridx = 0;
-        gbc_btnNewButton_5.gridy = 5;
-        panel.add(button_NOR, gbc_btnNewButton_5);
+        panel.add(button_NOR, new GBConstraints(0, 5, 5));
         
         JButton button_NAND = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NAND_White.png")));
-        button_NAND.setText("    NAND");
-        GridBagConstraints gbc_btnNewButton_6 = new GridBagConstraints();
-        gbc_btnNewButton_6.insets = new Insets(0, 0, 5, 0);
-        gbc_btnNewButton_6.gridx = 0;
-        gbc_btnNewButton_6.gridy = 6;
-        panel.add(button_NAND, gbc_btnNewButton_6);
+        button_NAND.setText("    NAND  ");
+        panel.add(button_NAND, new GBConstraints(0, 6, 5));
         
         JButton button_XOR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/XOR_White.png")));
-        button_XOR.setText("     XOR");GridBagConstraints gbc_btnNewButton_7 = new GridBagConstraints();
-        gbc_btnNewButton_7.insets = new Insets(0, 0, 5, 0);
-        gbc_btnNewButton_7.gridx = 0;
-        gbc_btnNewButton_7.gridy = 7;
-        panel.add(button_XOR, gbc_btnNewButton_7);
+        button_XOR.setText("     XOR  ");GridBagConstraints gbc_btnNewButton_7 = new GridBagConstraints();
+        panel.add(button_XOR, new GBConstraints(0, 7, 5));
         
         JButton button_Empty = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/tileEmpty64.png")));
-        button_Empty.setText("   Empty");
-        GridBagConstraints gbc_btnNewButton_8 = new GridBagConstraints();
-        gbc_btnNewButton_8.gridx = 0;
-        gbc_btnNewButton_8.gridy = 8;
-        panel.add(button_Empty, gbc_btnNewButton_8);
+        button_Empty.setText("   Empty  ");
+        panel.add(button_Empty, new GBConstraints(0, 8, 5));
     }
     
-/**
- * Internal class used to draw elements within a JPanel. The Canvas class loads
- * images from an asset folder inside the main project folder.
- * @author cmcgrego, Dominik Baumann
- */
-class Canvas extends JPanel {
+	/**
+	 * Internal class used to draw elements within a JPanel. The Canvas class loads
+	 * images from an asset folder inside the main project folder.
+	 * @author cmcgrego, Dominik Baumann
+	 */
+	class Canvas extends JPanel {
+	
+	    private BufferedImage tileEmpty;
+	    private BufferedImage tileFALSE;
+	    private BufferedImage tileTRUE;
+	    
+	    private BufferedImage tileAND_White;
+	    private BufferedImage tileAND_TRUE;
+	    private BufferedImage tileAND_FALSE;
+	    
+	    private BufferedImage tileNAND_White;
+	    private BufferedImage tileNAND_TRUE;
+	    private BufferedImage tileNAND_FALSE;
+	    
+	    private BufferedImage tileNOR_White;
+	    private BufferedImage tileNOR_TRUE;
+	    private BufferedImage tileNOR_FALSE;
+	    
+	    private BufferedImage tileNOT_White;
+	    private BufferedImage tileNOT_TRUE;
+	    private BufferedImage tileNOT_FALSE;
+	    
+	    private BufferedImage tileOR_White;
+	    private BufferedImage tileOR_TRUE;
+	    private BufferedImage tileOR_FALSE;
+	    
+	    private BufferedImage tileXOR_White;
+	    private BufferedImage tileXOR_TRUE;
+	    private BufferedImage tileXOR_FALSE;
+	    
+	    TileType[][] currentTiles;  //the current 2D array of tiles to display
+	
+	    
+	    /**
+	     * Constructor that loads tile images for use in this class
+	     */
+	    public Canvas() 
+	    {
+	        loadTileImages();
+	    }
+	    
+	    /**
+	     * Loads tiles images from a fixed folder location within the project directory
+	     */
+	    private void loadTileImages() {
+	        try {
+	        	tileEmpty = ImageIO.read(BoardGUI.class.getResource("/assets/tileEmpty64.png"));
+	        	
+			    tileTRUE = ImageIO.read(BoardGUI.class.getResource("/assets/TRUE.png"));
+	            tileFALSE = ImageIO.read(BoardGUI.class.getResource("/assets/FALSE.png"));
+	        	
+	            tileAND_White = ImageIO.read(BoardGUI.class.getResource("/assets/AND_White.png"));
+	            tileAND_TRUE = ImageIO.read(BoardGUI.class.getResource("/assets/AND_TRUE.png"));
+	            tileAND_FALSE = ImageIO.read(BoardGUI.class.getResource("/assets/AND_FALSE.png"));
+	            
+	            tileNAND_White = ImageIO.read(BoardGUI.class.getResource("/assets/NAND_White.png"));
+	            tileNAND_TRUE = ImageIO.read(BoardGUI.class.getResource("/assets/NAND_TRUE.png"));
+	            tileNAND_FALSE = ImageIO.read(BoardGUI.class.getResource("/assets/NAND_FALSE.png"));
+	            
+	            tileNOR_White = ImageIO.read(BoardGUI.class.getResource("/assets/NOR_White.png"));
+	            tileNOR_TRUE = ImageIO.read(BoardGUI.class.getResource("/assets/NOR_TRUE.png"));
+	            tileNOR_FALSE = ImageIO.read(BoardGUI.class.getResource("/assets/NOR_FALSE.png"));
+	            
+	            tileNOT_White = ImageIO.read(BoardGUI.class.getResource("/assets/NOT_White.png"));
+	            tileNOT_TRUE = ImageIO.read(BoardGUI.class.getResource("/assets/NOT_TRUE.png"));
+	            tileNOT_FALSE = ImageIO.read(BoardGUI.class.getResource("/assets/NOT_FALSE.png"));
+	            
+	            tileOR_White = ImageIO.read(BoardGUI.class.getResource("/assets/OR_White.png"));
+	            tileOR_TRUE = ImageIO.read(BoardGUI.class.getResource("/assets/OR_TRUE.png"));
+	            tileOR_FALSE = ImageIO.read(BoardGUI.class.getResource("/assets/OR_FALSE.png"));
+	            
+	            tileXOR_White = ImageIO.read(BoardGUI.class.getResource("/assets/XOR_White.png"));
+	            tileXOR_TRUE = ImageIO.read(BoardGUI.class.getResource("/assets/XOR_TRUE.png"));
+	            tileXOR_FALSE = ImageIO.read(BoardGUI.class.getResource("/assets/XOR_FALSE.png"));
+	            
+	            // only need temporarily for size verification of the images
+	            BufferedImage[] temp = { tileEmpty, tileFALSE, tileTRUE,
+	            		    tileAND_White, tileAND_TRUE, tileAND_FALSE,
+	            		    tileNAND_White, tileNAND_TRUE, tileNAND_FALSE,
+	            		    tileNOR_White, tileNOR_TRUE, tileNOR_FALSE,
+	            		    tileNOT_White, tileNOT_TRUE, tileNOT_FALSE,
+	            		    tileOR_White, tileOR_TRUE, tileOR_FALSE,
+	            		    tileXOR_White, tileXOR_TRUE, tileXOR_FALSE };
+	            
+	            for(BufferedImage b : temp) {
+	              assert b.getHeight() == BoardGUI.TILE_HEIGHT &&
+	              b.getWidth() == BoardGUI.TILE_WIDTH;
+	            }
+	
+	        } catch (IOException e) {
+	            System.out.println("Exception loading images: " + e.getMessage());
+	            e.printStackTrace(System.out);
+	        }
+	    }
+	    
+	    /**
+	     * Updates the current graphics on the screen to display the tiles
+	     */
+	    public void update(TileType[][] t) 
+	    {
+	        currentTiles = t;
+	        repaint();
+	    }
+	    
+	    /**
+	     * Override of method in super class, it draws the custom elements for this
+	     * board such as the tiles.
+	     * @param g 
+	     */
+	    @Override
+	    public void paintComponent(Graphics g)
+	    {
+	        super.paintComponent(g);
+	        drawBoard(g);
+	    }
+	
+	    /**
+	     * Draws graphical elements to the screen.
+	     * @param g 
+	     */
+	    private void drawBoard(Graphics g) 
+	    {
+	        Graphics2D g2 = (Graphics2D) g;
+	        if (currentTiles != null) {
+	            for (int i = 0; i < currentTiles.length; i++) {
+	                for (int j = 0; j < currentTiles[i].length; j++) {
+	                    if (currentTiles[i][j] != null) {   //checks a tile exists
+	                        switch (currentTiles[i][j]) 
+	                        {
+	                            case EMPTYTILE:
+	                                g2.drawImage(tileEmpty, i * BoardGUI.TILE_WIDTH, j * BoardGUI.TILE_HEIGHT, null);
+	                                break;
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
+	}
 
-    private BufferedImage tileEmpty;
-    private BufferedImage tileFALSE;
-    private BufferedImage tileTRUE;
-    
-    private BufferedImage tileAND_White;
-    private BufferedImage tileAND_TRUE;
-    private BufferedImage tileAND_FALSE;
-    
-    private BufferedImage tileNAND_White;
-    private BufferedImage tileNAND_TRUE;
-    private BufferedImage tileNAND_FALSE;
-    
-    private BufferedImage tileNOR_White;
-    private BufferedImage tileNOR_TRUE;
-    private BufferedImage tileNOR_FALSE;
-    
-    private BufferedImage tileNOT_White;
-    private BufferedImage tileNOT_TRUE;
-    private BufferedImage tileNOT_FALSE;
-    
-    private BufferedImage tileOR_White;
-    private BufferedImage tileOR_TRUE;
-    private BufferedImage tileOR_FALSE;
-    
-    private BufferedImage tileXOR_White;
-    private BufferedImage tileXOR_TRUE;
-    private BufferedImage tileXOR_FALSE;
-    
-    TileType[][] currentTiles;  //the current 2D array of tiles to display
-
-    
-    /**
-     * Constructor that loads tile images for use in this class
-     */
-    public Canvas() 
-    {
-        loadTileImages();
-    }
-    
-    /**
-     * Loads tiles images from a fixed folder location within the project directory
-     */
-    private void loadTileImages() {
-        try { // Took code for generating the filePath from here: https://stackoverflow.com/a/15804263
-        	
-        	// path of project Folder
-        	String absolutePath = new File(".").getAbsolutePath(); 
-        	
-        	// remove the dot at the end of path
-        	absolutePath = absolutePath.substring(0, absolutePath.length() - 1);
-        	tileEmpty = ImageIO.read(new File(absolutePath + "bin\\Assets\\tileEmpty64.png"));
-            
-        	tileTRUE = ImageIO.read(new File(absolutePath + "bin\\Assets\\TRUE.png"));
-            tileFALSE = ImageIO.read(new File(absolutePath + "bin\\Assets\\FALSE.png"));
-        	
-            tileAND_White = ImageIO.read(new File(absolutePath + "bin\\Assets\\AND_White.png"));
-            tileAND_TRUE = ImageIO.read(new File(absolutePath + "bin\\Assets\\AND_TRUE.png"));
-            tileAND_FALSE = ImageIO.read(new File(absolutePath + "bin\\Assets\\AND_FALSE.png"));
-            
-            tileNAND_White = ImageIO.read(new File(absolutePath + "bin\\Assets\\NAND_White.png"));
-            tileNAND_TRUE = ImageIO.read(new File(absolutePath + "bin\\Assets\\NAND_TRUE.png"));
-            tileNAND_FALSE = ImageIO.read(new File(absolutePath + "bin\\Assets\\NAND_FALSE.png"));
-            
-            tileNOR_White = ImageIO.read(new File(absolutePath + "bin\\Assets\\NOR_White.png"));
-            tileNOR_TRUE = ImageIO.read(new File(absolutePath + "bin\\Assets\\NOR_TRUE.png"));
-            tileNOR_FALSE = ImageIO.read(new File(absolutePath + "bin\\Assets\\NOR_FALSE.png"));
-            
-            tileNOT_White = ImageIO.read(new File(absolutePath + "bin\\Assets\\NOT_White.png"));
-            tileNOT_TRUE = ImageIO.read(new File(absolutePath + "bin\\Assets\\NOT_TRUE.png"));
-            tileNOT_FALSE = ImageIO.read(new File(absolutePath + "bin\\Assets\\NOT_FALSE.png"));
-            
-            tileOR_White = ImageIO.read(new File(absolutePath + "bin\\Assets\\OR_White.png"));
-            tileOR_TRUE = ImageIO.read(new File(absolutePath + "bin\\Assets\\OR_TRUE.png"));
-            tileOR_FALSE = ImageIO.read(new File(absolutePath + "bin\\Assets\\OR_FALSE.png"));
-            
-            tileXOR_White = ImageIO.read(new File(absolutePath + "bin\\Assets\\XOR_White.png"));
-            tileXOR_TRUE = ImageIO.read(new File(absolutePath + "bin\\Assets\\XOR_TRUE.png"));
-            tileXOR_FALSE = ImageIO.read(new File(absolutePath + "bin\\Assets\\XOR_FALSE.png"));
-            
-            // only need temporarily for size verification of the images
-            BufferedImage[] temp = { tileEmpty, tileFALSE, tileTRUE,
-            		    tileAND_White, tileAND_TRUE, tileAND_FALSE,
-            		    tileNAND_White, tileNAND_TRUE, tileNAND_FALSE,
-            		    tileNOR_White, tileNOR_TRUE, tileNOR_FALSE,
-            		    tileNOT_White, tileNOT_TRUE, tileNOT_FALSE,
-            		    tileOR_White, tileOR_TRUE, tileOR_FALSE,
-            		    tileXOR_White, tileXOR_TRUE, tileXOR_FALSE };
-            
-            for(BufferedImage b : temp) {
-              assert b.getHeight() == BoardGUI.TILE_HEIGHT &&
-              b.getWidth() == BoardGUI.TILE_WIDTH;
-            }
-
-        } catch (IOException e) {
-            System.out.println("Exception loading images: " + e.getMessage());
-            e.printStackTrace(System.out);
-        }
-    }
-    
-    /**
-     * Updates the current graphics on the screen to display the tiles
-     */
-    public void update(TileType[][] t) 
-    {
-        currentTiles = t;
-        repaint();
-    }
-    
-    /**
-     * Override of method in super class, it draws the custom elements for this
-     * board such as the tiles.
-     * @param g 
-     */
-    @Override
-    public void paintComponent(Graphics g)
-    {
-        super.paintComponent(g);
-        drawBoard(g);
-    }
-
-    /**
-     * Draws graphical elements to the screen.
-     * @param g 
-     */
-    private void drawBoard(Graphics g) 
-    {
-        Graphics2D g2 = (Graphics2D) g;
-        if (currentTiles != null) {
-            for (int i = 0; i < currentTiles.length; i++) {
-                for (int j = 0; j < currentTiles[i].length; j++) {
-                    if (currentTiles[i][j] != null) {   //checks a tile exists
-                        switch (currentTiles[i][j]) 
-                        {
-                            case EMPTYTILE:
-                                g2.drawImage(tileEmpty, i * BoardGUI.TILE_WIDTH, j * BoardGUI.TILE_HEIGHT, null);
-                                break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+	/**
+	 * Internal class to simplify the button instantiation in 
+	 * {@link BoardGUI.initButtons initButtons}.
+	 * @author Dominik Baumann
+	 */
+	class GBConstraints extends GridBagConstraints {
+		public GBConstraints(int x, int y, int bottom) {
+			gridx = x;
+			gridy = y;
+			insets = new Insets(0, 0, bottom, 0);
+		}
+	}
 }
