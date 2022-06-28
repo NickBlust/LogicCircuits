@@ -1,1 +1,25 @@
+<<<<<<< Updated upstream
 /tileEmpty.png
+=======
+/AND_FALSE.png
+/AND_TRUE.png
+/AND_White.png
+/FALSE.png
+/NAND_FALSE.png
+/NAND_TRUE.png
+/NAND_White.png
+/NOR_FALSE.png
+/NOR_TRUE.png
+/NOR_White.png
+/NOT_FALSE.png
+/NOT_TRUE.png
+/NOT_White.png
+/OR_FALSE.png
+/OR_TRUE.png
+/OR_White.png
+/TRUE.png
+/XOR_FALSE.png
+/XOR_TRUE.png
+/XOR_White.png
+/tileEmpty64.png
+>>>>>>> Stashed changes

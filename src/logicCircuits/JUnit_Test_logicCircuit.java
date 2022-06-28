@@ -41,6 +41,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 		int m = 100;
 		logicCircuit circuit = new logicCircuit(n,m);
 		assertEquals(50, circuit.board.size());
+		assertEquals(100, circuit.board.get(13).size());
 	}
 
 	/**
@@ -53,6 +54,14 @@ public class JUnit_Test_logicCircuit extends TestCase {
 		circuit.addGate(or1, 4, 3);
 		assertEquals(or1, circuit.board.get(4).get(3));
 		assertEquals(true, circuit.output_gates.contains(or1));
+		assertEquals(50, circuit.board.size());
+		assertEquals(50, circuit.board.get(13).size());
+		ORgate or2 = new ORgate();
+		circuit.addGate(or2, 56, 76);
+		assertEquals(or2, circuit.board.get(56).get(76));
+		assertEquals(true, circuit.output_gates.contains(or2));
+		assertEquals(57, circuit.board.size());
+		assertEquals(77, circuit.board.get(13).size());
 	}
 
 	/**
