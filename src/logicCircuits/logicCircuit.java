@@ -23,9 +23,16 @@ public class logicCircuit {
 			n = 2;
 			m = 2;
 		}
-		board = new ArrayList<ArrayList<Gate>>(m);
-		for (int i = 0; i < m; i++) {
-			board.set(i, new ArrayList<Gate>(n));
+		
+		board = new ArrayList<ArrayList<Gate>>();
+		
+		for (int i = 0; i < n; i++) {
+			//ArrayList<Gate> tmp = new ArrayList<Gate>();
+			board.add(i, new ArrayList<Gate>());
+			//board.set(i, tmp);
+			for (int j = 0; j < m; j++) {
+				board.get(i).add(j, null);
+			}
 		}
 		output_gates = new ArrayList<Gate>();
 	}
@@ -33,28 +40,28 @@ public class logicCircuit {
 	public void addGate(Gate g, int pos1, int pos2) {
 		if (g == null) return;
 		if (!valid(pos1, pos2)) return;
-		this.board.get(pos2).set(pos1, g);
+		this.board.get(pos1).set(pos2, g);
 		output_gates.add(g);		
 	}
 	
 	public void removeGate(int pos1, int pos2) {
 		if (!valid(pos1, pos2)) return;
-		output_gates.remove(this.board.get(pos2).get(pos1));
-		this.board.get(pos2).remove(pos1);
+		output_gates.remove(this.board.get(pos1).get(pos2));
+		this.board.get(pos1).remove(pos2);
 	}
 	
 	public void connectGates(int inputgate_pos1, int inputgate_pos2, int outputgate_pos1, int outputgate_pos2, int input_pos) {
 		if (!valid(inputgate_pos1, inputgate_pos2)) return;
 		if (!valid(outputgate_pos1, outputgate_pos2)) return;
-		Gate gate_in = board.get(inputgate_pos2).get(inputgate_pos1);
-		Gate gate_out = board.get(outputgate_pos2).get(outputgate_pos1);
+		Gate gate_in = board.get(inputgate_pos1).get(inputgate_pos2);
+		Gate gate_out = board.get(outputgate_pos1).get(outputgate_pos2);
 		gate_in.setInput(gate_out, input_pos);
 		output_gates.remove(gate_out);
 	}
 	
 	public void unconnectGate(int pos1, int pos2, int num) {
 		if (!valid(pos1, pos2)) return;
-		Gate gate = board.get(pos2).get(pos1);
+		Gate gate = board.get(pos1).get(pos2);
 		Gate input = gate.getInput(num);
 		output_gates.add(input);
 		gate.setInput(null, num);
@@ -76,6 +83,6 @@ public class logicCircuit {
 	}
 	
 	private boolean valid(int pos1, int pos2) {
-		return (0 <= pos1 && pos1 < board.get(0).size()) && (0 <= pos2 && pos2 < board.size());
+		return (0 <= pos1) && (0 <= pos2);
 	}
 }
