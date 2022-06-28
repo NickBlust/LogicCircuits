@@ -7,8 +7,11 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import LogicBoard.BoardEditor.TileType;
+import javax.swing.JMenuItem;
 
 
 /**
@@ -32,6 +35,8 @@ public class BoardGUI extends JFrame
      * of the BoardGUI class.
      */
     Canvas canvas;
+    JMenuBar menuBar;
+//    MenuBar menuBar;
 
      /**
      * Constructor for the BoardGUI class. It calls the initGUI method to generate the
@@ -48,11 +53,45 @@ public class BoardGUI extends JFrame
      */
     private void initGUI() 
     {
-        add(canvas = new Canvas());     //adds canvas to this frame
-        setTitle("LogicCircuit");
+        getContentPane().add(canvas = new Canvas());     //adds canvas to this frame
+//        menuBar = new JMenuBar();
+//        JMenu fileMenu = new JMenu("File"); 
+//        menuBar.add(fileMenu);
+//        add(menuBar = new MenuBar()); // add menu bar to this frame
+        setTitle("Logic Circuits Simulator");
         setSize(816, 615); //Can be changed by user but must fit the measurements of the tile
         setLocationRelativeTo(null);        //sets position of frame on screen
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+        
+        JMenu fileMenu = new JMenu("File");
+        menuBar.add(fileMenu);
+        
+        JMenuItem menuItem_SaveToFile = new JMenuItem("Save Board to File");
+        fileMenu.add(menuItem_SaveToFile);
+        
+        JMenuItem menuItem_LoadFromFile = new JMenuItem("Load Board from File");
+        fileMenu.add(menuItem_LoadFromFile);
+        
+        JMenu editMenu = new JMenu("Edit");
+        menuBar.add(editMenu);
+        
+        JMenuItem menuItem_ResetBoard = new JMenuItem("Reset Board");
+        editMenu.add(menuItem_ResetBoard);
+        
+        JMenuItem menuItem_Evaluate = new JMenuItem("Evaluate");
+        editMenu.add(menuItem_Evaluate);
+        
+        JMenu helpMenu = new JMenu("About & Help");
+        menuBar.add(helpMenu);
+        
+        JMenuItem menuItem_About = new JMenuItem("About");
+        helpMenu.add(menuItem_About);
+        
+        JMenuItem menuItem_Help = new JMenuItem("Help");
+        helpMenu.add(menuItem_Help);
     }
 
      /**
@@ -213,4 +252,15 @@ class Canvas extends JPanel {
         }
     }
 }
+
+//class MenuBar extends JMenuBar {
+//	public MenuBar() {
+//		this.add(new JMenu("File"));
+//	}
+//	
+//	@Override
+//	public void paintComponent(Graphics g) {
+//		super.paintComponent(g);
+//	}
+//}
 }
