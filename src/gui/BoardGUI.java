@@ -148,8 +148,12 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
      * 2) green: output evaluates to true
      * 3) red:   output evaluates to false
      */
-    private void evaluateCircuits() { // TODO
+    private void evaluateCircuits() {
     	System.out.println("Evaluating all circuits on the board");
+    	ArrayList<EvaluationInfo> info = boardEditor.evaluateAndVisualizeModel();
+    	for(EvaluationInfo eInfo : info)
+    		setColoredTile(eInfo);
+    	repaint();
     }
     
     /**
@@ -645,6 +649,26 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 			return new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * (coord.y + 1) - 4);
 		System.out.println("ERROR: Unexpected Behaviour!!!: " + index);
 		return new Vector2Int(0, 0);
+	}
+	
+	private void setColoredTile(EvaluationInfo e) {
+		TileType t = e.type;
+		if(t== TileType.AND)
+			t = (e.truthValue ? TileType.AND_TRUE : TileType.AND_FALSE);
+		else if(t== TileType.NAND)
+			t = (e.truthValue ? TileType.NAND_TRUE : TileType.NAND_FALSE);
+		else if(t== TileType.NOR)
+			t = (e.truthValue ? TileType.NOR_TRUE : TileType.NOR_FALSE);
+		else if(t== TileType.NOT)
+			t = (e.truthValue ? TileType.NOT_TRUE : TileType.NOT_FALSE);
+		else if(t== TileType.OR)
+			t = (e.truthValue ? TileType.OR_TRUE : TileType.OR_FALSE);
+		else if(t== TileType.XOR)
+			t = (e.truthValue ? TileType.XOR_TRUE : TileType.XOR_FALSE);
+		else {
+			System.out.println("ERROR: Evaluation failed: " + e.type);
+		}
+		canvas.currentTiles[e.row][e.col] = t;
 	}
 	
 	@Override public void mouseMoved(MouseEvent e) { }

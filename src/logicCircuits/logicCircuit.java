@@ -6,6 +6,7 @@ package logicCircuits;
 import gates.*;
 import gui.BoardEditor;
 import gui.BoardEditor.TileType;
+import utility.EvaluationInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,10 @@ public class LogicCircuit {
 		else {
 			System.out.println("ERROR: No matching gate! --> " + t);
 		}
-		addGate(g, col, row);
+		if(g == null)
+			removeGate(col, row);
+		else
+			addGate(g, col, row);
 	}
 	
 	public void addGate(Gate g, int pos1, int pos2) {
@@ -87,7 +91,12 @@ public class LogicCircuit {
 		}
 		
 		this.board.get(pos1).set(pos2, g);
-		output_gates.add(g);		
+		output_gates.add(g);
+		for(Gate gate : output_gates) {
+			if(gate != null) {
+				System.out.println(gate);
+			}
+		}
 	}
 	
 	public void removeGate(int pos1, int pos2) {
@@ -96,7 +105,7 @@ public class LogicCircuit {
 		this.board.get(pos1).remove(pos2);
 	}
 	
-	public void connectGates(int inputgate_pos1, int inputgate_pos2, int outputgate_pos1, int outputgate_pos2, int input_pos) {
+	public void connectGates(int outputgate_pos1, int outputgate_pos2, int inputgate_pos1, int inputgate_pos2, int input_pos) {
 		if (!valid(inputgate_pos1, inputgate_pos2)) return;
 		if (!valid(outputgate_pos1, outputgate_pos2)) return;
 		Gate gate_in = board.get(inputgate_pos1).get(inputgate_pos2);
@@ -130,5 +139,37 @@ public class LogicCircuit {
 	
 	private boolean valid(int pos1, int pos2) {
 		return (0 <= pos1) && (0 <= pos2);
+	}
+	
+	public ArrayList<EvaluationInfo> evaluateAndVisualize() {
+		while (output_gates.remove(null));
+		ArrayList<Gate> gatesToEvaluate = new ArrayList<Gate>();
+		ArrayList<Gate> evaluatedGates = new ArrayList<Gate>();
+		ArrayList<EvaluationInfo> info = new ArrayList<EvaluationInfo>();
+		
+//		for(Gate g : output_gates) {
+//			System.out.println(g);
+//			gatesToEvaluate.add(g);
+//		}
+		Gate g;
+		for(int row = 0; row < board.size(); row++) {
+			for(int col = 0; col < board.get(row).size(); col++) {
+				if((g = board.get(row).get(col)) != null && !(g instanceof TRUEgate || g instanceof FALSEgate)) {
+					EvaluationInfo e = new EvaluationInfo(null, col, row, g.output());
+					if(g instanceof ANDgate) { e.type = TileType.AND; }
+					else if(g instanceof NANDgate) { e.type = TileType.NAND; }
+					else if(g instanceof NORgate) { e.type = TileType.NOR; }
+					else if(g instanceof NOTgate) { e.type = TileType.NOT; }
+					else if(g instanceof ORgate) { e.type = TileType.OR; }
+					else if(g instanceof XORgate) { e.type = TileType.XOR; }
+					else {
+						System.out.println("ERROR: Unknown type of gate!");
+					}
+					info.add(e);
+				}
+			}
+		}
+		return info;
+		
 	}
 }

@@ -1,6 +1,9 @@
 package gui;
 
+import java.util.ArrayList;
+
 import logicCircuits.LogicCircuit;
+import utility.EvaluationInfo;
 import utility.Vector2Int;
 
 /**
@@ -130,5 +133,9 @@ public class BoardEditor
     public void addConnection(Vector2Int inputPos, Vector2Int targetPos, int id) {
     	// Gates work with identifier 0 or 1 => subtract 1 from the id before passing it on!
     	logicCircuit.connectGates(inputPos.x, inputPos.y, targetPos.x, targetPos.y, id - 1);
+    }
+    
+    public ArrayList<EvaluationInfo> evaluateAndVisualizeModel() {
+    	return logicCircuit.evaluateAndVisualize();
     }
 }
