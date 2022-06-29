@@ -85,7 +85,7 @@ public class LogicCircuit {
 	 */
 	public void addGate(TileType t, int col, int row) {
 		Gate g = null;
-		if(t == TileType.EMPTYTILE)
+		if(t == TileType.EMPTYTILE || t == null)
 			g = null;
 		else if(t == TileType.TRUE)
 			g = new TRUEgate();
@@ -159,6 +159,7 @@ public class LogicCircuit {
 			output_gates.remove(this.board.get(pos1).get(pos2));
 			this.board.get(pos1).remove(pos2);
 		} catch (IndexOutOfBoundsException e) { /*do nothing*/ }
+		catch(java.lang.NullPointerException e) { /*do nothing*/ }
 	}
 	
 	/**
@@ -181,7 +182,8 @@ public class LogicCircuit {
 	}
 	
 	public void unconnectGate(ConnectionInfo c) {
-		Gate outGate = board.get(c.target_col).get(c.target_row);
+		System.out.println(board.size() + " " + board.get(c.target_row).size() + " << SIZE");
+		Gate outGate = board.get(c.target_row).get(c.target_col);
 		outGate.setInput(null, c.id - 1);		
 		connections.remove(c);
 	}
@@ -265,6 +267,28 @@ public class LogicCircuit {
 			}
 		}
 		return info;
+		
+	}
+
+	/**
+	 * @param end
+	 * @param inputIndex
+	 * @return
+	 */
+	public boolean hasConnection(Vector2Int end, int inputIndex) {
+		System.out.println(inputIndex);
+		return board.get(end.x).get(end.y).getInput(inputIndex - 1) != null;
+	}
+
+	/**
+	 * 
+	 */
+	public void AllGates() {
+		for(int row = 0; row < board.size(); row++) {
+			for(int col = 0; col < board.get(row).size(); col++) {
+				board.get(row).set(col, null);
+			}
+		}
 		
 	}
 }

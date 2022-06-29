@@ -130,6 +130,15 @@ public class BoardEditor
     	logicCircuit.addGate(tileToPlace, v.x, v.y);
     }
     
+    public void removeGate(Vector2Int v) {
+    	tiles[v.x][v.y] = TileType.EMPTYTILE;
+    	logicCircuit.removeGate(v.x, v.y);
+    }
+    
+    public void removeAllGates() {
+    	logicCircuit.AllGates();
+    }
+    
     /** 
      * Create a connection between two gates in the underlying model.
      * @param inputPos Position of the gate whose output is used as input.
@@ -167,10 +176,21 @@ public class BoardEditor
     			}
     		}
     		ArrayList<ConnectionInfo> connections = logicCircuit.getConnections();
+    		someGUI.clearConnections();
     		for(ConnectionInfo c : connections) {
     			someGUI.addConnectionToGUI(c);
     		}
     	}
     	
     }
+
+	/**
+	 * @param start
+	 * @param end
+	 * @param inputIndex
+	 * @return
+	 */
+	public boolean alreadyHasConnection(Vector2Int start, Vector2Int end, int inputIndex) {
+		return logicCircuit.hasConnection(end, inputIndex);
+	}
 }

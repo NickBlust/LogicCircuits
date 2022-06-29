@@ -137,14 +137,13 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
      */
     private void resetBoard() { // TODO
     	System.out.println("Resetting Board");
-    	boardEditor.selectTileToPlace(TileType.EMPTYTILE);
     	for(int col = 0; col < canvas.currentTiles.length; col++) {
     		for(int row = 0; row < canvas.currentTiles[col].length; row++) {
     			Vector2Int v = new Vector2Int(col, row);
     			SetTile(v, TileType.EMPTYTILE);
-    			boardEditor.placeTile(v);
     		}
     	}
+    	boardEditor.removeAllGates();
     	canvas.connections.clear();
     }
     
@@ -519,20 +518,22 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	}
 	
 	public void SetTile(Vector2Int v, TileType type) {
-		canvas.currentTiles[v.x][v.y] = type;
-		if(type == TileType.EMPTYTILE) {
-			ArrayList<ConnectionInfo> newInfo = new ArrayList<ConnectionInfo>();
-			// remove connections
-			for(ConnectionInfo c : canvas.connections) {
-				if(c.isPartOfConnection(v))
-					newInfo.add(c);
+		try { // v may be null			
+			canvas.currentTiles[v.x][v.y] = type;
+			if(type == TileType.EMPTYTILE) {
+				ArrayList<ConnectionInfo> newInfo = new ArrayList<ConnectionInfo>();
+				// remove connections
+				for(ConnectionInfo c : canvas.connections) {
+					if(c.isPartOfConnection(v))
+						newInfo.add(c);
+				}
+				for(ConnectionInfo c : newInfo) {
+					canvas.connections.remove(c);
+					boardEditor.removeConnection(c);
+				}
 			}
-			for(ConnectionInfo c : newInfo) {
-				canvas.connections.remove(c);
-				boardEditor.removeConnection(c);
-			}
-		}
-		repaint();
+			repaint();
+		} catch(java.lang.NullPointerException ex) { /* do nothing */ }
 	}
 	
 	boolean startedDragging = false;
@@ -568,26 +569,35 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	int inputIndex = -1;
 	
 	private boolean isValidStart(Vector2Int v) {
-		Vector2Int coord = positionCalculator.GetTileIndices(v);
-		TileType t = canvas.currentTiles[coord.x][coord.y];
-		if(t == TileType.EMPTYTILE) { return false; }
-		Vector2Int target = new Vector2Int(TILE_WIDTH * (coord.x + 1) - 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
-		double dist = target.squaredDistance(v);
-		if(dist <= 10*10) 
-			return true;
-		return false;
+		try {
+			Vector2Int coord = positionCalculator.GetTileIndices(v); // coord may be null
+			TileType t = canvas.currentTiles[coord.x][coord.y];
+			if(t == TileType.EMPTYTILE) { return false; }
+			Vector2Int target = new Vector2Int(TILE_WIDTH * (coord.x + 1) - 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
+			double dist = target.squaredDistance(v);
+			if(dist <= 10*10) 
+				return true;
+			return false;
+		} catch (java.lang.NullPointerException ex) {
+			return false;
+		}
 	}
 	
 	private boolean isValidEnd(Vector2Int v) {
-		Vector2Int coord = positionCalculator.GetTileIndices(v);
-		if(coord.equals(positionCalculator.GetTileIndices(lineStart)))
-			return false; // drag remained on same tile
-		TileType t = canvas.currentTiles[coord.x][coord.y];
-		if(t == TileType.EMPTYTILE) { return false; }
-		else if(t == TileType.TRUE || t == TileType.FALSE) { return false; }
-		else if(t == TileType.NOT) // has only one output
-		{ return isValidEndOneInput(v); }
-		else { return isValidEndTwoInputs(v); }
+		try {
+			Vector2Int coord = positionCalculator.GetTileIndices(v);
+			if(coord.equals(positionCalculator.GetTileIndices(lineStart)))
+				return false; // drag remained on same tile
+			TileType t = canvas.currentTiles[coord.x][coord.y];
+			if(t == TileType.EMPTYTILE) { return false; }
+			else if(t == TileType.TRUE || t == TileType.FALSE) { return false; }
+			else if(t == TileType.NOT) // has only one output
+			{ return isValidEndOneInput(v); }
+			else { return isValidEndTwoInputs(v); }
+		} 
+		catch (java.lang.NullPointerException ex) {
+			return false;
+		}
 	}
 	
 	private boolean isValidEndOneInput(Vector2Int v) {
@@ -630,21 +640,37 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 		Vector2Int start = positionCalculator.GetTileIndices(lineStart);
 		Vector2Int end = positionCalculator.GetTileIndices(lineEnd);
 		
-//		ConnectionInfo circleTest = new ConnectionInfo(end.x, end.y, start.x, end.y, 0);
-//		System.out.println(start + " " + end + " " + circleTest);
-//		if(connectionAlreadyExists(circleTest)) { return; }
-//		circleTest.id = 1;
-//		if(connectionAlreadyExists(circleTest)) { return; }
 		
 		for(ConnectionInfo c: canvas.connections) {
 			if(c.isPartOfConnection(start) && c.isPartOfConnection(end))
 				return;
 		}
+		
+		if(boardEditor.alreadyHasConnection(start, end, inputIndex))
+		{
+			System.out.println("Input already given!");
+			
+			ConnectionInfo toDelete = null;
+			for(ConnectionInfo c: canvas.connections) {
+				if(c.isPartOfConnection(end)) {
+					toDelete = c;
+					break;
+				}
+			} try {
+				// remove old connection from model
+				boardEditor.removeConnection(toDelete);
+				
+				// and gui
+				canvas.connections.remove(toDelete);				
+			} catch(java.lang.NullPointerException ex) {
+				System.out.println("ERROR in BoardGUI: Could not remove connection --> " + toDelete);
+			}
+		}
 
-		// in model
+		// add connection in model
 		boardEditor.addConnection(start, end, inputIndex);
 
-		// in GUI
+		// and in GUI
 		ConnectionInfo cInfo = new ConnectionInfo(start.x, start.y, end.x, end.y, inputIndex);
 		if(!connectionAlreadyExists(cInfo)) {
 			System.out.println("Adding connection");
@@ -688,6 +714,8 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	
 	private void setColoredTile(EvaluationInfo e) {
 		TileType t = e.type;
+		System.out.println("(" + e.row + ", " + e.col + ") --> " + t);
+
 		if(t== TileType.AND)
 			t = (e.truthValue ? TileType.AND_TRUE : TileType.AND_FALSE);
 		else if(t== TileType.NAND)
@@ -704,6 +732,10 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 			System.out.println("ERROR: Evaluation failed: " + e.type);
 		}
 		canvas.currentTiles[e.row][e.col] = t;
+	}
+	
+	public void clearConnections() {
+		canvas.connections.clear();
 	}
 	
 	@Override public void mouseMoved(MouseEvent e) { }
