@@ -169,8 +169,8 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
      * Displays a window with information about the program.
      */
     private void showInformationAboutProgram() {
-        JFrame frame = new JFrame("About");
-        frame.setPreferredSize(new Dimension(400, 200));
+        JFrame frame = new JFrame("About - Logical Circuits");
+        frame.setPreferredSize(new Dimension(400, 250));
         
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         try 
@@ -192,7 +192,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
      */
     private void openHelpMenu() {
         JFrame frame = new JFrame("Help");
-        frame.setPreferredSize(new Dimension(400, 200));
+        frame.setPreferredSize(new Dimension(500, 350));
         
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         try 
