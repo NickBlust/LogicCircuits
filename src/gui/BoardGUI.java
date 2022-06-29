@@ -205,19 +205,13 @@ public class BoardGUI extends JFrame implements MouseListener
         JMenuItem menuItem_SaveToFile = new JMenuItem("Save Board to File");
         fileMenu.add(menuItem_SaveToFile);
     	menuItem_SaveToFile.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		clickedSave();
-        	}
-        });
+        	public void actionPerformed(ActionEvent e) { clickedSave(); } });
     	
         
         JMenuItem menuItem_LoadFromFile = new JMenuItem("Load Board from File");
         fileMenu.add(menuItem_LoadFromFile);
         menuItem_LoadFromFile.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		clickedLoad();
-        	}
-        });
+        	public void actionPerformed(ActionEvent e) { clickedLoad(); } });
         
         JMenu editMenu = new JMenu("Edit");
         menuBar.add(editMenu);
@@ -225,19 +219,13 @@ public class BoardGUI extends JFrame implements MouseListener
         JMenuItem menuItem_ResetBoard = new JMenuItem("Reset Board");
         editMenu.add(menuItem_ResetBoard);
         menuItem_ResetBoard.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		resetBoard();
-        	}
-        });
+        	public void actionPerformed(ActionEvent e) { resetBoard(); } });
         
         
         JMenuItem menuItem_Evaluate = new JMenuItem("Evaluate");
         editMenu.add(menuItem_Evaluate);
         menuItem_Evaluate.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		evaluateCircuits();
-        	}
-        });
+        	public void actionPerformed(ActionEvent e) { evaluateCircuits(); } });
         
         
         JMenu helpMenu = new JMenu("About & Help");
@@ -248,24 +236,21 @@ public class BoardGUI extends JFrame implements MouseListener
         menuItem_About.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		EventQueue.invokeLater(new Runnable()
-                { @Override
-                    public void run() { showInformationAboutProgram(); } });
-        	}
-        });
+                { @Override public void run() { showInformationAboutProgram(); } }); } });
         
         JMenuItem menuItem_Help = new JMenuItem("Help");
         helpMenu.add(menuItem_Help);
         menuItem_Help.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		EventQueue.invokeLater(new Runnable()
-                { @Override
-                    public void run() { openHelpMenu(); } }); }
-        });    
+                { @Override public void run() { openHelpMenu(); } }); } });    
     }
     
     /**
      * Provide all buttons for gate / tile selection 
      * in a scroll pane on the right-hand side of the main frame.
+     * It is CRUCIAL that the arrays for the button initialization
+     * are ordered correctly!
      * @author Dominik Baumann
      */
     private void initButtons() {
@@ -283,70 +268,33 @@ public class BoardGUI extends JFrame implements MouseListener
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         
-        JButton button_FALSE = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/FALSE.png")));
-        button_FALSE.setText("   FALSE  ");
-        button_FALSE.addActionListener(new ActionListener(){  
-        	public void actionPerformed(ActionEvent e){  
-        	            boardEditor.SelectTileToPlace(TileType.FALSE); } });  
-        panel.add(button_FALSE, new GBConstraints(0, 0, 5));
+        JButton button_Empty = null, button_FALSE = null, button_TRUE = null, 
+                button_AND = null, button_OR = null, button_NOT = null, 
+                button_NOR = null, button_NAND = null, button_XOR = null;
 
         
+        String[] fileLocations = {"tileEmpty64", "FALSE", "TRUE",
+        		"AND_White", "OR_White", "NOT_White", "NOR_White", "NAND_White", "XOR_White" };
         
-        JButton button_TRUE = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/TRUE.png")));
-        button_TRUE.setText("    TRUE  ");
-        button_TRUE.addActionListener(new ActionListener(){  
-        	public void actionPerformed(ActionEvent e){  
-        	            boardEditor.SelectTileToPlace(TileType.TRUE); } });  
-        panel.add(button_TRUE, new GBConstraints(0, 1, 5));
+        String[] buttonTexts = {"   Empty  ", "   FALSE  ", "    TRUE  ", "     AND  ",
+        		"      OR  ", "     NOT  ", "     NOR  ", "    NAND  ", "     XOR  "};
         
-        JButton button_AND = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/AND_White.png")));
-        button_AND.setText("     AND  ");
-        button_AND.addActionListener(new ActionListener(){  
-        	public void actionPerformed(ActionEvent e){  
-        	            boardEditor.SelectTileToPlace(TileType.AND); } });  
-        panel.add(button_AND, new GBConstraints(0, 2, 5));
+        TileType[] tileTypes = { TileType.EMPTYTILE, TileType.FALSE, TileType.TRUE,
+        		TileType.AND, TileType.OR, TileType.NOT, TileType.NOR, TileType.NAND, TileType.XOR };
         
-        JButton button_OR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/OR_White.png")));
-        button_OR.setText("      OR  ");        GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
-        button_OR.addActionListener(new ActionListener(){  
-        	public void actionPerformed(ActionEvent e){  
-        	            boardEditor.SelectTileToPlace(TileType.OR); } });  
-        panel.add(button_OR, new GBConstraints(0, 3, 5));
+        JButton[] tileButtons = { button_Empty, button_FALSE, button_TRUE, 
+                button_AND, button_OR, button_NOT, button_NOR, button_NAND, button_XOR };
         
-        JButton button_NOT = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NOT_White.png")));
-        button_NOT.setText("     NOT  ");        GridBagConstraints gbc_btnNewButton_4 = new GridBagConstraints();
-        button_NOT.addActionListener(new ActionListener(){  
-        	public void actionPerformed(ActionEvent e){  
-        	            boardEditor.SelectTileToPlace(TileType.NOT); } });  
-        panel.add(button_NOT, new GBConstraints(0, 4, 5));
-        
-        JButton button_NOR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NOR_White.png")));
-        button_NOR.setText("     NOR  ");
-        button_NOR.addActionListener(new ActionListener(){  
-        	public void actionPerformed(ActionEvent e){  
-        	            boardEditor.SelectTileToPlace(TileType.NOR); } });  
-        panel.add(button_NOR, new GBConstraints(0, 5, 5));
-        
-        JButton button_NAND = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NAND_White.png")));
-        button_NAND.setText("    NAND  ");
-        button_NAND.addActionListener(new ActionListener(){  
-        	public void actionPerformed(ActionEvent e){  
-        	            boardEditor.SelectTileToPlace(TileType.NAND); } });  
-        panel.add(button_NAND, new GBConstraints(0, 6, 5));
-        
-        JButton button_XOR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/XOR_White.png")));
-        button_XOR.setText("     XOR  ");GridBagConstraints gbc_btnNewButton_7 = new GridBagConstraints();
-        button_XOR.addActionListener(new ActionListener(){  
-        	public void actionPerformed(ActionEvent e){  
-        	            boardEditor.SelectTileToPlace(TileType.XOR); } });
-        panel.add(button_XOR, new GBConstraints(0, 7, 5));
-        
-        JButton button_Empty = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/tileEmpty64.png")));
-        button_Empty.setText("   Empty  ");        
-        button_Empty.addActionListener(new ActionListener(){  
-        	public void actionPerformed(ActionEvent e){  
-	            boardEditor.SelectTileToPlace(TileType.EMPTYTILE); } });  
-        panel.add(button_Empty, new GBConstraints(0, 8, 5));
+        for(int i = 0; i < tileButtons.length; i++) {
+        	final int k = i; // later the index has to final for access to tileTypes
+        	tileButtons[i] = new JButton(new ImageIcon(BoardGUI.class.getResource(
+        			"/Assets/" + fileLocations[i] + ".png")));
+        	tileButtons[i].setText(buttonTexts[i]);
+        	tileButtons[i].addActionListener(new ActionListener(){  
+        		public void actionPerformed(ActionEvent e){  
+    	            boardEditor.SelectTileToPlace(tileTypes[k]); } });  
+        	panel.add(tileButtons[i], new GBConstraints(0, i, 5));
+        }
     }
     
 	/**
