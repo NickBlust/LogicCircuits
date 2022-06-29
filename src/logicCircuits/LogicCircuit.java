@@ -1,5 +1,5 @@
 /**
- * 
+ * This class contains the data structure for storing a circuit made from single Gates.
  */
 package logicCircuits;
 
@@ -13,7 +13,9 @@ import java.util.List;
 
 /**
  * @author Dominik Baumann, Philipp Grzywaczyk
- * A logic circuit / logic board is an assortment of connected gates.
+ * A logic circuit / logic board is an assortment of connected gates.* The gates are organized in a twice-nested ArrayList.
+ * We use this instead of normal arrays, so we can dynamically increase the size.
+ * Adding / removing Gates as well as connecting them is done via their coordinates.
  * @see Gate
  */
 public class LogicCircuit {
@@ -22,6 +24,12 @@ public class LogicCircuit {
 	List<Gate> output_gates;
 	ArrayList<ArrayList<Gate> > board;
 	
+	/**
+	 * Constructor for a new board. The ArrayLists are initialized as n empty
+	 * lists of size m.
+	 * @param n size in one dimension
+	 * @param m size in second dimension
+	 */
 	public LogicCircuit(int n, int m){
 		if (n <= 2 || m <= 2) {
 			n = 2;
@@ -41,6 +49,13 @@ public class LogicCircuit {
 		output_gates = new ArrayList<Gate>();
 	}
 	
+	/**
+	 * This method is used to specify the gate to be added based on the visual
+	 * tile from the GUI
+	 * @param t Type of tile and thus gate to be added
+	 * @param col position 1
+	 * @param row position 2
+	 */
 	public void addGate(TileType t, int col, int row) {
 		Gate g = null;
 		if(t == TileType.EMPTYTILE)
@@ -70,6 +85,13 @@ public class LogicCircuit {
 			addGate(g, col, row);
 	}
 	
+	/**
+	 * This method adds a gate to the nested ArrayList at a specified position.
+	 * First, it is also added to output gates list.
+	 * @param g Gate to be added
+	 * @param pos1 Position 1
+	 * @param pos2 Position 2
+	 */
 	public void addGate(Gate g, int pos1, int pos2) {
 		if (g == null) return;
 		if (!valid(pos1, pos2)) return;
@@ -99,6 +121,11 @@ public class LogicCircuit {
 		}
 	}
 	
+	/**
+	 * Removes a gate from the specified position.
+	 * @param pos1 Position 1
+	 * @param pos2 Position 2
+	 */
 	public void removeGate(int pos1, int pos2) {
 		if (!valid(pos1, pos2)) return;
 		try { 
@@ -107,6 +134,15 @@ public class LogicCircuit {
 		} catch (IndexOutOfBoundsException e) { /*do nothing*/ }
 	}
 	
+	/**
+	 * This method connects the output of a specified gate to the specified input port
+	 * of a second, specified, input gate.
+	 * @param outputgate_pos1 Position 1 of Gate whose output we use
+	 * @param outputgate_pos2 Position 2 of Gate whose output we use
+	 * @param inputgate_pos1 Position 1 of Gate whose input we set
+	 * @param inputgate_pos2 Position 2 of Gate whose input we set
+	 * @param input_pos Position in the input-array where we set the input
+	 */
 	public void connectGates(int outputgate_pos1, int outputgate_pos2, int inputgate_pos1, int inputgate_pos2, int input_pos) {
 		if (!valid(inputgate_pos1, inputgate_pos2)) return;
 		if (!valid(outputgate_pos1, outputgate_pos2)) return;
@@ -116,6 +152,12 @@ public class LogicCircuit {
 		output_gates.remove(gate_out);
 	}
 	
+	/**
+	 * Unconnects the input at input-index num from the gate at specified position
+	 * @param pos1 Position 1
+	 * @param pos2 Position 2
+	 * @param num Input-index to be unconnected
+	 */
 	public void unconnectGate(int pos1, int pos2, int num) {
 		if (!valid(pos1, pos2)) return;
 		Gate gate = board.get(pos1).get(pos2);
@@ -125,6 +167,10 @@ public class LogicCircuit {
 		
 	}
 	
+	/**
+	 * returns an array with all the output values of gates which are not used as inputs
+	 * @return array of boolean variables
+	 */
 	public boolean[] get_circuit_output() {
 		boolean[] circuit_output = new boolean[number_of_output_gates()]; 
 		
@@ -134,15 +180,29 @@ public class LogicCircuit {
 		return circuit_output;
 	}
 	
+	/**
+	 * helper method, used above
+	 * @return integer the number of output gates
+	 */
 	private int number_of_output_gates() {
 		while (output_gates.remove(null));
 		return output_gates.size();
 	}
 	
+	/**
+	 * helper method, checks if two position parameters are valid
+	 * @param pos1 position 1
+	 * @param pos2 position 2
+	 * @return boolean true iff they are valid, false else
+	 */
 	private boolean valid(int pos1, int pos2) {
 		return (0 <= pos1) && (0 <= pos2);
 	}
 	
+	/**
+	 * Used for evaluating the states of all intermediate gate and colouring them properly
+	 * @return Evaluation Info for colouring the gates
+	 */
 	public ArrayList<EvaluationInfo> evaluateAndVisualize() {
 		while (output_gates.remove(null));
 		ArrayList<Gate> gatesToEvaluate = new ArrayList<Gate>();
