@@ -1,5 +1,7 @@
 package gui;
 
+import utility.Vector2Int;
+
 /**
  * The BoardEditor class is responsible for managing information about the board.
  * @author cmcgregor
@@ -13,7 +15,7 @@ public class BoardEditor
      */
     public enum TileType 
     {
-        EMPTYTILE, OR, AND //PLUS ANY ADDITIONAL ONES NEEDED
+        EMPTYTILE, FALSE, TRUE, AND, NAND, NOR, NOT, OR, XOR;
     }
 
     /**
@@ -21,14 +23,14 @@ public class BoardEditor
      * cause the display to draw incorrectly, and as a minimum the size of the
      * GUI would need to be adjusted.
      */
-    public static final int BOARD_WIDTH = 10;
+    public int BOARD_WIDTH = 10;
     
     /**
      * The height of the board, measured in tiles. Changing this may
      * cause the display to draw incorrectly, and as a minimum the size of the
      * GUI would need to be adjusted.
      */
-    public static final int BOARD_HEIGHT = 8;
+    public int BOARD_HEIGHT = 8;
 
     /**
      * The GUI associated with a BoardEditor object. This link allows the editor
@@ -42,6 +44,12 @@ public class BoardEditor
      * attributes when it is created.
      */
     private TileType[][] tiles;
+    
+    /**
+     * The tile to place on the board. 
+     * Equals null, if connections between gates are drawn.
+     */
+    public TileType tileToPlace;
 
     /**
      * Constructor that creates a BoardEditor object and connects it with a BoardGUI
@@ -81,7 +89,20 @@ public class BoardEditor
     public void startBoard() 
     {
         tiles = generateBoard();
-
         gui.updateDisplay(tiles);
+    }
+    
+    public void SelectTileToPlace(TileType t) { 
+    	if(t == tileToPlace)
+    		tileToPlace = null;
+    	else
+    		tileToPlace = t;
+    	System.out.println("Selected " + tileToPlace);
+    	}
+    
+    public void PlaceTile(Vector2Int v) {
+    	gui.SetTile(v, tileToPlace);
+    	// update gui
+    	// update model
     }
 }

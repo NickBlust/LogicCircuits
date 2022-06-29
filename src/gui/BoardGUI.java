@@ -1,5 +1,7 @@
 package gui;
 
+import utility.*;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -22,6 +24,9 @@ import javax.swing.JMenuItem;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.GridBagLayout;
@@ -35,9 +40,15 @@ import java.awt.Insets;
  * the grid.
  * @author cmcgregor, Dominik Baumann
  */
-public class BoardGUI extends JFrame
+public class BoardGUI extends JFrame implements MouseListener
 {
-
+	/**
+	 * The {@link gui.BoardEditor BoardEditor} associated with this GUI.
+	 */
+	BoardEditor boardEditor;
+	
+	BoardPositionCalculator positionCalculator;
+	
     /**
      * The two final int attributes below set the size of some graphical elements,
      * specifically the display height and width of tiles on the board. Tile sizes 
@@ -85,6 +96,7 @@ public class BoardGUI extends JFrame
         
         initMenuBar();
         initButtons();
+        canvas.addMouseListener(this);
     }
 
      /**
@@ -270,40 +282,67 @@ public class BoardGUI extends JFrame
         
         JButton button_FALSE = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/FALSE.png")));
         button_FALSE.setText("   FALSE  ");
+        button_FALSE.addActionListener(new ActionListener(){  
+        	public void actionPerformed(ActionEvent e){  
+        	            boardEditor.SelectTileToPlace(TileType.FALSE); } });  
         panel.add(button_FALSE, new GBConstraints(0, 0, 5));
+
         
         
         JButton button_TRUE = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/TRUE.png")));
         button_TRUE.setText("    TRUE  ");
+        button_TRUE.addActionListener(new ActionListener(){  
+        	public void actionPerformed(ActionEvent e){  
+        	            boardEditor.SelectTileToPlace(TileType.TRUE); } });  
         panel.add(button_TRUE, new GBConstraints(0, 1, 5));
         
         JButton button_AND = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/AND_White.png")));
         button_AND.setText("     AND  ");
+        button_AND.addActionListener(new ActionListener(){  
+        	public void actionPerformed(ActionEvent e){  
+        	            boardEditor.SelectTileToPlace(TileType.AND); } });  
         panel.add(button_AND, new GBConstraints(0, 2, 5));
         
         JButton button_OR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/OR_White.png")));
         button_OR.setText("      OR  ");        GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
+        button_OR.addActionListener(new ActionListener(){  
+        	public void actionPerformed(ActionEvent e){  
+        	            boardEditor.SelectTileToPlace(TileType.OR); } });  
         panel.add(button_OR, new GBConstraints(0, 3, 5));
         
         JButton button_NOT = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NOT_White.png")));
         button_NOT.setText("     NOT  ");        GridBagConstraints gbc_btnNewButton_4 = new GridBagConstraints();
+        button_NOT.addActionListener(new ActionListener(){  
+        	public void actionPerformed(ActionEvent e){  
+        	            boardEditor.SelectTileToPlace(TileType.NOT); } });  
         panel.add(button_NOT, new GBConstraints(0, 4, 5));
         
         JButton button_NOR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NOR_White.png")));
         button_NOR.setText("     NOR  ");
-        GridBagConstraints gbc_btnNewButton_5 = new GridBagConstraints();
+        button_NOR.addActionListener(new ActionListener(){  
+        	public void actionPerformed(ActionEvent e){  
+        	            boardEditor.SelectTileToPlace(TileType.NOR); } });  
         panel.add(button_NOR, new GBConstraints(0, 5, 5));
         
         JButton button_NAND = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NAND_White.png")));
         button_NAND.setText("    NAND  ");
+        button_NAND.addActionListener(new ActionListener(){  
+        	public void actionPerformed(ActionEvent e){  
+        	            boardEditor.SelectTileToPlace(TileType.NAND); } });  
         panel.add(button_NAND, new GBConstraints(0, 6, 5));
         
         JButton button_XOR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/XOR_White.png")));
         button_XOR.setText("     XOR  ");GridBagConstraints gbc_btnNewButton_7 = new GridBagConstraints();
+        button_XOR.addActionListener(new ActionListener(){  
+        	public void actionPerformed(ActionEvent e){  
+        	            boardEditor.SelectTileToPlace(TileType.XOR); } });
         panel.add(button_XOR, new GBConstraints(0, 7, 5));
         
         JButton button_Empty = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/tileEmpty64.png")));
-        button_Empty.setText("   Empty  ");
+        button_Empty.setText("   Empty  ");        
+        button_Empty.addActionListener(new ActionListener(){  
+        	public void actionPerformed(ActionEvent e){  
+	            boardEditor.SelectTileToPlace(TileType.EMPTYTILE); } });  
         panel.add(button_Empty, new GBConstraints(0, 8, 5));
     }
     
@@ -342,7 +381,7 @@ public class BoardGUI extends JFrame
 	    private BufferedImage tileXOR_TRUE;
 	    private BufferedImage tileXOR_FALSE;
 	    
-	    TileType[][] currentTiles;  //the current 2D array of tiles to display
+	    public TileType[][] currentTiles;  //the current 2D array of tiles to display
 	
 	    
 	    /**
@@ -444,6 +483,7 @@ public class BoardGUI extends JFrame
 	                            case EMPTYTILE:
 	                                g2.drawImage(tileEmpty, i * BoardGUI.TILE_WIDTH, j * BoardGUI.TILE_HEIGHT, null);
 	                                break;
+	                                
 	                        }
 	                    }
 	                }
@@ -463,5 +503,53 @@ public class BoardGUI extends JFrame
 			gridy = y;
 			insets = new Insets(0, 0, bottom, 0);
 		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Vector2Int v = positionCalculator.GetTileIndices(e.getX(), e.getY());
+		if(v != null) {
+			System.out.println("Clicked mouse at " + v);
+			if(boardEditor.tileToPlace != null) 
+				boardEditor.PlaceTile(v);
+			else {
+//				BoardEditor.DrawConnection???
+			}
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	public void SetBoardEditor(BoardEditor be) { 
+		boardEditor = be; 
+        positionCalculator = new BoardPositionCalculator(boardEditor);	
+	}
+	
+	public void SetTile(Vector2Int v, TileType type) {
+		canvas.currentTiles[v.x][v.y] = type;
+		repaint();
 	}
 }
