@@ -21,6 +21,7 @@ public class Launcher {
                 BoardGUI gui = new BoardGUI();            //create GUI
                 gui.setVisible(true);                   //display GUI
                 BoardEditor eng = new BoardEditor(gui);   //create engine
+                gui.SetBoardEditor(eng);
                 eng.startBoard();                        //starts the game
             }
         });
