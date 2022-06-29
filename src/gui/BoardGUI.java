@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -43,7 +45,7 @@ import java.awt.Insets;
  * the grid.
  * @author cmcgregor, Dominik Baumann
  */
-public class BoardGUI extends JFrame implements MouseListener
+public class BoardGUI extends JFrame implements MouseListener, MouseMotionListener
 {
 	/**
 	 * The {@link gui.BoardEditor BoardEditor} associated with this GUI.
@@ -100,6 +102,7 @@ public class BoardGUI extends JFrame implements MouseListener
         initMenuBar();
         initButtons();
         canvas.addMouseListener(this);
+        canvas.addMouseMotionListener(this);
     }
 
      /**
@@ -304,6 +307,8 @@ public class BoardGUI extends JFrame implements MouseListener
 	 */
 	class Canvas extends JPanel {
 	
+		public ArrayList<ConnectionInfo> connections = new ArrayList<ConnectionInfo>();
+		
 	    private BufferedImage tileEmpty;
 	    private BufferedImage tileFALSE;
 	    private BufferedImage tileTRUE;
@@ -443,6 +448,11 @@ public class BoardGUI extends JFrame implements MouseListener
 	    {
 	        super.paintComponent(g);
 	        drawBoard(g);
+	        if(drawLine) {
+	        	Graphics2D g2D = (Graphics2D) g;
+	        	g2D.drawLine(lineStart.x, lineStart.y,  lineEnd.x, lineEnd.y);
+	        }
+	        drawAllConnections(g);
 	    }
 	
 	    /**
@@ -477,42 +487,17 @@ public class BoardGUI extends JFrame implements MouseListener
 		}
 	}
 
+	boolean drawLine = false;
+	Vector2Int lineStart = null;
+	Vector2Int lineEnd = null;
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Vector2Int v = positionCalculator.GetTileIndices(e.getX(), e.getY());
-		if(v != null) {
-			System.out.println("Clicked mouse at " + v);
-			if(boardEditor.tileToPlace != null) 
-				boardEditor.PlaceTile(v);
-			else {
-//				BoardEditor.DrawConnection???
-			}
+		if(boardEditor.tileToPlace != null && !drawLine) {
+			SetTile(positionCalculator.GetTileIndices(e.getX(),e.getY()), boardEditor.tileToPlace);
 		}
 	}
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	
 	public void SetBoardEditor(BoardEditor be) { 
@@ -524,4 +509,122 @@ public class BoardGUI extends JFrame implements MouseListener
 		canvas.currentTiles[v.x][v.y] = type;
 		repaint();
 	}
+	
+	boolean startedDragging = false;
+	
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		Vector2Int v = new Vector2Int(e.getX(), e.getY());
+		if(!drawLine && !startedDragging && isValidStart(v)) {
+			lineStart = v;
+			lineEnd = lineStart;
+			drawLine = true;
+		}
+		else {
+			lineEnd = v;
+		}
+		startedDragging = true;
+		repaint();
+
+	}
+
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if(drawLine) {
+			drawLine = false;
+			if(isValidEnd(new Vector2Int(e.getX(),e.getY())))
+				addConnection();
+			repaint();
+		}
+		startedDragging = false;
+	}
+	
+	int inputIndex = -1;
+	
+	private boolean isValidStart(Vector2Int v) {
+		Vector2Int coord = positionCalculator.GetTileIndices(v);
+		TileType t = canvas.currentTiles[coord.x][coord.y];
+		if(t == TileType.EMPTYTILE) { return false; }
+		Vector2Int target = new Vector2Int(TILE_WIDTH * (coord.x + 1) - 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
+		double dist = target.squaredDistance(v);
+		if(dist <= 10*10) 
+			return true;
+		return false;
+	}
+	
+	private boolean isValidEnd(Vector2Int v) {
+		Vector2Int coord = positionCalculator.GetTileIndices(v);
+		if(coord.equals(positionCalculator.GetTileIndices(lineStart)))
+			return false; // drag remained on same tile
+		TileType t = canvas.currentTiles[coord.x][coord.y];
+		if(t == TileType.EMPTYTILE) { return false; }
+		else if(t == TileType.TRUE || t == TileType.FALSE) { return false; }
+		else if(t == TileType.NOT) // has only one output
+		{ return isValidEndOneInput(v); }
+		else { return isValidEndTwoInputs(v); }
+	}
+	
+	private boolean isValidEndOneInput(Vector2Int v) {
+		Vector2Int coord = positionCalculator.GetTileIndices(v);
+		Vector2Int target = new Vector2Int(TILE_WIDTH * coord.x - 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
+		double dist = target.squaredDistance(v);
+		System.out.println(dist + " " + v + " " + target);		
+		inputIndex = 1;
+		if(dist <= 10*10) 
+			return true;
+		return false;
+	}
+	
+	private boolean isValidEndTwoInputs(Vector2Int v) {
+		Vector2Int coord = positionCalculator.GetTileIndices(v);
+		Vector2Int target_Top = new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * coord.y + 5);
+		double dist = target_Top.squaredDistance(v);
+		if(dist <= 10*10) 
+		{
+			inputIndex = 1;
+			return true;
+		}
+		Vector2Int target_Bottom = new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * (coord.y + 1) - 4);
+		dist = target_Bottom.squaredDistance(v);
+		if(dist <= 10*10) 
+		{
+			inputIndex = 2;
+			return true;
+		}
+		return false;
+	}
+	
+	private void addConnection() {
+		// IN MODEL
+		// get input gate
+		// get target gate
+		// set input using inputIndex
+		Vector2Int start = positionCalculator.GetTileIndices(lineStart);
+		Vector2Int end = positionCalculator.GetTileIndices(lineEnd);
+		ConnectionInfo cInfo = new ConnectionInfo(start.x, start.y, end.x, end.y, inputIndex);
+		if(!connectionAlreadyExists(cInfo)) {
+			System.out.println("Adding connection");
+			canvas.connections.add(cInfo);
+		}
+			
+		System.out.println(cInfo);
+		// keep a list of entries
+	}
+	
+	private boolean connectionAlreadyExists(ConnectionInfo c) {
+		for(ConnectionInfo cInfo : canvas.connections) {
+			if(c.equals(cInfo)) { return true; }
+		}
+		return false;
+	}
+	
+	private void drawAllConnections(Graphics g) {
+		
+	}
+	
+	@Override public void mouseMoved(MouseEvent e) { }
+	@Override public void mousePressed(MouseEvent e) { }
+	@Override public void mouseEntered(MouseEvent e) { }
+	@Override public void mouseExited(MouseEvent e) {	}
 }

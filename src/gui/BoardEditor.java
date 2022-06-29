@@ -104,8 +104,8 @@ public class BoardEditor
     	}
     
     public void PlaceTile(Vector2Int v) {
-    	gui.SetTile(v, tileToPlace);
     	// update gui
-    	// update model
+    	gui.SetTile(v, tileToPlace);
+    	// TODO: update model
     }
 }
