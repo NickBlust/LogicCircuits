@@ -620,6 +620,12 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 		return false;
 	}
 	
+	public void addConnectionToGUI(ConnectionInfo c) {
+		ConnectionInfo cInfo = new ConnectionInfo(c);
+		cInfo.id += 1;
+		canvas.connections.add(cInfo); // keep a list of entries
+	}
+	
 	private void addConnection() {
 		Vector2Int start = positionCalculator.GetTileIndices(lineStart);
 		Vector2Int end = positionCalculator.GetTileIndices(lineEnd);
@@ -676,7 +682,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 			return new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * coord.y + 5);
 		if(index == 2)
 			return new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * (coord.y + 1) - 4);
-		System.out.println("ERROR: Unexpected Behaviour!!!: " + index);
+		System.out.println("ERROR: Unexpected Behaviour!!!: " + index + " " + coord);
 		return new Vector2Int(0, 0);
 	}
 	

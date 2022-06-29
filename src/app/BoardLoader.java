@@ -14,7 +14,7 @@ import gates.*;
 import logicCircuits.LogicCircuit;
 
 /**
- * @author domin
+ * @author Dominik Baumann
  *
  */
 public class BoardLoader {
@@ -41,7 +41,10 @@ public class BoardLoader {
 	    				int y = fileInfo.nextInt();
 	    				model.addGate(g, x, y);
 	    			}
-				System.out.println(fileInfo.nextLine());    		
+	    			while(fileInfo.hasNextLine()) {
+	    				model.connectGates(fileInfo.nextInt(), fileInfo.nextInt(),
+	    						fileInfo.nextInt(), fileInfo.nextInt(), fileInfo.nextInt());
+	    			}	
 	    		}
 	    		fileInfo.close();
     		} catch(NullPointerException e) {} // leave count at 0			

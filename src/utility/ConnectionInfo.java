@@ -26,6 +26,17 @@ public class ConnectionInfo {
 		id = id_;
 	}
 	
+	/**
+	 * @param c
+	 */
+	public ConnectionInfo(ConnectionInfo c) {
+		input_col = c.input_col;
+		input_row = c.input_row;
+		target_col = c.target_col;
+		target_row = c.target_row;
+		id = c.id;
+	}
+
 	public boolean equals(ConnectionInfo c) {
 		return input_col == c.input_col 
 				&& input_row == c.input_row 

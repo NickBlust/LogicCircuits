@@ -142,6 +142,7 @@ public class BoardEditor
     }
     
     public void removeConnection(ConnectionInfo c) {
+    	System.out.println(c);
     	logicCircuit.unconnectGate(c);
     }
     
@@ -163,10 +164,13 @@ public class BoardEditor
     		for(int row = 0; row < logicCircuit.getModelDimensions().x; row++) {
     			for(int col = 0; col < logicCircuit.getModelDimensions().y; col++) {
     				someGUI.canvas.currentTiles[row][col] = Gate.getTileTypeFromGate(newBoard.get(row).get(col));
-//    				System.out.println("(" + col + ", " + row + "): " + newBoard.get(row).get(col));
     			}
     		}
-//    		someGUI.canvas.currentTiles[0][0] = TileType.AND; 
+    		ArrayList<ConnectionInfo> connections = logicCircuit.getConnections();
+    		for(ConnectionInfo c : connections) {
+    			someGUI.addConnectionToGUI(c);
+    		}
     	}
+    	
     }
 }
