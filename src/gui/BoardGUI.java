@@ -160,15 +160,15 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
      * Displays a window with information about the program.
      */
     private void showInformationAboutProgram() {
-        JFrame frame = new JFrame("About");
-        frame.setPreferredSize(new Dimension(400, 200));
+        JFrame frame = new JFrame("About - Logical Circuits");
+        frame.setPreferredSize(new Dimension(400, 250));
         
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         try 
         { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
         catch (Exception e) { e.printStackTrace(); }
         
-        JTextArea textArea = new JTextArea("About");
+        JTextArea textArea = new JTextArea("Logical Circuits. \n Designed and developed by Dominik Baumann, \n Philipp Grzywaczyk and Cameron McGregor. \n Version 1.0, June 2022. \n \n This program allows the user \n to graphically design a logical circuit, \n by adding and connecting the standard \n logical gates, and evaluating the circuit \n for a specified input.");
         textArea.setEditable(false);
 
         frame.getContentPane().add(BorderLayout.CENTER, textArea);
@@ -183,14 +183,14 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
      */
     private void openHelpMenu() {
         JFrame frame = new JFrame("Help");
-        frame.setPreferredSize(new Dimension(400, 200));
+        frame.setPreferredSize(new Dimension(500, 350));
         
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         try 
         { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
         catch (Exception e) { e.printStackTrace(); }
         
-        JTextArea textArea = new JTextArea("Help");
+        JTextArea textArea = new JTextArea("To add a gate: \n Choose a type of gate on the right, \n and then click whereever on the board \n where you want to place it. \n \n To connect two gates: \n Simply drag a line from the output \n point of one gate to a input \n point of another gate. \n \n To evaluate the output, press Edit -> Evaluate.");
         textArea.setEditable(false);
 
         frame.getContentPane().add(BorderLayout.CENTER, textArea);
