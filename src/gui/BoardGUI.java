@@ -591,7 +591,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 			TileType t = canvas.currentTiles[coord.x][coord.y];
 			if(t == TileType.EMPTYTILE) { return false; }
 			else if(t == TileType.TRUE || t == TileType.FALSE) { return false; }
-			else if(t == TileType.NOT) // has only one output
+			else if(t == TileType.NOT || t == TileType.NOT_FALSE || t == TileType.NOT_TRUE) // has only one output
 			{ return isValidEndOneInput(v); }
 			else { return isValidEndTwoInputs(v); }
 		} 
@@ -702,7 +702,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	
 	private Vector2Int getInputPositionOnBoard(Vector2Int coord, int index) {
 		TileType t = canvas.currentTiles[coord.x][coord.y];
-		if(t == TileType.NOT)
+		if(t == TileType.NOT || t == TileType.NOT_FALSE || t == TileType.NOT_TRUE)
 			return new Vector2Int(TILE_WIDTH * coord.x + 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
 		if(index == 1)
 			return new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * coord.y + 5);
