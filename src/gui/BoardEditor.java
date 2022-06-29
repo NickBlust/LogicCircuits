@@ -103,7 +103,7 @@ public class BoardEditor
         gui.updateDisplay(tiles);
     }
     
-    public void SelectTileToPlace(TileType t) { 
+    public void selectTileToPlace(TileType t) { 
     	if(t == tileToPlace)
     		tileToPlace = null;
     	else
@@ -111,8 +111,24 @@ public class BoardEditor
     	System.out.println("Selected " + tileToPlace);
     	}
     
-    public void PlaceTile(Vector2Int v) {
+    /**
+     * Add the {@link BoardEditor.tileToPlace currently selected type of gate}
+     * to the underlying model at the given position.
+     * @param v Position of the new gate on the board.
+     */
+    public void placeTile(Vector2Int v) {
     	tiles[v.x][v.y] = tileToPlace;
     	logicCircuit.addGate(tileToPlace, v.x, v.y);
+    }
+    
+    /** 
+     * Create a connection between two gates in the underlying model.
+     * @param inputPos Position of the gate whose output is used as input.
+     * @param targetPos Position of the gate whose input is to be set.
+     * @param id Determines which input of the gate is set - is either 1 or 2;
+     */
+    public void addConnection(Vector2Int inputPos, Vector2Int targetPos, int id) {
+    	// Gates work with identifier 0 or 1 => subtract 1 from the id before passing it on!
+    	logicCircuit.connectGates(inputPos.x, inputPos.y, targetPos.x, targetPos.y, id - 1);
     }
 }

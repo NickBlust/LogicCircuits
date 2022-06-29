@@ -296,7 +296,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
         	tileButtons[i].setText(buttonTexts[i]);
         	tileButtons[i].addActionListener(new ActionListener(){  
         		public void actionPerformed(ActionEvent e){  
-    	            boardEditor.SelectTileToPlace(tileTypes[k]); } });  
+    	            boardEditor.selectTileToPlace(tileTypes[k]); } });  
         	panel.add(tileButtons[i], new GBConstraints(0, i, 5));
         }
     }
@@ -497,7 +497,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 		if(boardEditor.tileToPlace != null && !drawLine) {
 			Vector2Int v = positionCalculator.GetTileIndices(e.getX(),e.getY());
 			SetTile(v, boardEditor.tileToPlace);
-			boardEditor.PlaceTile(v);
+			boardEditor.placeTile(v);
 		}
 	}
 
@@ -599,21 +599,20 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	}
 	
 	private void addConnection() {
-		// IN MODEL
-		// get input gate
-		// get target gate
-		// set input using inputIndex
 		Vector2Int start = positionCalculator.GetTileIndices(lineStart);
 		Vector2Int end = positionCalculator.GetTileIndices(lineEnd);
 
+		// in model
+		boardEditor.addConnection(start, end, inputIndex);
+
+		// in GUI
 		ConnectionInfo cInfo = new ConnectionInfo(start.x, start.y, end.x, end.y, inputIndex);
 		if(!connectionAlreadyExists(cInfo)) {
 			System.out.println("Adding connection");
-			canvas.connections.add(cInfo);
+			canvas.connections.add(cInfo); // keep a list of entries
 		}
-			
 		System.out.println(cInfo);
-		// keep a list of entries
+			
 	}
 	
 	private boolean connectionAlreadyExists(ConnectionInfo c) {
