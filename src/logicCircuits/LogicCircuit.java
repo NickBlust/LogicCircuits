@@ -187,9 +187,9 @@ public class LogicCircuit {
 		System.out.println(c);
 		System.out.println(board.size() + "  " + board.get(c.target_row).size());
 		System.out.println(this.toString());
-		Gate outGate = board.get(c.target_row).get(c.target_col);
-
-		outGate.setInput(null, c.id - 1);		
+		Gate outGate = board.get(c.target_col).get(c.target_row);
+		if(outGate != null)
+			outGate.setInput(null, c.id - 1);		
 		connections.remove(c);
 	}
 	
@@ -299,15 +299,15 @@ public class LogicCircuit {
 	
 	public String toString() {
 		String s = "";
-		for(int row = 0; row < board.size(); row++) {
-			for(int col = 0; col < board.get(row).size(); col++) {
-				if(board.get(row).get(col) == null)
-					s += " 0 ";
-				else
-					s += Gate.getTileTypeFromGate(board.get(row).get(col));
-			}
-			s += "\n";
-		}
+//		for(int row = 0; row < board.size(); row++) {
+//			for(int col = 0; col < board.get(row).size(); col++) {
+//				if(board.get(row).get(col) == null)
+//					s += " 0 ";
+//				else
+//					s += Gate.getTileTypeFromGate(board.get(row).get(col));
+//			}
+//			s += "\n";
+//		}
 		return s;
 	}
 }

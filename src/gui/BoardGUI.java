@@ -504,7 +504,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(boardEditor.tileToPlace != null && !drawLine) {
-			Vector2Int v = positionCalculator.GetTileIndices(e.getX(),e.getY());
+			Vector2Int v = positionCalculator.GetTileIndices(e.getX(), e.getY());
 			SetTile(v, boardEditor.tileToPlace);
 			boardEditor.placeTile(v);
 		}
