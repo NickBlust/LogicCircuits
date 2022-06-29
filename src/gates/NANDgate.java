@@ -28,6 +28,9 @@ public class NANDgate extends InputGate {
 			return !(inputs[0].output() && inputs[1].output());
 		} catch (NullPointerException e) {
 			System.out.println("ERROR: Input gates not specified!");
+			if(inputs[0] == null && inputs[1] == null) { return true; }
+			else if (inputs[0] == null && inputs[1].output() == true) { return true; }
+			else if (inputs[0].output() == true && inputs[1] == null) { return true; }
 			return false;
 		}
 	}

@@ -28,7 +28,7 @@ public class NOTgate extends InputGate {
 			return !inputs[0].output();
 		} catch (NullPointerException e) {
 			System.out.println("ERROR: Input gates not specified!");
-			return false;
+			return true;
 		}
 	}
 

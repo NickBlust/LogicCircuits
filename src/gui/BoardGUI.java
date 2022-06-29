@@ -523,6 +523,18 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	
 	public void SetTile(Vector2Int v, TileType type) {
 		canvas.currentTiles[v.x][v.y] = type;
+		if(type == TileType.EMPTYTILE) {
+			ArrayList<ConnectionInfo> newInfo = new ArrayList<ConnectionInfo>();
+			// remove connections
+			for(ConnectionInfo c : canvas.connections) {
+				if(c.isPartOfConnection(v))
+					newInfo.add(c);
+			}
+			for(ConnectionInfo c : newInfo) {
+				canvas.connections.remove(c);
+				boardEditor.removeConnection(c);
+			}
+		}
 		repaint();
 	}
 	

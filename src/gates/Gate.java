@@ -27,6 +27,8 @@ public abstract class Gate {
 	 * depending on the type of gate and its input gates/values.
 	 * If an input gate is not set to an object (i.e. is null),
 	 * the value for that gate defaults to false. 
+	 * 
+	 * IF A GATES INPUTS ARE NOT SET, THEY ARE TREATED AS FALSE!!!
 	 * @return The output truth value of this gate.
 	 */
 	public abstract boolean output();

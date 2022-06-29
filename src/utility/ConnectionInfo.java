@@ -34,6 +34,10 @@ public class ConnectionInfo {
 				&& id == c.id;
 	}
 	
+	public boolean isPartOfConnection(Vector2Int pos) {
+		return ((input_col == pos.x) && (input_row == pos.y)) || ((target_col == pos.x) && (target_row == pos.y)); 
+	}
+	
 	public String toString() {
 		return input_col + " " + input_row + " " + target_col + " " + target_row + " " + id;
 	}

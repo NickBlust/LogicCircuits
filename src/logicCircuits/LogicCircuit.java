@@ -6,6 +6,7 @@ package logicCircuits;
 import gates.*;
 import gui.BoardEditor;
 import gui.BoardEditor.TileType;
+import utility.ConnectionInfo;
 import utility.EvaluationInfo;
 
 import java.util.ArrayList;
@@ -116,13 +117,17 @@ public class LogicCircuit {
 		output_gates.remove(gate_out);
 	}
 	
+	public void unconnectGate(ConnectionInfo c) {
+		Gate outGate = board.get(c.target_col).get(c.target_row);
+		outGate.setInput(null, c.id - 1);		
+	}
+	
 	public void unconnectGate(int pos1, int pos2, int num) {
 		if (!valid(pos1, pos2)) return;
 		Gate gate = board.get(pos1).get(pos2);
 		Gate input = gate.getInput(num);
 		output_gates.add(input);
-		gate.setInput(null, num);
-		
+		gate.setInput(null, num);	
 	}
 	
 	public boolean[] get_circuit_output() {
