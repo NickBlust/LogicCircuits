@@ -3,6 +3,7 @@ package gui;
 import utility.*;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -448,8 +449,8 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	    {
 	        super.paintComponent(g);
 	        drawBoard(g);
+	        Graphics2D g2D = (Graphics2D) g;
 	        if(drawLine) {
-	        	Graphics2D g2D = (Graphics2D) g;
 	        	g2D.drawLine(lineStart.x, lineStart.y,  lineEnd.x, lineEnd.y);
 	        }
 	        drawAllConnections(g);
@@ -494,7 +495,9 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(boardEditor.tileToPlace != null && !drawLine) {
-			SetTile(positionCalculator.GetTileIndices(e.getX(),e.getY()), boardEditor.tileToPlace);
+			Vector2Int v = positionCalculator.GetTileIndices(e.getX(),e.getY());
+			SetTile(v, boardEditor.tileToPlace);
+			boardEditor.PlaceTile(v);
 		}
 	}
 
@@ -567,7 +570,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	
 	private boolean isValidEndOneInput(Vector2Int v) {
 		Vector2Int coord = positionCalculator.GetTileIndices(v);
-		Vector2Int target = new Vector2Int(TILE_WIDTH * coord.x - 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
+		Vector2Int target = new Vector2Int(TILE_WIDTH * coord.x + 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
 		double dist = target.squaredDistance(v);
 		System.out.println(dist + " " + v + " " + target);		
 		inputIndex = 1;
@@ -602,6 +605,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 		// set input using inputIndex
 		Vector2Int start = positionCalculator.GetTileIndices(lineStart);
 		Vector2Int end = positionCalculator.GetTileIndices(lineEnd);
+
 		ConnectionInfo cInfo = new ConnectionInfo(start.x, start.y, end.x, end.y, inputIndex);
 		if(!connectionAlreadyExists(cInfo)) {
 			System.out.println("Adding connection");
@@ -620,7 +624,28 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	}
 	
 	private void drawAllConnections(Graphics g) {
-		
+		Graphics2D g2D = (Graphics2D) g;
+		for(ConnectionInfo c : canvas.connections) {
+			Vector2Int v1 = getOutputPositionOnBoard(new Vector2Int(c.input_col, c.input_row));
+			Vector2Int v2 = getInputPositionOnBoard(new Vector2Int(c.target_col, c.target_row), c.id);
+			g2D.drawLine(v1.x, v1.y, v2.x, v2.y);
+		}
+	}
+	
+	private Vector2Int getOutputPositionOnBoard(Vector2Int coord) {
+		return new Vector2Int(TILE_WIDTH * (coord.x + 1) - 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
+	}
+	
+	private Vector2Int getInputPositionOnBoard(Vector2Int coord, int index) {
+		TileType t = canvas.currentTiles[coord.x][coord.y];
+		if(t == TileType.NOT)
+			return new Vector2Int(TILE_WIDTH * coord.x + 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
+		if(index == 1)
+			return new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * coord.y + 5);
+		if(index == 2)
+			return new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * (coord.y + 1) - 4);
+		System.out.println("ERROR: Unexpected Behaviour!!!: " + index);
+		return new Vector2Int(0, 0);
 	}
 	
 	@Override public void mouseMoved(MouseEvent e) { }

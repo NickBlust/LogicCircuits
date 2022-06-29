@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.EventQueue;
 
+import logicCircuits.LogicCircuit;
+
 /**
  * This class is the entry point for the project, containing the main method that
  * starts the board.

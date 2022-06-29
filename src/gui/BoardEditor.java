@@ -1,5 +1,6 @@
 package gui;
 
+import logicCircuits.LogicCircuit;
 import utility.Vector2Int;
 
 /**
@@ -41,6 +42,12 @@ public class BoardEditor
      */
     private BoardGUI gui;
 
+    
+    /**
+     * The underlying model for the logic board.
+     */
+    private LogicCircuit logicCircuit;
+    
     /**
      * The 2 dimensional array of tiles the represent the current board.
      * The size of this array should use the BOARD_HEIGHT and BOARD_WIDTH
@@ -63,6 +70,7 @@ public class BoardEditor
     public BoardEditor(BoardGUI gui) 
     {
         this.gui = gui;
+        this.logicCircuit = new LogicCircuit(BOARD_WIDTH, BOARD_HEIGHT);
     }
 
     /**
@@ -104,8 +112,7 @@ public class BoardEditor
     	}
     
     public void PlaceTile(Vector2Int v) {
-    	// update gui
-    	gui.SetTile(v, tileToPlace);
-    	// TODO: update model
+    	tiles[v.x][v.y] = tileToPlace;
+    	logicCircuit.addGate(tileToPlace, v.x, v.y);
     }
 }

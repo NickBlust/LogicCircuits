@@ -3,7 +3,10 @@
  */
 package logicCircuits;
 
-import gates.Gate;
+import gates.*;
+import gui.BoardEditor;
+import gui.BoardEditor.TileType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +15,13 @@ import java.util.List;
  * A logic circuit / logic board is an assortment of connected gates.
  * @see Gate
  */
-public class logicCircuit {
+public class LogicCircuit {
 
 	//Gate[][] board;
 	List<Gate> output_gates;
 	ArrayList<ArrayList<Gate> > board;
 	
-	public logicCircuit(int n, int m){
+	public LogicCircuit(int n, int m){
 		if (n <= 2 || m <= 2) {
 			n = 2;
 			m = 2;
@@ -35,6 +38,32 @@ public class logicCircuit {
 			}
 		}
 		output_gates = new ArrayList<Gate>();
+	}
+	
+	public void addGate(TileType t, int col, int row) {
+		Gate g = null;
+		if(t == TileType.EMPTYTILE)
+			g = null;
+		else if(t == TileType.TRUE)
+			g = new TRUEgate();
+		else if(t == TileType.FALSE)
+			g = new FALSEgate();
+		else if(t == TileType.AND)
+			g = new ANDgate();
+		else if(t == TileType.NAND)
+			g = new NANDgate();
+		else if(t == TileType.NOR)
+			g = new NORgate();
+		else if(t == TileType.NOT)
+			g = new NOTgate();
+		else if(t == TileType.OR)
+			g = new ORgate();
+		else if(t == TileType.XOR)
+			g = new XORgate();
+		else {
+			System.out.println("ERROR: No matching gate! --> " + t);
+		}
+		addGate(g, col, row);
 	}
 	
 	public void addGate(Gate g, int pos1, int pos2) {
