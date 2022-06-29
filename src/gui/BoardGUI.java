@@ -9,6 +9,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.*;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -382,6 +385,7 @@ public class BoardGUI extends JFrame implements MouseListener
 	    private BufferedImage tileXOR_FALSE;
 	    
 	    public TileType[][] currentTiles;  //the current 2D array of tiles to display
+	    Map<TileType, BufferedImage> tileMap;
 	
 	    
 	    /**
@@ -439,6 +443,32 @@ public class BoardGUI extends JFrame implements MouseListener
 	              assert b.getHeight() == BoardGUI.TILE_HEIGHT &&
 	              b.getWidth() == BoardGUI.TILE_WIDTH;
 	            }
+	            
+	            tileMap = new HashMap<>();
+	            tileMap.put(TileType.EMPTYTILE, tileEmpty);
+	            tileMap.put(TileType.FALSE, tileFALSE);
+	            tileMap.put(TileType.TRUE, tileTRUE);
+	            
+	            tileMap.put(TileType.AND, tileAND_White);
+	            tileMap.put(TileType.NAND, tileNAND_White);
+	            tileMap.put(TileType.NOR, tileNOR_White);
+	            tileMap.put(TileType.NOT, tileNOT_White);
+	            tileMap.put(TileType.OR, tileOR_White);
+	            tileMap.put(TileType.XOR, tileXOR_White);
+	            
+	            tileMap.put(TileType.AND_TRUE, tileAND_TRUE);
+	            tileMap.put(TileType.NAND_TRUE, tileNAND_TRUE);
+	            tileMap.put(TileType.NOR_TRUE, tileNOR_TRUE);
+	            tileMap.put(TileType.NOT_TRUE, tileNOT_TRUE);
+	            tileMap.put(TileType.OR_TRUE, tileOR_TRUE);
+	            tileMap.put(TileType.XOR_TRUE, tileXOR_TRUE);
+	            
+	            tileMap.put(TileType.AND_FALSE, tileAND_FALSE);
+	            tileMap.put(TileType.NAND_FALSE, tileNAND_FALSE);
+	            tileMap.put(TileType.NOR_FALSE, tileNOR_FALSE);
+	            tileMap.put(TileType.NOT_FALSE, tileNOT_FALSE);
+	            tileMap.put(TileType.OR_FALSE, tileOR_FALSE);
+	            tileMap.put(TileType.XOR_FALSE, tileXOR_FALSE);
 	
 	        } catch (IOException e) {
 	            System.out.println("Exception loading images: " + e.getMessage());
@@ -478,13 +508,7 @@ public class BoardGUI extends JFrame implements MouseListener
 	            for (int i = 0; i < currentTiles.length; i++) {
 	                for (int j = 0; j < currentTiles[i].length; j++) {
 	                    if (currentTiles[i][j] != null) {   //checks a tile exists
-	                        switch (currentTiles[i][j]) 
-	                        {
-	                            case EMPTYTILE:
-	                                g2.drawImage(tileEmpty, i * BoardGUI.TILE_WIDTH, j * BoardGUI.TILE_HEIGHT, null);
-	                                break;
-	                                
-	                        }
+	                        g2.drawImage(tileMap.get(currentTiles[i][j]), i * BoardGUI.TILE_WIDTH, j * BoardGUI.TILE_HEIGHT, null);
 	                    }
 	                }
 	            }
