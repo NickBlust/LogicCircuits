@@ -26,6 +26,17 @@ public class ConnectionInfo {
 		id = id_;
 	}
 	
+	/**
+	 * @param c
+	 */
+	public ConnectionInfo(ConnectionInfo c) {
+		input_col = c.input_col;
+		input_row = c.input_row;
+		target_col = c.target_col;
+		target_row = c.target_row;
+		id = c.id;
+	}
+
 	public boolean equals(ConnectionInfo c) {
 		return input_col == c.input_col 
 				&& input_row == c.input_row 
@@ -34,7 +45,15 @@ public class ConnectionInfo {
 				&& id == c.id;
 	}
 	
+	public boolean isPartOfConnection(Vector2Int pos) {
+		return ((input_col == pos.x) && (input_row == pos.y)) || ((target_col == pos.x) && (target_row == pos.y)); 
+	}
+	
 	public String toString() {
+		return "{(" + input_col + ", " + input_row + ") --> (" + target_col + ", " + target_row + ") : " + id + "}";
+	}
+	
+	public String toStorageString() {
 		return input_col + " " + input_row + " " + target_col + " " + target_row + " " + id;
 	}
 }

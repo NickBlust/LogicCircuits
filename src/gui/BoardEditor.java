@@ -1,9 +1,15 @@
 package gui;
 
+import app.BoardLoader;
+import app.BoardSaver;
+import gates.Gate;
+
 import java.util.ArrayList;
 
 import logicCircuits.LogicCircuit;
+import utility.ConnectionInfo;
 import utility.EvaluationInfo;
+import utility.PositionInfo;
 import utility.Vector2Int;
 
 /**
@@ -135,7 +141,36 @@ public class BoardEditor
     	logicCircuit.connectGates(inputPos.x, inputPos.y, targetPos.x, targetPos.y, id - 1);
     }
     
+    public void removeConnection(ConnectionInfo c) {
+    	System.out.println(c);
+    	logicCircuit.unconnectGate(c);
+    }
+    
     public ArrayList<EvaluationInfo> evaluateAndVisualizeModel() {
     	return logicCircuit.evaluateAndVisualize();
+    }
+    
+    public void saveBoard() {
+    	BoardSaver.save(logicCircuit);
+    }
+    
+    public void loadBoard(BoardGUI someGUI) {
+    	LogicCircuit loadedBoard = BoardLoader.load();
+    	if(loadedBoard != null) {
+    		logicCircuit = loadedBoard;
+    		ArrayList<ArrayList<Gate> > newBoard = logicCircuit.getBoard();
+    		System.out.println("HELP: " + logicCircuit.getModelDimensions());
+    		someGUI.canvas.currentTiles = new TileType[logicCircuit.getModelDimensions().x][logicCircuit.getModelDimensions().y];
+    		for(int row = 0; row < logicCircuit.getModelDimensions().x; row++) {
+    			for(int col = 0; col < logicCircuit.getModelDimensions().y; col++) {
+    				someGUI.canvas.currentTiles[row][col] = Gate.getTileTypeFromGate(newBoard.get(row).get(col));
+    			}
+    		}
+    		ArrayList<ConnectionInfo> connections = logicCircuit.getConnections();
+    		for(ConnectionInfo c : connections) {
+    			someGUI.addConnectionToGUI(c);
+    		}
+    	}
+    	
     }
 }
