@@ -140,6 +140,15 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
      */
     private void resetBoard() { // TODO
     	System.out.println("Resetting Board");
+    	boardEditor.selectTileToPlace(TileType.EMPTYTILE);
+    	for(int col = 0; col < canvas.currentTiles.length; col++) {
+    		for(int row = 0; row < canvas.currentTiles[col].length; row++) {
+    			Vector2Int v = new Vector2Int(col, row);
+    			SetTile(v, TileType.EMPTYTILE);
+    			boardEditor.placeTile(v);
+    		}
+    	}
+    	canvas.connections.clear();
     }
     
     /**

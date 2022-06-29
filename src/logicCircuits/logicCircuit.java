@@ -101,8 +101,10 @@ public class LogicCircuit {
 	
 	public void removeGate(int pos1, int pos2) {
 		if (!valid(pos1, pos2)) return;
-		output_gates.remove(this.board.get(pos1).get(pos2));
-		this.board.get(pos1).remove(pos2);
+		try { 
+			output_gates.remove(this.board.get(pos1).get(pos2));
+			this.board.get(pos1).remove(pos2);
+		} catch (IndexOutOfBoundsException e) { /*do nothing*/ }
 	}
 	
 	public void connectGates(int outputgate_pos1, int outputgate_pos2, int inputgate_pos1, int inputgate_pos2, int input_pos) {
