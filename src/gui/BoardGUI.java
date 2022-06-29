@@ -120,12 +120,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
      */
     private void clickedSave() { // TODO
     	System.out.println("Clicked on Save");
-    	// format suggestion:
-    	// #row + " " + #columns + " " + numberOfTilesOnBoard
-    	// #rowOfThisTile + " " + #columnOfThisTile + " " + tileName
-    	// ... numberOfTilesOnBoard-many lines
-    	// #rowOfInput + " " + #columnOfInput + " " + #rowOfTarget + " " + #columnOfTarget + " " + #slotIDOnTarget
-    	// ... (iterate until file has no more nextLine)
+    	boardEditor.saveBoard();
     }
     
     /**
@@ -133,6 +128,8 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
      */
     private void clickedLoad() { // TODO
     	System.out.println("Clicked on Load");
+    	boardEditor.loadBoard(this);
+    	repaint();
     }
     
     /**
@@ -626,6 +623,17 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	private void addConnection() {
 		Vector2Int start = positionCalculator.GetTileIndices(lineStart);
 		Vector2Int end = positionCalculator.GetTileIndices(lineEnd);
+		
+//		ConnectionInfo circleTest = new ConnectionInfo(end.x, end.y, start.x, end.y, 0);
+//		System.out.println(start + " " + end + " " + circleTest);
+//		if(connectionAlreadyExists(circleTest)) { return; }
+//		circleTest.id = 1;
+//		if(connectionAlreadyExists(circleTest)) { return; }
+		
+		for(ConnectionInfo c: canvas.connections) {
+			if(c.isPartOfConnection(start) && c.isPartOfConnection(end))
+				return;
+		}
 
 		// in model
 		boardEditor.addConnection(start, end, inputIndex);

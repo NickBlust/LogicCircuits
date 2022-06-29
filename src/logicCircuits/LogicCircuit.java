@@ -8,6 +8,8 @@ import gui.BoardEditor;
 import gui.BoardEditor.TileType;
 import utility.ConnectionInfo;
 import utility.EvaluationInfo;
+import utility.PositionInfo;
+import utility.Vector2Int;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +24,36 @@ public class LogicCircuit {
 	//Gate[][] board;
 	List<Gate> output_gates;
 	ArrayList<ArrayList<Gate> > board;
+	ArrayList<ConnectionInfo> connections;
+	
+	public Vector2Int getModelDimensions() { 
+		return new Vector2Int(board.size(), board.get(0).size()); 
+	}
+	
+	public ArrayList<ConnectionInfo> getConnections() { return connections; }
+	
+	public ArrayList<ArrayList<Gate> > getBoard() { return board; }
+	
+	public ArrayList<PositionInfo> getAllGates() {
+		ArrayList<PositionInfo> gates = new ArrayList<PositionInfo>();
+	
+		Gate g;
+		for (int row = 0; row < board.size(); row++) {
+			for (int col = 0; col < board.get(0).size(); col++) {
+				System.out.println(row + " " + col);
+				if((g = board.get(row).get(col)) != null)
+					gates.add(new PositionInfo(g, new Vector2Int(row, col)));
+			}
+		}
+		
+		return gates;
+	}
 	
 	public LogicCircuit(int n, int m){
 		if (n <= 2 || m <= 2) {
 			n = 2;
 			m = 2;
 		}
-		
 		board = new ArrayList<ArrayList<Gate>>();
 		
 		for (int i = 0; i < n; i++) {
@@ -40,6 +65,7 @@ public class LogicCircuit {
 			}
 		}
 		output_gates = new ArrayList<Gate>();
+		connections = new ArrayList<ConnectionInfo>();  
 	}
 	
 	public void addGate(TileType t, int col, int row) {
@@ -115,11 +141,13 @@ public class LogicCircuit {
 		Gate gate_out = board.get(outputgate_pos1).get(outputgate_pos2);
 		gate_in.setInput(gate_out, input_pos);
 		output_gates.remove(gate_out);
+		connections.add(new ConnectionInfo(outputgate_pos1, outputgate_pos2, inputgate_pos1, inputgate_pos2, input_pos));
 	}
 	
 	public void unconnectGate(ConnectionInfo c) {
 		Gate outGate = board.get(c.target_col).get(c.target_row);
 		outGate.setInput(null, c.id - 1);		
+		connections.remove(c);
 	}
 	
 	public void unconnectGate(int pos1, int pos2, int num) {

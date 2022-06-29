@@ -29,6 +29,8 @@ public class NORgate extends InputGate {
 		} catch (NullPointerException e) {
 			System.out.println("ERROR: Input gates not specified!");
 			if(inputs[0] == null && inputs[1] == null) { return true; }
+			else if(inputs[0] == null && inputs[1].output() == false) { return true; }
+			else if(inputs[0].output() == false && inputs[1] == null) { return true; }
 			return false;
 		}
 	}

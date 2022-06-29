@@ -39,6 +39,10 @@ public class ConnectionInfo {
 	}
 	
 	public String toString() {
+		return "{(" + input_col + ", " + input_row + ") --> (" + target_col + ", " + target_row + ") : " + id + "}";
+	}
+	
+	public String toStorageString() {
 		return input_col + " " + input_row + " " + target_col + " " + target_row + " " + id;
 	}
 }
