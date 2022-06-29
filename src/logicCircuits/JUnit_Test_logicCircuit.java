@@ -39,7 +39,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	public void testLogicCircuit() {
 		int n = 50;
 		int m = 100;
-		logicCircuit circuit = new logicCircuit(n,m);
+		LogicCircuit circuit = new LogicCircuit(n,m);
 		assertEquals(50, circuit.board.size());
 		assertEquals(100, circuit.board.get(13).size());
 	}
@@ -49,7 +49,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	 */
 	@Test
 	public void testAddGate() {
-		logicCircuit circuit = new logicCircuit(50,50);
+		LogicCircuit circuit = new LogicCircuit(50,50);
 		ORgate or1 = new ORgate();
 		circuit.addGate(or1, 4, 3);
 		assertEquals(or1, circuit.board.get(4).get(3));
@@ -69,7 +69,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	 */
 	@Test
 	public void testRemoveGate() {
-		logicCircuit circuit = new logicCircuit(50,50);
+		LogicCircuit circuit = new LogicCircuit(50,50);
 		ANDgate and1 = new ANDgate();
 		circuit.addGate(and1, 7, 13);
 		assertEquals(and1, circuit.board.get(7).get(13));
@@ -84,7 +84,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	 */
 	@Test
 	public void testConnectGates() {
-		logicCircuit circuit = new logicCircuit(50,50);
+		LogicCircuit circuit = new LogicCircuit(50,50);
 		ORgate or1 = new ORgate();
 		circuit.addGate(or1, 4, 3);
 		ANDgate and1 = new ANDgate();
@@ -100,7 +100,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	 */
 	@Test
 	public void testUnconnectGate() {
-		logicCircuit circuit = new logicCircuit(50,50);
+		LogicCircuit circuit = new LogicCircuit(50,50);
 		NORgate nor1 = new NORgate();
 		circuit.addGate(nor1, 34, 15);
 		ANDgate and1 = new ANDgate();
@@ -119,7 +119,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	 */
 	@Test
 	public void testGet_circuit_output() {
-		logicCircuit circuit = new logicCircuit(50,50);
+		LogicCircuit circuit = new LogicCircuit(50,50);
 		ANDgate and1 = new ANDgate();
 		ORgate or1 = new ORgate();
 		NOTgate not1 = new NOTgate();

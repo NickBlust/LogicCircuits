@@ -1,5 +1,11 @@
 package gui;
 
+import java.util.ArrayList;
+
+import logicCircuits.LogicCircuit;
+import utility.EvaluationInfo;
+import utility.Vector2Int;
+
 /**
  * The BoardEditor class is responsible for managing information about the board.
  * @author cmcgregor
@@ -13,7 +19,10 @@ public class BoardEditor
      */
     public enum TileType 
     {
-        EMPTYTILE, OR, AND //PLUS ANY ADDITIONAL ONES NEEDED
+        EMPTYTILE, FALSE, TRUE,
+        AND, NAND, NOR, NOT, OR, XOR,
+        AND_TRUE, NAND_TRUE, NOR_TRUE, NOT_TRUE, OR_TRUE, XOR_TRUE,
+        AND_FALSE, NAND_FALSE, NOR_FALSE, NOT_FALSE, OR_FALSE, XOR_FALSE;
     }
 
     /**
@@ -21,14 +30,14 @@ public class BoardEditor
      * cause the display to draw incorrectly, and as a minimum the size of the
      * GUI would need to be adjusted.
      */
-    public static final int BOARD_WIDTH = 10;
+    public int BOARD_WIDTH = 10;
     
     /**
      * The height of the board, measured in tiles. Changing this may
      * cause the display to draw incorrectly, and as a minimum the size of the
      * GUI would need to be adjusted.
      */
-    public static final int BOARD_HEIGHT = 8;
+    public int BOARD_HEIGHT = 8;
 
     /**
      * The GUI associated with a BoardEditor object. This link allows the editor
@@ -36,12 +45,24 @@ public class BoardEditor
      */
     private BoardGUI gui;
 
+    
+    /**
+     * The underlying model for the logic board.
+     */
+    private LogicCircuit logicCircuit;
+    
     /**
      * The 2 dimensional array of tiles the represent the current board.
      * The size of this array should use the BOARD_HEIGHT and BOARD_WIDTH
      * attributes when it is created.
      */
     private TileType[][] tiles;
+    
+    /**
+     * The tile to place on the board. 
+     * Equals null, if connections between gates are drawn.
+     */
+    public TileType tileToPlace;
 
     /**
      * Constructor that creates a BoardEditor object and connects it with a BoardGUI
@@ -52,6 +73,7 @@ public class BoardEditor
     public BoardEditor(BoardGUI gui) 
     {
         this.gui = gui;
+        this.logicCircuit = new LogicCircuit(BOARD_WIDTH, BOARD_HEIGHT);
     }
 
     /**
@@ -81,7 +103,39 @@ public class BoardEditor
     public void startBoard() 
     {
         tiles = generateBoard();
-
         gui.updateDisplay(tiles);
+    }
+    
+    public void selectTileToPlace(TileType t) { 
+    	if(t == tileToPlace)
+    		tileToPlace = null;
+    	else
+    		tileToPlace = t;
+    	System.out.println("Selected " + tileToPlace);
+    	}
+    
+    /**
+     * Add the {@link BoardEditor.tileToPlace currently selected type of gate}
+     * to the underlying model at the given position.
+     * @param v Position of the new gate on the board.
+     */
+    public void placeTile(Vector2Int v) {
+    	tiles[v.x][v.y] = tileToPlace;
+    	logicCircuit.addGate(tileToPlace, v.x, v.y);
+    }
+    
+    /** 
+     * Create a connection between two gates in the underlying model.
+     * @param inputPos Position of the gate whose output is used as input.
+     * @param targetPos Position of the gate whose input is to be set.
+     * @param id Determines which input of the gate is set - is either 1 or 2;
+     */
+    public void addConnection(Vector2Int inputPos, Vector2Int targetPos, int id) {
+    	// Gates work with identifier 0 or 1 => subtract 1 from the id before passing it on!
+    	logicCircuit.connectGates(inputPos.x, inputPos.y, targetPos.x, targetPos.y, id - 1);
+    }
+    
+    public ArrayList<EvaluationInfo> evaluateAndVisualizeModel() {
+    	return logicCircuit.evaluateAndVisualize();
     }
 }

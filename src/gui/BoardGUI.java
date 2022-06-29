@@ -1,12 +1,19 @@
 package gui;
 
+import utility.*;
+
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -22,6 +29,10 @@ import javax.swing.JMenuItem;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.GridBagLayout;
@@ -35,9 +46,15 @@ import java.awt.Insets;
  * the grid.
  * @author cmcgregor, Dominik Baumann
  */
-public class BoardGUI extends JFrame
+public class BoardGUI extends JFrame implements MouseListener, MouseMotionListener
 {
-
+	/**
+	 * The {@link gui.BoardEditor BoardEditor} associated with this GUI.
+	 */
+	BoardEditor boardEditor;
+	
+	BoardPositionCalculator positionCalculator;
+	
     /**
      * The two final int attributes below set the size of some graphical elements,
      * specifically the display height and width of tiles on the board. Tile sizes 
@@ -85,6 +102,8 @@ public class BoardGUI extends JFrame
         
         initMenuBar();
         initButtons();
+        canvas.addMouseListener(this);
+        canvas.addMouseMotionListener(this);
     }
 
      /**
@@ -129,8 +148,12 @@ public class BoardGUI extends JFrame
      * 2) green: output evaluates to true
      * 3) red:   output evaluates to false
      */
-    private void evaluateCircuits() { // TODO
+    private void evaluateCircuits() {
     	System.out.println("Evaluating all circuits on the board");
+    	ArrayList<EvaluationInfo> info = boardEditor.evaluateAndVisualizeModel();
+    	for(EvaluationInfo eInfo : info)
+    		setColoredTile(eInfo);
+    	repaint();
     }
     
     /**
@@ -190,19 +213,13 @@ public class BoardGUI extends JFrame
         JMenuItem menuItem_SaveToFile = new JMenuItem("Save Board to File");
         fileMenu.add(menuItem_SaveToFile);
     	menuItem_SaveToFile.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		clickedSave();
-        	}
-        });
+        	public void actionPerformed(ActionEvent e) { clickedSave(); } });
     	
         
         JMenuItem menuItem_LoadFromFile = new JMenuItem("Load Board from File");
         fileMenu.add(menuItem_LoadFromFile);
         menuItem_LoadFromFile.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		clickedLoad();
-        	}
-        });
+        	public void actionPerformed(ActionEvent e) { clickedLoad(); } });
         
         JMenu editMenu = new JMenu("Edit");
         menuBar.add(editMenu);
@@ -210,19 +227,13 @@ public class BoardGUI extends JFrame
         JMenuItem menuItem_ResetBoard = new JMenuItem("Reset Board");
         editMenu.add(menuItem_ResetBoard);
         menuItem_ResetBoard.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		resetBoard();
-        	}
-        });
+        	public void actionPerformed(ActionEvent e) { resetBoard(); } });
         
         
         JMenuItem menuItem_Evaluate = new JMenuItem("Evaluate");
         editMenu.add(menuItem_Evaluate);
         menuItem_Evaluate.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		evaluateCircuits();
-        	}
-        });
+        	public void actionPerformed(ActionEvent e) { evaluateCircuits(); } });
         
         
         JMenu helpMenu = new JMenu("About & Help");
@@ -233,24 +244,21 @@ public class BoardGUI extends JFrame
         menuItem_About.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		EventQueue.invokeLater(new Runnable()
-                { @Override
-                    public void run() { showInformationAboutProgram(); } });
-        	}
-        });
+                { @Override public void run() { showInformationAboutProgram(); } }); } });
         
         JMenuItem menuItem_Help = new JMenuItem("Help");
         helpMenu.add(menuItem_Help);
         menuItem_Help.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		EventQueue.invokeLater(new Runnable()
-                { @Override
-                    public void run() { openHelpMenu(); } }); }
-        });    
+                { @Override public void run() { openHelpMenu(); } }); } });    
     }
     
     /**
      * Provide all buttons for gate / tile selection 
      * in a scroll pane on the right-hand side of the main frame.
+     * It is CRUCIAL that the arrays for the button initialization
+     * are ordered correctly!
      * @author Dominik Baumann
      */
     private void initButtons() {
@@ -268,43 +276,33 @@ public class BoardGUI extends JFrame
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         
-        JButton button_FALSE = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/FALSE.png")));
-        button_FALSE.setText("   FALSE  ");
-        panel.add(button_FALSE, new GBConstraints(0, 0, 5));
+        JButton button_Empty = null, button_FALSE = null, button_TRUE = null, 
+                button_AND = null, button_OR = null, button_NOT = null, 
+                button_NOR = null, button_NAND = null, button_XOR = null;
+
         
+        String[] fileLocations = {"tileEmpty64", "FALSE", "TRUE",
+        		"AND_White", "OR_White", "NOT_White", "NOR_White", "NAND_White", "XOR_White" };
         
-        JButton button_TRUE = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/TRUE.png")));
-        button_TRUE.setText("    TRUE  ");
-        panel.add(button_TRUE, new GBConstraints(0, 1, 5));
+        String[] buttonTexts = {"   Empty  ", "   FALSE  ", "    TRUE  ", "     AND  ",
+        		"      OR  ", "     NOT  ", "     NOR  ", "    NAND  ", "     XOR  "};
         
-        JButton button_AND = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/AND_White.png")));
-        button_AND.setText("     AND  ");
-        panel.add(button_AND, new GBConstraints(0, 2, 5));
+        TileType[] tileTypes = { TileType.EMPTYTILE, TileType.FALSE, TileType.TRUE,
+        		TileType.AND, TileType.OR, TileType.NOT, TileType.NOR, TileType.NAND, TileType.XOR };
         
-        JButton button_OR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/OR_White.png")));
-        button_OR.setText("      OR  ");        GridBagConstraints gbc_btnNewButton_3 = new GridBagConstraints();
-        panel.add(button_OR, new GBConstraints(0, 3, 5));
+        JButton[] tileButtons = { button_Empty, button_FALSE, button_TRUE, 
+                button_AND, button_OR, button_NOT, button_NOR, button_NAND, button_XOR };
         
-        JButton button_NOT = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NOT_White.png")));
-        button_NOT.setText("     NOT  ");        GridBagConstraints gbc_btnNewButton_4 = new GridBagConstraints();
-        panel.add(button_NOT, new GBConstraints(0, 4, 5));
-        
-        JButton button_NOR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NOR_White.png")));
-        button_NOR.setText("     NOR  ");
-        GridBagConstraints gbc_btnNewButton_5 = new GridBagConstraints();
-        panel.add(button_NOR, new GBConstraints(0, 5, 5));
-        
-        JButton button_NAND = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/NAND_White.png")));
-        button_NAND.setText("    NAND  ");
-        panel.add(button_NAND, new GBConstraints(0, 6, 5));
-        
-        JButton button_XOR = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/XOR_White.png")));
-        button_XOR.setText("     XOR  ");GridBagConstraints gbc_btnNewButton_7 = new GridBagConstraints();
-        panel.add(button_XOR, new GBConstraints(0, 7, 5));
-        
-        JButton button_Empty = new JButton(new ImageIcon(BoardGUI.class.getResource("/Assets/tileEmpty64.png")));
-        button_Empty.setText("   Empty  ");
-        panel.add(button_Empty, new GBConstraints(0, 8, 5));
+        for(int i = 0; i < tileButtons.length; i++) {
+        	final int k = i; // later the index has to final for access to tileTypes
+        	tileButtons[i] = new JButton(new ImageIcon(BoardGUI.class.getResource(
+        			"/Assets/" + fileLocations[i] + ".png")));
+        	tileButtons[i].setText(buttonTexts[i]);
+        	tileButtons[i].addActionListener(new ActionListener(){  
+        		public void actionPerformed(ActionEvent e){  
+    	            boardEditor.selectTileToPlace(tileTypes[k]); } });  
+        	panel.add(tileButtons[i], new GBConstraints(0, i, 5));
+        }
     }
     
 	/**
@@ -314,6 +312,8 @@ public class BoardGUI extends JFrame
 	 */
 	class Canvas extends JPanel {
 	
+		public ArrayList<ConnectionInfo> connections = new ArrayList<ConnectionInfo>();
+		
 	    private BufferedImage tileEmpty;
 	    private BufferedImage tileFALSE;
 	    private BufferedImage tileTRUE;
@@ -342,7 +342,8 @@ public class BoardGUI extends JFrame
 	    private BufferedImage tileXOR_TRUE;
 	    private BufferedImage tileXOR_FALSE;
 	    
-	    TileType[][] currentTiles;  //the current 2D array of tiles to display
+	    public TileType[][] currentTiles;  //the current 2D array of tiles to display
+	    Map<TileType, BufferedImage> tileMap;
 	
 	    
 	    /**
@@ -400,6 +401,32 @@ public class BoardGUI extends JFrame
 	              assert b.getHeight() == BoardGUI.TILE_HEIGHT &&
 	              b.getWidth() == BoardGUI.TILE_WIDTH;
 	            }
+	            
+	            tileMap = new HashMap<>();
+	            tileMap.put(TileType.EMPTYTILE, tileEmpty);
+	            tileMap.put(TileType.FALSE, tileFALSE);
+	            tileMap.put(TileType.TRUE, tileTRUE);
+	            
+	            tileMap.put(TileType.AND, tileAND_White);
+	            tileMap.put(TileType.NAND, tileNAND_White);
+	            tileMap.put(TileType.NOR, tileNOR_White);
+	            tileMap.put(TileType.NOT, tileNOT_White);
+	            tileMap.put(TileType.OR, tileOR_White);
+	            tileMap.put(TileType.XOR, tileXOR_White);
+	            
+	            tileMap.put(TileType.AND_TRUE, tileAND_TRUE);
+	            tileMap.put(TileType.NAND_TRUE, tileNAND_TRUE);
+	            tileMap.put(TileType.NOR_TRUE, tileNOR_TRUE);
+	            tileMap.put(TileType.NOT_TRUE, tileNOT_TRUE);
+	            tileMap.put(TileType.OR_TRUE, tileOR_TRUE);
+	            tileMap.put(TileType.XOR_TRUE, tileXOR_TRUE);
+	            
+	            tileMap.put(TileType.AND_FALSE, tileAND_FALSE);
+	            tileMap.put(TileType.NAND_FALSE, tileNAND_FALSE);
+	            tileMap.put(TileType.NOR_FALSE, tileNOR_FALSE);
+	            tileMap.put(TileType.NOT_FALSE, tileNOT_FALSE);
+	            tileMap.put(TileType.OR_FALSE, tileOR_FALSE);
+	            tileMap.put(TileType.XOR_FALSE, tileXOR_FALSE);
 	
 	        } catch (IOException e) {
 	            System.out.println("Exception loading images: " + e.getMessage());
@@ -426,6 +453,11 @@ public class BoardGUI extends JFrame
 	    {
 	        super.paintComponent(g);
 	        drawBoard(g);
+	        Graphics2D g2D = (Graphics2D) g;
+	        if(drawLine) {
+	        	g2D.drawLine(lineStart.x, lineStart.y,  lineEnd.x, lineEnd.y);
+	        }
+	        drawAllConnections(g);
 	    }
 	
 	    /**
@@ -439,12 +471,7 @@ public class BoardGUI extends JFrame
 	            for (int i = 0; i < currentTiles.length; i++) {
 	                for (int j = 0; j < currentTiles[i].length; j++) {
 	                    if (currentTiles[i][j] != null) {   //checks a tile exists
-	                        switch (currentTiles[i][j]) 
-	                        {
-	                            case EMPTYTILE:
-	                                g2.drawImage(tileEmpty, i * BoardGUI.TILE_WIDTH, j * BoardGUI.TILE_HEIGHT, null);
-	                                break;
-	                        }
+	                        g2.drawImage(tileMap.get(currentTiles[i][j]), i * BoardGUI.TILE_WIDTH, j * BoardGUI.TILE_HEIGHT, null);
 	                    }
 	                }
 	            }
@@ -464,4 +491,188 @@ public class BoardGUI extends JFrame
 			insets = new Insets(0, 0, bottom, 0);
 		}
 	}
+
+	boolean drawLine = false;
+	Vector2Int lineStart = null;
+	Vector2Int lineEnd = null;
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if(boardEditor.tileToPlace != null && !drawLine) {
+			Vector2Int v = positionCalculator.GetTileIndices(e.getX(),e.getY());
+			SetTile(v, boardEditor.tileToPlace);
+			boardEditor.placeTile(v);
+		}
+	}
+
+	
+	
+	public void SetBoardEditor(BoardEditor be) { 
+		boardEditor = be; 
+        positionCalculator = new BoardPositionCalculator(boardEditor);	
+	}
+	
+	public void SetTile(Vector2Int v, TileType type) {
+		canvas.currentTiles[v.x][v.y] = type;
+		repaint();
+	}
+	
+	boolean startedDragging = false;
+	
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		Vector2Int v = new Vector2Int(e.getX(), e.getY());
+		if(!drawLine && !startedDragging && isValidStart(v)) {
+			lineStart = v;
+			lineEnd = lineStart;
+			drawLine = true;
+		}
+		else {
+			lineEnd = v;
+		}
+		startedDragging = true;
+		repaint();
+
+	}
+
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if(drawLine) {
+			drawLine = false;
+			if(isValidEnd(new Vector2Int(e.getX(),e.getY())))
+				addConnection();
+			repaint();
+		}
+		startedDragging = false;
+	}
+	
+	int inputIndex = -1;
+	
+	private boolean isValidStart(Vector2Int v) {
+		Vector2Int coord = positionCalculator.GetTileIndices(v);
+		TileType t = canvas.currentTiles[coord.x][coord.y];
+		if(t == TileType.EMPTYTILE) { return false; }
+		Vector2Int target = new Vector2Int(TILE_WIDTH * (coord.x + 1) - 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
+		double dist = target.squaredDistance(v);
+		if(dist <= 10*10) 
+			return true;
+		return false;
+	}
+	
+	private boolean isValidEnd(Vector2Int v) {
+		Vector2Int coord = positionCalculator.GetTileIndices(v);
+		if(coord.equals(positionCalculator.GetTileIndices(lineStart)))
+			return false; // drag remained on same tile
+		TileType t = canvas.currentTiles[coord.x][coord.y];
+		if(t == TileType.EMPTYTILE) { return false; }
+		else if(t == TileType.TRUE || t == TileType.FALSE) { return false; }
+		else if(t == TileType.NOT) // has only one output
+		{ return isValidEndOneInput(v); }
+		else { return isValidEndTwoInputs(v); }
+	}
+	
+	private boolean isValidEndOneInput(Vector2Int v) {
+		Vector2Int coord = positionCalculator.GetTileIndices(v);
+		Vector2Int target = new Vector2Int(TILE_WIDTH * coord.x + 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
+		double dist = target.squaredDistance(v);
+		System.out.println(dist + " " + v + " " + target);		
+		inputIndex = 1;
+		if(dist <= 10*10) 
+			return true;
+		return false;
+	}
+	
+	private boolean isValidEndTwoInputs(Vector2Int v) {
+		Vector2Int coord = positionCalculator.GetTileIndices(v);
+		Vector2Int target_Top = new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * coord.y + 5);
+		double dist = target_Top.squaredDistance(v);
+		if(dist <= 10*10) 
+		{
+			inputIndex = 1;
+			return true;
+		}
+		Vector2Int target_Bottom = new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * (coord.y + 1) - 4);
+		dist = target_Bottom.squaredDistance(v);
+		if(dist <= 10*10) 
+		{
+			inputIndex = 2;
+			return true;
+		}
+		return false;
+	}
+	
+	private void addConnection() {
+		Vector2Int start = positionCalculator.GetTileIndices(lineStart);
+		Vector2Int end = positionCalculator.GetTileIndices(lineEnd);
+
+		// in model
+		boardEditor.addConnection(start, end, inputIndex);
+
+		// in GUI
+		ConnectionInfo cInfo = new ConnectionInfo(start.x, start.y, end.x, end.y, inputIndex);
+		if(!connectionAlreadyExists(cInfo)) {
+			System.out.println("Adding connection");
+			canvas.connections.add(cInfo); // keep a list of entries
+		}
+		System.out.println(cInfo);
+			
+	}
+	
+	private boolean connectionAlreadyExists(ConnectionInfo c) {
+		for(ConnectionInfo cInfo : canvas.connections) {
+			if(c.equals(cInfo)) { return true; }
+		}
+		return false;
+	}
+	
+	private void drawAllConnections(Graphics g) {
+		Graphics2D g2D = (Graphics2D) g;
+		for(ConnectionInfo c : canvas.connections) {
+			Vector2Int v1 = getOutputPositionOnBoard(new Vector2Int(c.input_col, c.input_row));
+			Vector2Int v2 = getInputPositionOnBoard(new Vector2Int(c.target_col, c.target_row), c.id);
+			g2D.drawLine(v1.x, v1.y, v2.x, v2.y);
+		}
+	}
+	
+	private Vector2Int getOutputPositionOnBoard(Vector2Int coord) {
+		return new Vector2Int(TILE_WIDTH * (coord.x + 1) - 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
+	}
+	
+	private Vector2Int getInputPositionOnBoard(Vector2Int coord, int index) {
+		TileType t = canvas.currentTiles[coord.x][coord.y];
+		if(t == TileType.NOT)
+			return new Vector2Int(TILE_WIDTH * coord.x + 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
+		if(index == 1)
+			return new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * coord.y + 5);
+		if(index == 2)
+			return new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * (coord.y + 1) - 4);
+		System.out.println("ERROR: Unexpected Behaviour!!!: " + index);
+		return new Vector2Int(0, 0);
+	}
+	
+	private void setColoredTile(EvaluationInfo e) {
+		TileType t = e.type;
+		if(t== TileType.AND)
+			t = (e.truthValue ? TileType.AND_TRUE : TileType.AND_FALSE);
+		else if(t== TileType.NAND)
+			t = (e.truthValue ? TileType.NAND_TRUE : TileType.NAND_FALSE);
+		else if(t== TileType.NOR)
+			t = (e.truthValue ? TileType.NOR_TRUE : TileType.NOR_FALSE);
+		else if(t== TileType.NOT)
+			t = (e.truthValue ? TileType.NOT_TRUE : TileType.NOT_FALSE);
+		else if(t== TileType.OR)
+			t = (e.truthValue ? TileType.OR_TRUE : TileType.OR_FALSE);
+		else if(t== TileType.XOR)
+			t = (e.truthValue ? TileType.XOR_TRUE : TileType.XOR_FALSE);
+		else {
+			System.out.println("ERROR: Evaluation failed: " + e.type);
+		}
+		canvas.currentTiles[e.row][e.col] = t;
+	}
+	
+	@Override public void mouseMoved(MouseEvent e) { }
+	@Override public void mousePressed(MouseEvent e) { }
+	@Override public void mouseEntered(MouseEvent e) { }
+	@Override public void mouseExited(MouseEvent e) {	}
 }
