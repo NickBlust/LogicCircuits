@@ -136,7 +136,7 @@ public class BoardEditor
     }
     
     public void removeAllGates() {
-    	logicCircuit.AllGates();
+    	logicCircuit.removeAllGates();
     }
     
     /** 
@@ -151,7 +151,6 @@ public class BoardEditor
     }
     
     public void removeConnection(ConnectionInfo c) {
-    	System.out.println(c);
     	logicCircuit.unconnectGate(c);
     }
     

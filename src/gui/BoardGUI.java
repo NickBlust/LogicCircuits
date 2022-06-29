@@ -640,17 +640,23 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 		Vector2Int start = positionCalculator.GetTileIndices(lineStart);
 		Vector2Int end = positionCalculator.GetTileIndices(lineEnd);
 		
-		
-		for(ConnectionInfo c: canvas.connections) {
-			if(c.isPartOfConnection(start) && c.isPartOfConnection(end))
-				return;
+		ConnectionInfo toDelete = null;
+		for(ConnectionInfo c: canvas.connections) { // recreating a connection leads to its deletion
+			if(c.isPartOfConnection(start) && c.isPartOfConnection(end) && c.id == inputIndex) {
+				toDelete = c;
+			}
+		}
+		if(toDelete != null) {
+			boardEditor.removeConnection(toDelete);
+			canvas.connections.remove(toDelete);
+			toDelete = null;
+			return;
 		}
 		
 		if(boardEditor.alreadyHasConnection(start, end, inputIndex))
 		{
 			System.out.println("Input already given!");
 			
-			ConnectionInfo toDelete = null;
 			for(ConnectionInfo c: canvas.connections) {
 				if(c.isPartOfConnection(end)) {
 					toDelete = c;
@@ -661,7 +667,8 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 				boardEditor.removeConnection(toDelete);
 				
 				// and gui
-				canvas.connections.remove(toDelete);				
+				canvas.connections.remove(toDelete);
+
 			} catch(java.lang.NullPointerException ex) {
 				System.out.println("ERROR in BoardGUI: Could not remove connection --> " + toDelete);
 			}

@@ -106,8 +106,10 @@ public class LogicCircuit {
 		else {
 			System.out.println("ERROR: No matching gate! --> " + t);
 		}
-		if(g == null)
+		if(g == null) {
+			System.out.println("Warning: Removing gate at (" + col + ", " + row + ")");
 			removeGate(col, row);
+		}
 		else
 			addGate(g, col, row);
 	}
@@ -182,8 +184,11 @@ public class LogicCircuit {
 	}
 	
 	public void unconnectGate(ConnectionInfo c) {
-		System.out.println(board.size() + " " + board.get(c.target_row).size() + " << SIZE");
+		System.out.println(c);
+		System.out.println(board.size() + "  " + board.get(c.target_row).size());
+		System.out.println(this.toString());
 		Gate outGate = board.get(c.target_row).get(c.target_col);
+
 		outGate.setInput(null, c.id - 1);		
 		connections.remove(c);
 	}
@@ -283,12 +288,26 @@ public class LogicCircuit {
 	/**
 	 * 
 	 */
-	public void AllGates() {
+	public void removeAllGates() {
 		for(int row = 0; row < board.size(); row++) {
 			for(int col = 0; col < board.get(row).size(); col++) {
 				board.get(row).set(col, null);
 			}
 		}
 		
+	}
+	
+	public String toString() {
+		String s = "";
+		for(int row = 0; row < board.size(); row++) {
+			for(int col = 0; col < board.get(row).size(); col++) {
+				if(board.get(row).get(col) == null)
+					s += " 0 ";
+				else
+					s += Gate.getTileTypeFromGate(board.get(row).get(col));
+			}
+			s += "\n";
+		}
+		return s;
 	}
 }
