@@ -1,7 +1,7 @@
 package gui;
 
 import java.awt.EventQueue;
-
+import java.awt.Dimension;
 import logicCircuits.LogicCircuit;
 
 /**
@@ -22,6 +22,7 @@ public class Launcher {
             public void run() {
                 BoardGUI gui = new BoardGUI();            //create GUI
                 gui.setVisible(true);                   //display GUI
+                gui.setMinimumSize(new Dimension(1220, 800));           //sets minimum size for the window
                 BoardEditor eng = new BoardEditor(gui);   //create engine
                 gui.SetBoardEditor(eng);
                 eng.startBoard();                        //starts the game
