@@ -4,7 +4,6 @@
 package logicCircuits;
 
 import gates.*;
-import gui.BoardEditor;
 import gui.BoardEditor.TileType;
 import utility.ConnectionInfo;
 import utility.EvaluationInfo;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Dominik Baumann, Philipp Grzywaczyk
+ * @author Philipp Grzywaczyk, Dominik Baumann
  * A logic circuit / logic board is an assortment of connected gates.* The gates are organized in a twice-nested ArrayList.
  * We use this instead of normal arrays, so we can dynamically increase the size.
  * Adding / removing Gates as well as connecting them is done via their coordinates.
@@ -24,18 +23,28 @@ import java.util.List;
 public class LogicCircuit {
 
 	//Gate[][] board;
+	/** A list of all {@link gates.Gate Gate}s which are not used as input. */
 	List<Gate> output_gates;
+	
+	/** The board model is stored as matrix of {@link gates.Gate Gate}s. */
 	ArrayList<ArrayList<Gate> > board;
+	
+	
+	/** Additionaly, we track the connections on the board with a list. */
 	ArrayList<ConnectionInfo> connections;
 	
+	/** @return the size of the board in the format (columns, rows). */
 	public Vector2Int getModelDimensions() { 
 		return new Vector2Int(board.size(), board.get(0).size()); 
 	}
 	
+	/** @return the current list of connections. */
 	public ArrayList<ConnectionInfo> getConnections() { return connections; }
 	
+	/** @return the current board that is being modelled. */
 	public ArrayList<ArrayList<Gate> > getBoard() { return board; }
 	
+	/** @return a list with all gates on the board. */
 	public ArrayList<PositionInfo> getAllGates() {
 		ArrayList<PositionInfo> gates = new ArrayList<PositionInfo>();
 	
@@ -47,7 +56,6 @@ public class LogicCircuit {
 					gates.add(new PositionInfo(g, new Vector2Int(row, col)));
 			}
 		}
-		
 		return gates;
 	}
 	

@@ -520,7 +520,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	public void SetTile(Vector2Int v, TileType type) {
 		try { // v may be null			
 			canvas.currentTiles[v.x][v.y] = type;
-			if(type == TileType.EMPTYTILE) {
+			if(true /*type == TileType.EMPTYTILE*/) {
 				ArrayList<ConnectionInfo> newInfo = new ArrayList<ConnectionInfo>();
 				// remove connections
 				for(ConnectionInfo c : canvas.connections) {
@@ -532,6 +532,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 					boardEditor.removeConnection(c);
 				}
 			}
+
 			repaint();
 		} catch(java.lang.NullPointerException ex) { /* do nothing */ }
 	}
@@ -673,6 +674,25 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 				System.out.println("ERROR in BoardGUI: Could not remove connection --> " + toDelete);
 			}
 		}
+		
+		// WIP, try DFS
+		// if connection leads to circle, don't create it
+//		ArrayList<Vector2Int> discovered = new ArrayList<Vector2Int>();
+//		ArrayList<Vector2Int> frontier = new ArrayList<Vector2Int>();
+//		discovered.add(start);
+//		frontier.add(start);
+//		
+//		while(frontier.size() > 0) {
+//			Vector2Int current = start;
+//			for(ConnectionInfo c : canvas.connections) {
+//				if(c.target_row == current.x && c.target_col == current.y) {
+//					System.out.println("Found one!");
+//					frontier.add(new Vector2Int(c.input_row, c.input_col));
+//				}
+//			}
+//			frontier.remove(current);
+//		}
+		
 
 		// add connection in model
 		boardEditor.addConnection(start, end, inputIndex);
