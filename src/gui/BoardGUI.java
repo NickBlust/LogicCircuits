@@ -752,6 +752,78 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 //			frontier.remove(current);
 //		}
 		
+		GateGraph graph = new GateGraph();
+		for(int i = 0; i < canvas.currentTiles.length; i++) {
+			for(int k = 0; k < canvas.currentTiles[0].length; k++) {
+				if(canvas.currentTiles[i][k] != TileType.EMPTYTILE) {
+					if(canvas.currentTiles[i][k] == TileType.TRUE
+							|| canvas.currentTiles[i][k] == TileType.FALSE) {
+						graph.addNode(new Vector2Int(i, k), 0);
+							
+						}
+					else if(canvas.currentTiles[i][k] == TileType.NOT 
+							|| canvas.currentTiles[i][k] == TileType.NOT_TRUE
+							|| canvas.currentTiles[i][k] == TileType.NOT_FALSE) {
+						Node in = new Node(new Vector2Int(i, k), 1);
+						Node out = new Node(new Vector2Int(i, k), 0);
+						graph.addNode(in);
+						graph.addNode(out);
+						graph.addEdge(in, out);
+					}
+					else {
+						Node top_in = new Node(new Vector2Int(i, k), 1);
+						Node bottom_in = new Node(new Vector2Int(i, k), 2);
+						Node out = new Node(new Vector2Int(i, k), 0);
+						graph.addNode(top_in);
+						graph.addNode(bottom_in);
+						graph.addNode(out);
+						graph.addEdge(top_in, out);
+						graph.addEdge(bottom_in, out);
+					}
+				}
+			}
+		}
+		// add connections from model
+		for(ConnectionInfo c : canvas.connections) {
+			Vector2Int from = new Vector2Int(c.input_col, c.input_row);
+			Vector2Int to = new Vector2Int(c.target_col, c.target_row);
+			Node start_ = new Node(from, 0);
+			Node end_ = new Node(to, c.id);
+			graph.addEdge(start_, end_);
+			System.out.println("Adding " + start_ + " --> " + end_);
+		}
+
+		// add the future edge:
+		Node futureStart = new Node(start, 0);
+		Node futureEnd = new Node(end, inputIndex);
+		graph.addEdge(futureStart, futureEnd);
+		
+		Node targetNode = new Node(end, 0);
+		Node searchBegin = new Node(start, 0);
+
+		ArrayList<Node> visited = new ArrayList<Node>();
+		ArrayList<Node> frontier = new ArrayList<Node>();
+		visited.add(searchBegin); frontier.add(searchBegin);
+		System.out.println(graph.toString());
+		graph.removeNode(new Node(start, 0));
+		while(frontier.size() > 0) {
+			Node current = frontier.remove(0);
+			ArrayList<Node> newNodes = graph.getNeighbouringNodes(current);
+			System.out.println("Comparing " + current + " to " + targetNode);
+			if(current.equals(targetNode))
+				System.out.println("FOUND CYCLE!!!");
+			for(Node n : newNodes) {
+				for(Node n2 : visited) {
+					if(n2.equals(n))
+						break; // already now this node
+					else
+						frontier.add(n);
+				}
+			}
+		}
+		
+		
+		
 
 		// add connection in model
 		boardEditor.addConnection(start, end, inputIndex);
