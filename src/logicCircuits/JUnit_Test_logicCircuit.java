@@ -89,9 +89,9 @@ public class JUnit_Test_logicCircuit extends TestCase {
 		ANDgate and1 = new ANDgate();
 		circuit.addGate(and1, 7, 13);
 		circuit.connectGates(4, 3, 7, 13, 0);
-		assertEquals(true, circuit.output_gates.contains(or1));
-		assertEquals(false, circuit.output_gates.contains(and1));
-		assertEquals(and1, circuit.board.get(4).get(3).getInput(0));		
+		assertEquals(false, circuit.output_gates.contains(or1));
+		assertEquals(true, circuit.output_gates.contains(and1));
+		assertEquals(or1, circuit.board.get(7).get(13).getInput(0));		
 	}
 
 	/**
@@ -105,12 +105,12 @@ public class JUnit_Test_logicCircuit extends TestCase {
 		ANDgate and1 = new ANDgate();
 		circuit.addGate(and1, 22, 32);
 		circuit.connectGates(34, 15, 22, 32, 1);
-		assertEquals(true, circuit.output_gates.contains(nor1));
-		assertEquals(false, circuit.output_gates.contains(and1));
-		assertEquals(and1, circuit.board.get(34).get(15).getInput(1));
-		circuit.disconnectGate(34, 15, 1);
-		assertEquals(null, circuit.board.get(34).get(15).getInput(1));
+		assertEquals(false, circuit.output_gates.contains(nor1));
 		assertEquals(true, circuit.output_gates.contains(and1));
+		assertEquals(nor1, circuit.board.get(22).get(32).getInput(1));
+		circuit.disconnectGate(22, 32, 1);
+		assertEquals(null, circuit.board.get(22).get(32).getInput(1));
+		assertEquals(true, circuit.output_gates.contains(nor1));
 	}
 
 	/**
@@ -135,13 +135,13 @@ public class JUnit_Test_logicCircuit extends TestCase {
 		circuit.addGate(not3, 5, 2);
 		circuit.addGate(or1, 4, 4);
 		
-		circuit.connectGates(2, 4, 2, 2, 0);
-		circuit.connectGates(2, 2, 0, 0, 0);
-		circuit.connectGates(2, 2, 1, 0, 1);
-		circuit.connectGates(4, 2, 0, 0, 0);
-		circuit.connectGates(5, 2, 1, 0, 0);
-		circuit.connectGates(4, 4, 4, 2, 0);
-		circuit.connectGates(4, 4, 5, 2, 1);
+		circuit.connectGates(2, 2, 2, 4, 0);
+		circuit.connectGates(0, 0, 2, 2, 0);
+		circuit.connectGates(1, 0, 2, 2, 1);
+		circuit.connectGates(0, 0, 4, 2, 0);
+		circuit.connectGates(1, 0, 5, 2, 0);
+		circuit.connectGates(4, 2, 4, 4, 0);
+		circuit.connectGates(5, 2, 4, 4, 1);
 		
 		boolean[] out = circuit.get_circuit_output();
 		assertEquals(2, circuit.get_circuit_output().length);
