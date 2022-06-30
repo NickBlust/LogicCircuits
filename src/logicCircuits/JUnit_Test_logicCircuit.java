@@ -4,7 +4,6 @@
 package logicCircuits;
 import gates.*;
 
-import static org.junit.Assert.*;
 import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +32,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link logicCircuits.logicCircuit#logicCircuit(int, int)}.
+	 * Test method for {@link logicCircuits.LogicCircuit#LogicCircuit(int, int)}.
 	 */
 	@Test
 	public void testLogicCircuit() {
@@ -45,7 +44,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link logicCircuits.logicCircuit#addGate(gates.Gate, int, int)}.
+	 * Test method for {@link logicCircuits.LogicCircuit#addGate(gates.Gate, int, int)}.
 	 */
 	@Test
 	public void testAddGate() {
@@ -65,7 +64,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link logicCircuits.logicCircuit#removeGate(int, int)}.
+	 * Test method for {@link logicCircuits.LogicCircuit#removeGate(int, int)}.
 	 */
 	@Test
 	public void testRemoveGate() {
@@ -80,7 +79,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link logicCircuits.logicCircuit#connectGates(int, int, int, int, int)}.
+	 * Test method for {@link logicCircuits.LogicCircuit#connectGates(int, int, int, int, int)}.
 	 */
 	@Test
 	public void testConnectGates() {
@@ -96,7 +95,7 @@ public class JUnit_Test_logicCircuit extends TestCase {
 	}
 
 	/**
-	 * Test method for {@link logicCircuits.logicCircuit#unconnectGate(int, int, int)}.
+	 * Test method for {@link logicCircuits.LogicCircuit#disconnectGate(int, int, int)}.
 	 */
 	@Test
 	public void testUnconnectGate() {
@@ -109,13 +108,13 @@ public class JUnit_Test_logicCircuit extends TestCase {
 		assertEquals(true, circuit.output_gates.contains(nor1));
 		assertEquals(false, circuit.output_gates.contains(and1));
 		assertEquals(and1, circuit.board.get(34).get(15).getInput(1));
-		circuit.unconnectGate(34, 15, 1);
+		circuit.disconnectGate(34, 15, 1);
 		assertEquals(null, circuit.board.get(34).get(15).getInput(1));
 		assertEquals(true, circuit.output_gates.contains(and1));
 	}
 
 	/**
-	 * Test method for {@link logicCircuits.logicCircuit#get_circuit_output()}.
+	 * Test method for {@link logicCircuits.LogicCircuit#get_circuit_output()}.
 	 */
 	@Test
 	public void testGet_circuit_output() {

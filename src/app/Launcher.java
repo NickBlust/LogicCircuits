@@ -1,8 +1,11 @@
-package gui;
+package app;
 
 import java.awt.EventQueue;
+
+import gui.BoardEditor;
+import gui.BoardGUI;
+
 import java.awt.Dimension;
-import logicCircuits.LogicCircuit;
 
 /**
  * This class is the entry point for the project, containing the main method that
@@ -11,6 +14,10 @@ import logicCircuits.LogicCircuit;
  */
 public class Launcher {
     
+    /**
+     * Runs the program (launches a GUI and underlying model).
+     * @param args (ignored)
+     */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
         

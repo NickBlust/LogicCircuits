@@ -3,18 +3,18 @@ package gui;
 import app.BoardLoader;
 import app.BoardSaver;
 import gates.Gate;
+import gates.TileConverter;
 
 import java.util.ArrayList;
 
 import logicCircuits.LogicCircuit;
 import utility.ConnectionInfo;
 import utility.EvaluationInfo;
-import utility.PositionInfo;
 import utility.Vector2Int;
 
 /**
  * The BoardEditor class is responsible for managing information about the board.
- * @author cmcgregor
+ * @author cmcgregor, Dominik Baumann (latter is responsible for the horrible parts)
  */
 public class BoardEditor 
 {
@@ -62,7 +62,7 @@ public class BoardEditor
      * The size of this array should use the BOARD_HEIGHT and BOARD_WIDTH
      * attributes when it is created.
      */
-    private TileType[][] tiles;
+//    private TileType[][] tiles;
     
     /**
      * The tile to place on the board. 
@@ -92,13 +92,10 @@ public class BoardEditor
      */
     private TileType[][] generateBoard() 
     {
-        tiles = new TileType[BOARD_WIDTH][BOARD_HEIGHT];
+        TileType[][] tiles = new TileType[BOARD_WIDTH][BOARD_HEIGHT];
         for (int i = 0; i < BOARD_WIDTH; i++)
-        {
-            for (int i2 = 0; i2 < BOARD_HEIGHT; i2++)
-            {
-                tiles[i][i2] = TileType.EMPTYTILE;
-            }
+        { for (int i2 = 0; i2 < BOARD_HEIGHT; i2++) {
+            tiles[i][i2] = TileType.EMPTYTILE; }
         }
         return tiles;
     }
@@ -108,36 +105,45 @@ public class BoardEditor
      */
     public void startBoard() 
     {
-        tiles = generateBoard();
-        gui.updateDisplay(tiles);
+        gui.updateDisplay(generateBoard());
     }
     
+    /**
+     * When clicking a button with a Gate in the GUI
+     * call this function to select which Type of tile is 
+     * to be drawn upon a click on the board.
+     * If the same Gate-button is clicked again, the tile is set to null.
+     * @param t The tile to draw onto the board.
+     */
     public void selectTileToPlace(TileType t) { 
     	if(t == tileToPlace)
     		tileToPlace = null;
     	else
     		tileToPlace = t;
-    	System.out.println("Selected " + tileToPlace);
+    	System.out.println("BoardEditor: Selected " + tileToPlace);
     	}
     
     /**
-     * Add the {@link BoardEditor.tileToPlace currently selected type of gate}
+     * Add the type of gate currently selected in the {@link gui.BoardEditor BoardEditor}
      * to the underlying model at the given position.
      * @param v Position of the new gate on the board.
      */
     public void placeTile(Vector2Int v) {
-    	tiles[v.x][v.y] = tileToPlace;
+//    	tiles[v.x][v.y] = tileToPlace;
     	logicCircuit.addGate(tileToPlace, v.x, v.y);
     }
     
+    /**
+     * Remove a gate from the board and the model.
+     * @param v Position of the gate.
+     */
     public void removeGate(Vector2Int v) {
-    	tiles[v.x][v.y] = TileType.EMPTYTILE;
+//    	tiles[v.x][v.y] = TileType.EMPTYTILE;
     	logicCircuit.removeGate(v.x, v.y);
     }
     
-    public void removeAllGates() {
-    	logicCircuit.removeAllGates();
-    }
+    /** Remove all gates from the model */
+    public void removeAllGates() { logicCircuit.removeAllGates(); }
     
     /** 
      * Create a connection between two gates in the underlying model.
@@ -150,28 +156,39 @@ public class BoardEditor
     	logicCircuit.connectGates(inputPos.x, inputPos.y, targetPos.x, targetPos.y, id - 1);
     }
     
+    /** Remove a connection between to gates in the model.
+     * @param c Contains the information which connection to remove.
+     */
     public void removeConnection(ConnectionInfo c) {
-    	logicCircuit.unconnectGate(c);
+    	logicCircuit.disconnectGate(c);
     }
     
+    /**
+     * @return A list with information for each gate on the board about
+     * 			the type of gate
+     * 			its position
+     * 			and its truth value under evaluation.
+     */
     public ArrayList<EvaluationInfo> evaluateAndVisualizeModel() {
     	return logicCircuit.evaluateAndVisualize();
     }
     
-    public void saveBoard() {
-    	BoardSaver.save(logicCircuit);
-    }
+    /** Save the board to a .txt-file. */
+    public void saveBoard() { BoardSaver.save(logicCircuit); }
     
+    /**
+     * Loads a board from a .txt file and updates the GUI.
+     * @param someGUI The current GUI.
+     */
     public void loadBoard(BoardGUI someGUI) {
     	LogicCircuit loadedBoard = BoardLoader.load();
     	if(loadedBoard != null) {
     		logicCircuit = loadedBoard;
     		ArrayList<ArrayList<Gate> > newBoard = logicCircuit.getBoard();
-    		System.out.println("HELP: " + logicCircuit.getModelDimensions());
     		someGUI.canvas.currentTiles = new TileType[logicCircuit.getModelDimensions().x][logicCircuit.getModelDimensions().y];
     		for(int row = 0; row < logicCircuit.getModelDimensions().x; row++) {
     			for(int col = 0; col < logicCircuit.getModelDimensions().y; col++) {
-    				someGUI.canvas.currentTiles[row][col] = Gate.getTileTypeFromGate(newBoard.get(row).get(col));
+    				someGUI.canvas.currentTiles[row][col] = TileConverter.getTileTypeFromGate(newBoard.get(row).get(col));
     			}
     		}
     		ArrayList<ConnectionInfo> connections = logicCircuit.getConnections();
@@ -180,16 +197,14 @@ public class BoardEditor
     			someGUI.addConnectionToGUI(c);
     		}
     	}
-    	
     }
 
-	/**
-	 * @param start
-	 * @param end
-	 * @param inputIndex
-	 * @return
+	/** Check if a gate already receives input.
+	 * @param end Position of the target (the gate receiving input).
+	 * @param inputIndex Which gate on the target is under investigation?
+	 * @return True if the gate already has a connection with the given index, false otherwise.
 	 */
-	public boolean alreadyHasConnection(Vector2Int start, Vector2Int end, int inputIndex) {
+	public boolean alreadyHasConnection(Vector2Int end, int inputIndex) {
 		return logicCircuit.hasConnection(end, inputIndex);
 	}
 }

@@ -3,7 +3,6 @@ package gui;
 import utility.*;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -44,7 +43,7 @@ import java.awt.Insets;
 /**
  * The BoardGUI class is responsible for rendering graphics to the screen to display
  * the grid.
- * @author cmcgregor, Dominik Baumann
+ * @author cmcgregor, Dominik Baumann (latter is responsible for the horrible parts, which is most of this class)
  */
 public class BoardGUI extends JFrame implements MouseListener, MouseMotionListener
 {
@@ -53,14 +52,21 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	 */
 	BoardEditor boardEditor;
 	
+	/** Used for calculation row / colum indices based on position (i.e. mouse position). */
 	BoardPositionCalculator positionCalculator;
 	
     /**
-     * The two final int attributes below set the size of some graphical elements,
-     * specifically the display height and width of tiles on the board. Tile sizes 
+     * Sets the size of some graphical elements,
+     * specifically the display width of tiles on the board. Tile sizes 
      * should match the size of the image files used.
      */
     public static final int TILE_WIDTH = 64;
+    
+    /**
+     * Sets the size of some graphical elements,
+     * specifically the display height of tiles on the board. Tile sizes 
+     * should match the size of the image files used.
+     */
     public static final int TILE_HEIGHT = 64;
 
     /**
@@ -106,37 +112,33 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
         canvas.addMouseMotionListener(this);
     }
 
-     /**
-     * Method to update the graphical elements on the screen
+     /** Method to update the graphical elements on the screen
+     * @param tiles The tiles on the board.
      */
     public void updateDisplay(TileType[][] tiles) 
-    {
-        canvas.update(tiles);
-    }
+    { canvas.update(tiles); }
 
+	
+	/** Sets the {@link gui.BoardEditor BoardEditor} and the
+	 *  {@link gui.BoardPositionCalculator BoardPositionCalculator} of this object.
+	 * @param be - a boardEditor
+	 */
+	public void SetBoardEditor(BoardEditor be) { 
+		boardEditor = be; 
+        positionCalculator = new BoardPositionCalculator(boardEditor);	
+	}
     
-    /**
-     * Stores the current board in a .txt-file
-     */
-    private void clickedSave() { // TODO
-    	System.out.println("Clicked on Save");
-    	boardEditor.saveBoard();
-    }
+    /** Store the current board in a .txt-file */
+    private void clickedSave() { boardEditor.saveBoard(); }
     
-    /**
-     * Load a board from a .txt-file
-     */
-    private void clickedLoad() { // TODO
-    	System.out.println("Clicked on Load");
+    /** Load a board from a .txt-file */
+    private void clickedLoad() {
     	boardEditor.loadBoard(this);
     	repaint();
     }
     
-    /**
-     * Delete all gates and connections on the board an in the model.
-     */
-    private void resetBoard() { // TODO
-    	System.out.println("Resetting Board");
+    /** Delete all gates and connections on the board an in the model. */
+    private void resetBoard() { 
     	for(int col = 0; col < canvas.currentTiles.length; col++) {
     		for(int row = 0; row < canvas.currentTiles[col].length; row++) {
     			Vector2Int v = new Vector2Int(col, row);
@@ -161,9 +163,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
     	repaint();
     }
     
-    /**
-     * Displays a window with information about the program.
-     */
+    /** Displays a window with information about the program. */
     private void showInformationAboutProgram() {
         JFrame frame = new JFrame("About - Logical Circuits");
         frame.setPreferredSize(new Dimension(400, 250));
@@ -173,7 +173,10 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
         { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
         catch (Exception e) { e.printStackTrace(); }
         
-        JTextArea textArea = new JTextArea("Logical Circuits. \n Designed and developed by Dominik Baumann, \n Philipp Grzywaczyk and Cameron McGregor. \n Version 1.0, June 2022. \n \n This program allows the user \n to graphically design a logical circuit, \n by adding and connecting the standard \n logical gates, and evaluating the circuit \n for a specified input");
+        JTextArea textArea = new JTextArea("Logical Circuits. \n Designed and developed by Dominik Baumann, \n" 
+        		+ "Philipp Grzywaczyk and Cameron McGregor. \n Version 1.0, June 2022. \n \n" 
+        		+ " This program allows the user \n to graphically design a logical circuit, \n " 
+        		+ "by adding and connecting the standard \n logical gates, and evaluating the circuit \n for a specified input");
         textArea.setEditable(false);
 
         frame.getContentPane().add(BorderLayout.CENTER, textArea);
@@ -183,9 +186,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
     }
     
     
-    /**
-     * Displays a window with information on how to use the program.
-     */
+    /** Displays a window with information on how to use the program. */
     private void openHelpMenu() {
         JFrame frame = new JFrame("Help");
         frame.setPreferredSize(new Dimension(500, 350));
@@ -195,7 +196,11 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
         { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
         catch (Exception e) { e.printStackTrace(); }
         
-        JTextArea textArea = new JTextArea("To add a gate: \n Choose a type of gate on the right, \n and then click whereever on the board \n where you want to place it. \n \n To connect two gates: \n Simply drag a line from the output \n point of one gate to a input \n point of another gate. \n \n To evaluate the output, press Edit -> Evaluate.");
+        JTextArea textArea = new JTextArea("To add a gate: \n Choose a type of gate on the right, \n" 
+        		+ "and then click whereever on the board \n where you want to place it. \n \n "
+        		+ "To connect two gates: \n Simply drag a line from the output \n " 
+        		+ "point of one gate to a input \n point of another gate. \n \n" 
+        		+ " To evaluate the output, press Edit -> Evaluate.");
         textArea.setEditable(false);
 
         frame.getContentPane().add(BorderLayout.CENTER, textArea);
@@ -204,10 +209,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
         frame.setVisible(true);
     }
 
-    /**
-     * Sets up the menu bar and its menus.
-     * @author Dominik Baumann
-     */
+    /** Sets up the menu bar and its menus. */
     private void initMenuBar() {
     	menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -259,12 +261,31 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
                 { @Override public void run() { openHelpMenu(); } }); } });    
     }
     
+
+	/**
+	 * Internal class to simplify the button instantiation in 
+	 * {@link gui.BoardGUI initButtons}.
+	 */
+	class GBConstraints extends GridBagConstraints {
+
+		/** Constructor
+		 * @param x ()
+		 * @param y ()
+		 * @param bottom ()
+		 * @see GridBagConstraints
+		 */
+		public GBConstraints(int x, int y, int bottom) {
+			gridx = x;
+			gridy = y;
+			insets = new Insets(0, 0, bottom, 0);
+		}
+	}
+    
     /**
      * Provide all buttons for gate / tile selection 
      * in a scroll pane on the right-hand side of the main frame.
      * It is CRUCIAL that the arrays for the button initialization
      * are ordered correctly!
-     * @author Dominik Baumann
      */
     private void initButtons() {
     	JPanel panel = new JPanel();
@@ -317,8 +338,10 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	 */
 	class Canvas extends JPanel {
 	
+		/** Maintain a list of the connections to draw onto the boad. */
 		public ArrayList<ConnectionInfo> connections = new ArrayList<ConnectionInfo>();
 		
+		// Store the images for all gates and their states.
 	    private BufferedImage tileEmpty;
 	    private BufferedImage tileFALSE;
 	    private BufferedImage tileTRUE;
@@ -348,20 +371,15 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	    private BufferedImage tileXOR_FALSE;
 	    
 	    public TileType[][] currentTiles;  //the current 2D array of tiles to display
-	    Map<TileType, BufferedImage> tileMap;
+	    Map<TileType, BufferedImage> tileMap; // retrieve correct image from TileType
 	
 	    
-	    /**
-	     * Constructor that loads tile images for use in this class
-	     */
-	    public Canvas() 
-	    {
-	        loadTileImages();
-	    }
+	    /** Constructor that loads tile images for use in this class */
+	    public Canvas() { loadTileImages(); }
 	    
-	    /**
-	     * Loads tiles images from a fixed folder location within the project directory
-	     */
+	    
+	    
+	    /** Loads tiles images from a fixed folder location within the project directory. */
 	    private void loadTileImages() {
 	        try {
 	        	tileEmpty = ImageIO.read(BoardGUI.class.getResource("/assets/tileEmpty64.png"));
@@ -407,7 +425,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	              b.getWidth() == BoardGUI.TILE_WIDTH;
 	            }
 	            
-	            tileMap = new HashMap<>();
+	            tileMap = new HashMap<>(); // set up the tilemap
 	            tileMap.put(TileType.EMPTYTILE, tileEmpty);
 	            tileMap.put(TileType.FALSE, tileFALSE);
 	            tileMap.put(TileType.TRUE, tileTRUE);
@@ -439,8 +457,8 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	        }
 	    }
 	    
-	    /**
-	     * Updates the current graphics on the screen to display the tiles
+	    /** Updates the current graphics on the screen to display the tiles.
+	     * @param t The tiles to display.
 	     */
 	    public void update(TileType[][] t) 
 	    {
@@ -451,7 +469,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	    /**
 	     * Override of method in super class, it draws the custom elements for this
 	     * board such as the tiles.
-	     * @param g 
+	     * @param g ()
 	     */
 	    @Override
 	    public void paintComponent(Graphics g)
@@ -467,7 +485,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	
 	    /**
 	     * Draws graphical elements to the screen.
-	     * @param g 
+	     * @param g ()
 	     */
 	    private void drawBoard(Graphics g) 
 	    {
@@ -483,24 +501,33 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 	        }
 	    }
 	}
-
-	/**
-	 * Internal class to simplify the button instantiation in 
-	 * {@link BoardGUI.initButtons initButtons}.
-	 * @author Dominik Baumann
+	
+	
+	/** 
+	 * Draw all connections (i.e. their lines) on the GUI.
+	 * @param g ()
 	 */
-	class GBConstraints extends GridBagConstraints {
-		public GBConstraints(int x, int y, int bottom) {
-			gridx = x;
-			gridy = y;
-			insets = new Insets(0, 0, bottom, 0);
+	private void drawAllConnections(Graphics g) {
+		Graphics2D g2D = (Graphics2D) g;
+		for(ConnectionInfo c : canvas.connections) {
+			Vector2Int v1 = getOutputPositionOnBoard(new Vector2Int(c.input_col, c.input_row));
+			Vector2Int v2 = getInputPositionOnBoard(new Vector2Int(c.target_col, c.target_row), c.id);
+			g2D.drawLine(v1.x, v1.y, v2.x, v2.y);
 		}
 	}
 
+	/** True iff mouse has been clicked and is dragged, to preview connections */
 	boolean drawLine = false;
+	
+	/** Start of the connection-preview line */
 	Vector2Int lineStart = null;
+	
+	/** End of the connection-preview line (i.e. the mouse position)*/
 	Vector2Int lineEnd = null;
 	
+	/** True iff the mouse is already dragging */
+	boolean startedDragging = false;
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(boardEditor.tileToPlace != null && !drawLine) {
@@ -509,35 +536,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 			boardEditor.placeTile(v);
 		}
 	}
-
 	
-	
-	public void SetBoardEditor(BoardEditor be) { 
-		boardEditor = be; 
-        positionCalculator = new BoardPositionCalculator(boardEditor);	
-	}
-	
-	public void SetTile(Vector2Int v, TileType type) {
-		try { // v may be null			
-			canvas.currentTiles[v.x][v.y] = type;
-			if(true /*type == TileType.EMPTYTILE*/) {
-				ArrayList<ConnectionInfo> newInfo = new ArrayList<ConnectionInfo>();
-				// remove connections
-				for(ConnectionInfo c : canvas.connections) {
-					if(c.isPartOfConnection(v))
-						newInfo.add(c);
-				}
-				for(ConnectionInfo c : newInfo) {
-					canvas.connections.remove(c);
-					boardEditor.removeConnection(c);
-				}
-			}
-
-			repaint();
-		} catch(java.lang.NullPointerException ex) { /* do nothing */ }
-	}
-	
-	boolean startedDragging = false;
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -555,7 +554,6 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 
 	}
 
-
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		if(drawLine) {
@@ -567,8 +565,14 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 		startedDragging = false;
 	}
 	
+	/** Stores which input to set if a connection is deemed valid. */
 	int inputIndex = -1;
 	
+	/** 
+	 * Check if the position at which the mouse was clicked is the output of a gate.
+	 * @param v The position of the mouse click.
+	 * @return True iff the position of the mouseclick was the output of a gate.
+	 */
 	private boolean isValidStart(Vector2Int v) {
 		try {
 			Vector2Int coord = positionCalculator.GetTileIndices(v); // coord may be null
@@ -584,34 +588,53 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 		}
 	}
 	
+	/**
+	 * Check if the position at which the mouse was released is the input of a gate.
+	 * @param v The position of the mouse release.
+	 * @return True iff the position of the mouse release was the input of a gate.
+	 */
 	private boolean isValidEnd(Vector2Int v) {
-		try {
+		try { // coord may be null
 			Vector2Int coord = positionCalculator.GetTileIndices(v);
 			if(coord.equals(positionCalculator.GetTileIndices(lineStart)))
 				return false; // drag remained on same tile
+			
 			TileType t = canvas.currentTiles[coord.x][coord.y];
-			if(t == TileType.EMPTYTILE) { return false; }
-			else if(t == TileType.TRUE || t == TileType.FALSE) { return false; }
-			else if(t == TileType.NOT || t == TileType.NOT_FALSE || t == TileType.NOT_TRUE) // has only one output
-			{ return isValidEndOneInput(v); }
-			else { return isValidEndTwoInputs(v); }
+			if(t == TileType.EMPTYTILE) { return false; } // no gate
+			else if(t == TileType.TRUE || t == TileType.FALSE) { return false; } // no input
+			else if(t == TileType.NOT || t == TileType.NOT_FALSE || t == TileType.NOT_TRUE)
+			{ return isValidEndOneInput(v); } // NOT etc. has only one input
+			else { return isValidEndTwoInputs(v); } // all other gates gave two inputs
 		} 
-		catch (java.lang.NullPointerException ex) {
+		catch (java.lang.NullPointerException ex) { // e.g. mouse was not released on canvas
 			return false;
 		}
 	}
 	
+	/** 
+	 * Check if the position of the mouse release was the input
+	 * of a gate with only one input (NOT and its colourings).
+	 * @param v Position of the mouse release.
+	 * @return True iff the position of the mouse release was the input of a NOT-gate. 
+	 */
 	private boolean isValidEndOneInput(Vector2Int v) {
 		Vector2Int coord = positionCalculator.GetTileIndices(v);
 		Vector2Int target = new Vector2Int(TILE_WIDTH * coord.x + 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
 		double dist = target.squaredDistance(v);
-		System.out.println(dist + " " + v + " " + target);		
 		inputIndex = 1;
 		if(dist <= 10*10) 
 			return true;
 		return false;
 	}
 	
+	
+	/**
+	 * Check if the position of the mouse release was the input
+	 * of a gate with two inputs (all except TRUE, FALSE, EMPTY as well as NOT and its colourings).
+	 * Sets inputIndex accordingly if the result is true.
+	 * @param v Position of the mouse release.
+	 * @return True iff the position of the mouse release was the input of the target gate (also sets inputIndex in that case!).
+	 */
 	private boolean isValidEndTwoInputs(Vector2Int v) {
 		Vector2Int coord = positionCalculator.GetTileIndices(v);
 		Vector2Int target_Top = new Vector2Int(TILE_WIDTH * coord.x + 5, TILE_HEIGHT * coord.y + 5);
@@ -631,18 +654,53 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 		return false;
 	}
 	
+	
+	/**
+	 * Set a tile / gate on the GUI and in the {@link logicCircuits.LogicCircuit underlying model}.
+	 * @param v Tile / Gate Position
+	 * @param type The type of tile / gate to set
+	 */
+	public void SetTile(Vector2Int v, TileType type) {
+		try { // v may be null			
+			canvas.currentTiles[v.x][v.y] = type;
+			if(true /*type == TileType.EMPTYTILE*/) {
+				ArrayList<ConnectionInfo> newInfo = new ArrayList<ConnectionInfo>();
+				// remove connections
+				for(ConnectionInfo c : canvas.connections) {
+					if(c.isPartOfConnection(v))
+						newInfo.add(c);
+				}
+				for(ConnectionInfo c : newInfo) {
+					canvas.connections.remove(c);
+					boardEditor.removeConnection(c);
+				}
+			}
+			repaint();
+		} catch(java.lang.NullPointerException ex) { /* do nothing */ }
+	}
+	
+	/**
+	 * EXCLUSIVELY add a connection to the GUI (but not to the model).
+	 * This function is used when {@link app.BoardLoader loading boards}.
+	 * @param c Information about the connection to draw.
+	 */
 	public void addConnectionToGUI(ConnectionInfo c) {
 		ConnectionInfo cInfo = new ConnectionInfo(c);
 		cInfo.id += 1;
 		canvas.connections.add(cInfo); // keep a list of entries
 	}
 	
+	/**
+	 * Add a connection to the GUI and the {@link logicCircuits.LogicCircuit underlying model}.
+	 * Recreating a connection leads to its deletion. 
+	 */
 	private void addConnection() {
 		Vector2Int start = positionCalculator.GetTileIndices(lineStart);
 		Vector2Int end = positionCalculator.GetTileIndices(lineEnd);
 		
 		ConnectionInfo toDelete = null;
-		for(ConnectionInfo c: canvas.connections) { // recreating a connection leads to its deletion
+		// recreating a connection leads to its deletion
+		for(ConnectionInfo c: canvas.connections) { 
 			if(c.isPartOfConnection(start) && c.isPartOfConnection(end) && c.id == inputIndex) {
 				toDelete = c;
 			}
@@ -654,10 +712,12 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 			return;
 		}
 		
-		if(boardEditor.alreadyHasConnection(start, end, inputIndex))
+		/* if the gate is already receiving input at this position
+		 * remove the old connection.
+		 */
+		if(boardEditor.alreadyHasConnection(end, inputIndex))
 		{
-			System.out.println("Input already given!");
-			
+			// find the existing connection
 			for(ConnectionInfo c: canvas.connections) {
 				if(c.isPartOfConnection(end)) {
 					toDelete = c;
@@ -666,7 +726,6 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 			} try {
 				// remove old connection from model
 				boardEditor.removeConnection(toDelete);
-				
 				// and gui
 				canvas.connections.remove(toDelete);
 
@@ -699,34 +758,40 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 
 		// and in GUI
 		ConnectionInfo cInfo = new ConnectionInfo(start.x, start.y, end.x, end.y, inputIndex);
-		if(!connectionAlreadyExists(cInfo)) {
-			System.out.println("Adding connection");
+//		if(!connectionAlreadyExists(cInfo)) { // this should be unnecessary
 			canvas.connections.add(cInfo); // keep a list of entries
-		}
-		System.out.println(cInfo);
+//		}
 			
 	}
 	
+	/** Check if a connection already exists (should be unused atm)
+	 * @param c The connection to check.
+	 * @return True iff the given connection was already present (in the GUI).
+	 */
 	private boolean connectionAlreadyExists(ConnectionInfo c) {
 		for(ConnectionInfo cInfo : canvas.connections) {
 			if(c.equals(cInfo)) { return true; }
 		}
 		return false;
 	}
+
 	
-	private void drawAllConnections(Graphics g) {
-		Graphics2D g2D = (Graphics2D) g;
-		for(ConnectionInfo c : canvas.connections) {
-			Vector2Int v1 = getOutputPositionOnBoard(new Vector2Int(c.input_col, c.input_row));
-			Vector2Int v2 = getInputPositionOnBoard(new Vector2Int(c.target_col, c.target_row), c.id);
-			g2D.drawLine(v1.x, v1.y, v2.x, v2.y);
-		}
-	}
-	
+	/**
+	 * Determine the position of the output of a gate / tile at a certain position.
+	 * @param coord The position of the gate / tile.
+	 * @return The position of the output of a gate / tile at that position.
+	 */
 	private Vector2Int getOutputPositionOnBoard(Vector2Int coord) {
 		return new Vector2Int(TILE_WIDTH * (coord.x + 1) - 4, TILE_HEIGHT * coord.y + (TILE_HEIGHT / 2));
 	}
 	
+	/**
+	 * Determine the position of the input of a gate / tile at a certain position.
+	 * Depends on the type of tile / gate!
+	 * @param coord The position of the gate / tile.
+	 * @param index The identifier of the input slot.
+	 * @return The position of the output of a gate / tile at that position for the given input slot.
+	 */
 	private Vector2Int getInputPositionOnBoard(Vector2Int coord, int index) {
 		TileType t = canvas.currentTiles[coord.x][coord.y];
 		if(t == TileType.NOT || t == TileType.NOT_FALSE || t == TileType.NOT_TRUE)
@@ -739,6 +804,11 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 		return new Vector2Int(0, 0);
 	}
 	
+	/** 
+	 * Set a tile with color, which represents the gate's output.
+	 * Called upon board evaluation.
+	 * @param e Contains the type of gate / tile, its position and its truth value.
+	 */
 	private void setColoredTile(EvaluationInfo e) {
 		TileType t = e.type;
 		System.out.println("(" + e.row + ", " + e.col + ") --> " + t);
@@ -761,6 +831,7 @@ public class BoardGUI extends JFrame implements MouseListener, MouseMotionListen
 		canvas.currentTiles[e.row][e.col] = t;
 	}
 	
+	/** Remove all existing connections in the GUI */
 	public void clearConnections() {
 		canvas.connections.clear();
 	}

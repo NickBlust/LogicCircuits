@@ -9,18 +9,32 @@ import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 
-import gates.Gate;
 import logicCircuits.LogicCircuit;
 import utility.ConnectionInfo;
 import utility.PositionInfo;
 import utility.Vector2Int;
 
 /**
- * @author domin
- *
+ * @author Dominik Baumann
+ * This class stores the current layout of a Board on the GUI into a .txt-file.
+ * The format is as follows:
+ * 	#row + " " + #columns + " " + numberOfTilesOnBoard
+ *  #rowOfThisTile + " " + #columnOfThisTile + " " + tileName
+ *  --> repeat  numberOfTilesOnBoard-many lines
+ *  #rowOfInput + " " + #columnOfInput + " " + #rowOfTarget + " " + #columnOfTarget + " " + #slot_ID_OnTarget
+ *  --> repeat until all connections are listed
+ * 
+ * @see BoardLoader
+ * @see gui.BoardGUI
+ * @see LogicCircuit
  */
 public class BoardSaver {
 
+	/**
+	 * Save a given model to a .txt-file.
+	 * See class description for format description.
+	 * @param model the model to save
+	 */
 	public static void save(LogicCircuit model) {
     	if(model != null) {
     		try {
@@ -35,15 +49,7 @@ public class BoardSaver {
     	                ArrayList<PositionInfo> gatesWithPositions = model.getAllGates();
     	                ArrayList<ConnectionInfo> connections = model.getConnections();
     	                
-    	                System.out.println("SAVING: " + dimensions);
-    	                
-    	                // write to file
-    	             // format suggestion:
-    	            	// #row + " " + #columns + " " + numberOfTilesOnBoard
-    	            	// #rowOfThisTile + " " + #columnOfThisTile + " " + tileName
-    	            	// ... numberOfTilesOnBoard-many lines
-    	            	// #rowOfInput + " " + #columnOfInput + " " + #rowOfTarget + " " + #columnOfTarget + " " + #slotIDOnTarget
-    	            	// ... (iterate until file has no more nextLine)
+    	                // write to file    	            
     	                writer.write(dimensions.x + " " + dimensions.y + " " + gatesWithPositions.size() + "\n");
     	                for(int i = 0; i < gatesWithPositions.size() - 1; i++) {
     	                	writer.write(gatesWithPositions.get(i).toStorageString() + "\n");

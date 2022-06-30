@@ -5,7 +5,6 @@ package app;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JFileChooser;
@@ -15,7 +14,8 @@ import logicCircuits.LogicCircuit;
 
 /**
  * @author Dominik Baumann
- *
+ * Load a board modelling a {@link logicCircuits.LogicCircuit logic circuit} into the GUI.
+ * File format has to be as specified in {@link app.BoardSaver BoardSaver}.
  */
 public class BoardLoader {
 	
@@ -31,12 +31,11 @@ public class BoardLoader {
 	    		int rows = fileInfo.nextInt();
 	    		int cols = fileInfo.nextInt();
 	    		int numberOfGates = fileInfo.nextInt();
-	    		System.out.println("Blub " + rows + " " + cols + " " + numberOfGates);
-	    		System.out.println(fileInfo.nextLine());
+	    		fileInfo.nextLine();
 	    		if(numberOfGates != 0) {
 	    			model = new LogicCircuit(rows, cols);
 	    			for(int i = 0; i < numberOfGates; i++) {
-	    				Gate g = Gate.getGateFromName(fileInfo.next());
+	    				Gate g = TileConverter.getGateFromName(fileInfo.next());
 	    				int x = fileInfo.nextInt();
 	    				int y = fileInfo.nextInt();
 	    				model.addGate(g, x, y);

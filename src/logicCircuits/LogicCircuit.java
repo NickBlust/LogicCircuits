@@ -73,9 +73,7 @@ public class LogicCircuit {
 		board = new ArrayList<ArrayList<Gate>>();
 		
 		for (int i = 0; i < n; i++) {
-			//ArrayList<Gate> tmp = new ArrayList<Gate>();
 			board.add(i, new ArrayList<Gate>());
-			//board.set(i, tmp);
 			for (int j = 0; j < m; j++) {
 				board.get(i).add(j, null);
 			}
@@ -112,10 +110,10 @@ public class LogicCircuit {
 		else if(t == TileType.XOR)
 			g = new XORgate();
 		else {
-			System.out.println("ERROR: No matching gate! --> " + t);
+			System.out.println("ERROR in LogicCircuit.java: No matching gate! --> " + t);
 		}
 		if(g == null) {
-			System.out.println("Warning: Removing gate at (" + col + ", " + row + ")");
+			System.out.println("Note (LogicCircuit): Removing gate at (" + col + ", " + row + ")");
 			removeGate(col, row);
 		}
 		else
@@ -191,10 +189,10 @@ public class LogicCircuit {
 		connections.add(new ConnectionInfo(outputgate_pos1, outputgate_pos2, inputgate_pos1, inputgate_pos2, input_pos));
 	}
 	
-	public void unconnectGate(ConnectionInfo c) {
-		System.out.println(c);
-		System.out.println(board.size() + "  " + board.get(c.target_row).size());
-		System.out.println(this.toString());
+	/** Disconnects the input specified as target of the {@link utility.ConnectionInfo input}.
+	 * @param c Contains target that is to be disconnected
+	 */
+	public void disconnectGate(ConnectionInfo c) {
 		Gate outGate = board.get(c.target_col).get(c.target_row);
 		if(outGate != null)
 			outGate.setInput(null, c.id - 1);		
@@ -202,12 +200,12 @@ public class LogicCircuit {
 	}
 	
 	/**
-	 * Unconnects the input at input-index num from the gate at specified position
+	 * Disconnects the input at input-index num from the gate at specified position
 	 * @param pos1 Position 1
 	 * @param pos2 Position 2
 	 * @param num Input-index to be unconnected
 	 */
-	public void unconnectGate(int pos1, int pos2, int num) {
+	public void disconnectGate(int pos1, int pos2, int num) {
 		if (!valid(pos1, pos2)) return;
 		Gate gate = board.get(pos1).get(pos2);
 		Gate input = gate.getInput(num);
@@ -248,20 +246,13 @@ public class LogicCircuit {
 	}
 	
 	/**
-	 * Used for evaluating the states of all intermediate gate and colouring them properly
-	 * @return Evaluation Info for colouring the gates
+	 * Used for evaluating the states of all intermediate gate and colouring them properly.
+	 * @return A list with the positions, types and truth values of all gates for colouring in the {@link gui.BoardGUI BoardGUI}
+	 * 			stored as {@link utility.EvaluationInfo EvaluationInfo}.
 	 */
-	public ArrayList<EvaluationInfo> evaluateAndVisualize() {
-		while (output_gates.remove(null));
-		ArrayList<Gate> gatesToEvaluate = new ArrayList<Gate>();
-		ArrayList<Gate> evaluatedGates = new ArrayList<Gate>();
-		ArrayList<EvaluationInfo> info = new ArrayList<EvaluationInfo>();
-		
-//		for(Gate g : output_gates) {
-//			System.out.println(g);
-//			gatesToEvaluate.add(g);
-//		}
+	public ArrayList<EvaluationInfo> evaluateAndVisualize() {		
 		Gate g;
+		ArrayList<EvaluationInfo> info = new ArrayList<EvaluationInfo>();
 		for(int row = 0; row < board.size(); row++) {
 			for(int col = 0; col < board.get(row).size(); col++) {
 				if((g = board.get(row).get(col)) != null && !(g instanceof TRUEgate || g instanceof FALSEgate)) {
@@ -283,39 +274,23 @@ public class LogicCircuit {
 		
 	}
 
-	/**
-	 * @param end
-	 * @param inputIndex
-	 * @return
+	/** 
+	 * Check if a given gate already has a connection to a specific input on this board.
+	 * @param end The position of the gate under investigation.
+	 * @param inputIndex Specifies which input is under investigation.
+	 * @return True if the gate already has a connection, False otherwise.
 	 */
 	public boolean hasConnection(Vector2Int end, int inputIndex) {
 		System.out.println(inputIndex);
 		return board.get(end.x).get(end.y).getInput(inputIndex - 1) != null;
 	}
 
-	/**
-	 * 
-	 */
+	/** Remove all gates from the board. */
 	public void removeAllGates() {
 		for(int row = 0; row < board.size(); row++) {
 			for(int col = 0; col < board.get(row).size(); col++) {
 				board.get(row).set(col, null);
 			}
 		}
-		
-	}
-	
-	public String toString() {
-		String s = "";
-//		for(int row = 0; row < board.size(); row++) {
-//			for(int col = 0; col < board.get(row).size(); col++) {
-//				if(board.get(row).get(col) == null)
-//					s += " 0 ";
-//				else
-//					s += Gate.getTileTypeFromGate(board.get(row).get(col));
-//			}
-//			s += "\n";
-//		}
-		return s;
 	}
 }
