@@ -4,29 +4,29 @@
 package gates;
 
 /**
- * @author Dominik Baumann
- *
+ * This gate returns true iff all input values are false.
+ * @author Dominik Baumann, Philipp Grzywaczyk
  */
-public class NORgate extends Gate {
+public class NORgate extends InputGate {
 
-	public NORgate() {
-		inputs = new Gate[2];
-	}
+	/** By default, this gate uses two input values. */
+	public NORgate() { }
 	
 	@Override
 	public boolean output() {
 		try {
-			return !(inputs[0].output() || inputs[1].output());
+			return !(inputs.get(GateIndex.TOP).output() || inputs.get(GateIndex.BOTTOM).output());
 		} catch (NullPointerException e) {
-			System.out.println("ERROR: Input gates not specified!");
+			System.out.println("ERROR: Input gates not specified! " + this);
+			if(inputs.get(GateIndex.TOP) == null 
+					&& inputs.get(GateIndex.BOTTOM) == null) { return true; }
+			
+			else if(inputs.get(GateIndex.TOP) == null 
+					&& inputs.get(GateIndex.BOTTOM).output() == false) { return true; }
+			
+			else if(inputs.get(GateIndex.TOP).output() == false 
+					&& inputs.get(GateIndex.BOTTOM) == null) { return true; }
 			return false;
 		}
 	}
-
-	@Override
-	public void setInput(Gate g, int i) {
-		if(i != 0 && i != 1) { return; }
-		inputs[i] = g;
-	}
-
 }

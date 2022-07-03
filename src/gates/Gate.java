@@ -3,18 +3,52 @@
  */
 package gates;
 
-// IDEA: original input (true false), is represented as
-// gate which just returns its value
-
 /** 
- * @author Dominik Baumann
+ * @author Dominik Baumann, Philipp Grzywaczyk
+ * @version 2, July 2022
  * Abstract class for representing a generic logic gate.
  * Any gate needs to be able to compute its output value.
  * For the purpose of computing the output value, each gate can get
- * one or more inputs from other gates
+ * one or more inputs from other gates (unless it is a {@link gates.ConstGate constant gate}).
+ *    ==> Input is not given as booleans, but as Gate!
+ *    ==> Missing input gates are treated as false!
+ * @see InputGate
+ * @see ConstGate
  */
 public abstract class Gate {
-	Gate[] inputs;
+	
+	/**
+	 * Used to for indexing which of the inputs to set in a Gate
+	 * and on a tile representing a gate in the GUI.
+	 * "TOP" and "BOTTOM" are references to how the gates are 
+	 * displayed in the GUI!
+	 */
+	public enum GateIndex { 
+		/** Use this one for setting the input gate at the top of the tile. */
+		TOP, 
+		/** Use this one for setting the input gate at the bottom of the tile. */		
+		BOTTOM 
+		};
+	
+	/** Compute the output truth value of this gate, 
+	 * depending on the type of gate and its input gates/values.
+	 * If an input gate is not set to an object (i.e. is null),
+	 * the value for that gate defaults to false. 
+	 * 
+	 * IF A GATES INPUTS ARE NOT SET, THEY ARE TREATED AS FALSE!!!
+	 * @return The output truth value of this gate.
+	 */
 	public abstract boolean output();
-	public abstract void setInput(Gate g, int i);
+	
+	/**
+	 * @param i The identifier of the input gate.
+	 * @return The input gate with identifier i. Returns null if the identifier is not valid.
+	 */
+	public abstract Gate getInput(GateIndex i);
+	
+	/** Change the input of this gate.
+	 * @param g The new gate whose output value is to be input.
+	 * @param i The identifier of the gate which should be changed. Does nothing if the identifier is not valid.
+	 */
+	public abstract void setInput(Gate g, GateIndex i);
 }

@@ -4,20 +4,24 @@
 package gates;
 
 /**
- * @author Dominik Baumann
+ * @author Dominik Baumann, Philipp Grzywaczyk
  * This gate always returns false!
  * Use this internally for user input.
  */
-public class FALSEgate extends Gate {
+public class FALSEgate extends ConstGate {
 
-	public FALSEgate() {
-		inputs = new Gate[0];
-	}
-		
+	/** This gate uses no input values. */
+	public FALSEgate() {}
+
+	/** Always returns false.
+	 * @return false
+	 */
 	@Override
 	public boolean output() { return false;	}
 
 	@Override
-	public void setInput(Gate g, int i) { /*do nothing*/ }
+	public Gate getInput(GateIndex i) { return null; }
 
+	@Override
+	public void setInput(Gate g, GateIndex i) { /* do nothing */ }
 }
