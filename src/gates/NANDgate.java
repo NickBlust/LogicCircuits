@@ -17,7 +17,7 @@ public class NANDgate extends InputGate {
 	@Override
 	public Gate getInput(int i) {
 		try { return this.inputs[i];			
-		} catch (NullPointerException e) {
+		} catch (NullPointerException e) { // use enum for indexing gates
 			return null;
 		}
 	}
