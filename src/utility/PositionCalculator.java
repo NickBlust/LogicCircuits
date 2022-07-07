@@ -37,56 +37,60 @@ public class PositionCalculator {
 	 * @param coord Coordinate of the tile on the Board in (row, column)-format
 	 * @return true iff the click was on an input or the output of the tile.
 	 */
-	public boolean validStartPositionOnTile(TileType t, Vector2Int pos, Vector2Int coord, GateIndex index) {
+	public BoolGateIndexTuple validStartPositionOnTile(TileType t, Vector2Int pos, Vector2Int coord) {
 		if(t == TileType.TRUE || t == TileType.FALSE) {
 			return overOutput(pos, coord);
 		}
 		else if(t == TileType.NOT || t == TileType.NOT_TRUE || t == TileType.NOT_FALSE) {
-			return overOutput(pos, coord) || overSoloInput(pos, coord, index);
+			BoolGateIndexTuple temp = overOutput(pos, coord);
+			if(temp.key) { return temp; }
+			temp = overSoloInput(pos, coord);
+			if(temp.key) { return temp; }
 		}
 		else {
-			return overOutput(pos, coord) || overDoubleInput(pos, coord, index);
+			BoolGateIndexTuple temp = overOutput(pos, coord);
+			if(temp.key) { return temp; }
+			temp = overDoubleInput(pos, coord);
+			if(temp.key) { return temp; }
 		}
+		return new BoolGateIndexTuple(false, null);
 	}
 	
-	public boolean overOutput(Vector2Int pos, Vector2Int coord) {
+	public BoolGateIndexTuple overOutput(Vector2Int pos, Vector2Int coord) {
 		Vector2Int target = new Vector2Int(tileWidth * (coord.x + 1) - 4,
 				tileHeight * coord.y + (tileHeight / 2));
 		double dist = target.squaredDistance(pos);
-		return dist <= maxDistance * maxDistance;
+		return new BoolGateIndexTuple(dist <= maxDistance * maxDistance, null);
 	}
 	
 	
-	public boolean overSoloInput(Vector2Int pos, Vector2Int coord, GateIndex index) {
+	public BoolGateIndexTuple overSoloInput(Vector2Int pos, Vector2Int coord) {
 		Vector2Int target = new Vector2Int(tileWidth * coord.x + 5,
 				tileHeight * coord.y + (tileHeight / 2));
 		double dist = target.squaredDistance(pos);
 		if (dist <= maxDistance * maxDistance) {
-			index = GateIndex.TOP;
-			return true;
+			return new BoolGateIndexTuple(true, GateIndex.TOP);
 		}
-		return false;
+		return new BoolGateIndexTuple(false, null);
 	}
 	
 	
-	public boolean overDoubleInput(Vector2Int pos, Vector2Int coord, GateIndex index) {
+	public BoolGateIndexTuple overDoubleInput(Vector2Int pos, Vector2Int coord) {
 		// check TOP input first
 		Vector2Int target = new Vector2Int(tileWidth * coord.x + 5, tileHeight * coord.y + 5);
 		double dist = target.squaredDistance(pos);
 		if (dist <= maxDistance * maxDistance) {
-			index = GateIndex.TOP;
-			return true;
+			return new BoolGateIndexTuple(true, GateIndex.TOP);	
 		}
 		
 		// check BOTTOM input second
 		target = new Vector2Int(tileWidth * coord.x + 5, tileHeight * (coord.y + 1) - 4);
 		dist = target.squaredDistance(pos);
 		if (dist <= maxDistance * maxDistance) {
-			index = GateIndex.BOTTOM;
-			return true;
+			return new BoolGateIndexTuple(true, GateIndex.BOTTOM);
 		}
 		
-		return false;
+		return new BoolGateIndexTuple(false, null);
 	}
 	
 	
@@ -104,27 +108,27 @@ public class PositionCalculator {
 	 * @param index
 	 * @return
 	 */
-	public boolean validEndPositionOnTile(TileType t, Vector2Int v, Vector2Int pos, GateIndex index) {
-		return validStartPositionOnTile(t, v, pos, index);
+	public BoolGateIndexTuple validEndPositionOnTile(TileType t, Vector2Int v, Vector2Int pos) {
+		return validStartPositionOnTile(t, v, pos);
 	}
 	
 	public GateIndex getGateIndexFromPositionOnTile(TileType t, Vector2Int v) {
 		if(t == TileType.FALSE || t == TileType.TRUE)
 			return null;
 		else if (t == TileType.NOT || t == TileType.NOT_TRUE || t == TileType.FALSE) {
-			if(overOutput(v, mousePositionToGridCoordinates(v)))
+			if(overOutput(v, mousePositionToGridCoordinates(v)).key())
 				return null;
 			return GateIndex.TOP;
 		}
 		else if (t != TileType.EMPTY) {
-			if(overOutput(v, mousePositionToGridCoordinates(v)))
+			if(overOutput(v, mousePositionToGridCoordinates(v)).key())
 				return null;
 			
-			GateIndex result = null;
+			BoolGateIndexTuple temp = overDoubleInput(v, mousePositionToGridCoordinates(v));
 			System.out.println("Checking " + v + " " + mousePositionToGridCoordinates(v));
-			System.out.println(overDoubleInput(v, mousePositionToGridCoordinates(v), result));
-			System.out.println(result);
-			return result;
+//			System.out.println(overDoubleInput(v, mousePositionToGridCoordinates(v), result));
+			System.out.println(temp.key());
+			return temp.value();
 				
 		}
 		System.out.println("ERROR (PositionCalculator): Could not determine GateIndex " + t + " at " + v);

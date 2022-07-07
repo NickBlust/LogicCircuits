@@ -5,6 +5,7 @@ package app;
 
 import gui.LogicBoardGUI;
 import gui.TiledCanvas.TileType;
+import utility.BoolGateIndexTuple;
 import utility.PositionCalculator;
 import utility.Vector2Int;
 
@@ -89,10 +90,9 @@ public class Controller {
 		Vector2Int pos = positionCalculator.mousePositionToGridCoordinates(v);
 		TileType t = theBoard.getGateType(pos);
 		if(t != TileType.EMPTY) {
-			GateIndex index = null;
 //			System.out.println("HELP:" + v + " " + (positionCalculator.validPositionOnTile(t, v, pos, index)));
 			// if it is at the right position on the tile, return true
-			return positionCalculator.validStartPositionOnTile(t, v, pos, index);
+			return positionCalculator.validStartPositionOnTile(t, v, pos).key();
 		}
 		
 		return false;
@@ -104,28 +104,37 @@ public class Controller {
 	 * @return
 	 */
 	public boolean isValidEnd(Vector2Int v, Vector2Int start) {
-		Vector2Int pos = positionCalculator.mousePositionToGridCoordinates(v);
-		Vector2Int startCoord = positionCalculator.mousePositionToGridCoordinates(start);
-		TileType t = theBoard.getGateType(pos);
+		Vector2Int pos = positionCalculator.mousePositionToGridCoordinates(v); // end of line
+		Vector2Int startCoord = positionCalculator.mousePositionToGridCoordinates(start); // start of line
+		TileType t = theBoard.getGateType(pos); // Tile at end of line
 		
 		if(t != TileType.EMPTY && !startCoord.equals(pos)) {
-			GateIndex index = null;
+			GateIndex endIndex = null;
 			// hit an input or output on another gate?
-			boolean preliminaryResult = positionCalculator.validEndPositionOnTile(t, v, pos, index);
-			if(!preliminaryResult)
+			BoolGateIndexTuple preliminaryResult = positionCalculator.validEndPositionOnTile(t, v, pos);
+			if(!preliminaryResult.key())
 				return false;
+			endIndex = preliminaryResult.value();
 			
 			// check if we are connecting from an input to an output or vice versa,
 			// i.e. do not allow connections from one input to another input etc.
-			GateIndex otherIndex = positionCalculator
-					.getGateIndexFromPositionOnTile(theBoard.getGateType(pos), v);
-			System.out.println("Comparing " + t + " index " + index + " at " + startCoord
-					+ "  with  " + theBoard.getGateType(pos) + " index " + otherIndex + " at " + pos);
-			
+			GateIndex startIndex = positionCalculator
+					.getGateIndexFromPositionOnTile(theBoard.getGateType(startCoord), start);
+			System.out.println("Comparing " + theBoard.getGateType(startCoord) + " index " 
+					+ startIndex + " at " + startCoord + "  with  " 
+					+ t + " index " + endIndex + " at " + pos);
+			if(startIndex == null && !(endIndex == GateIndex.TOP || endIndex == GateIndex.BOTTOM)) {
+				System.out.println("1");				
+				return false;
+			}
+			else if(startIndex != null && endIndex != null) {
+				System.out.println("2");				
+				return false;
+			}
 			
 			
 			// check if we would form a cycle
-			return !theBoard.formsCycle(start, v, index);
+			return !theBoard.formsCycle(start, v, endIndex);
 			
 		}
 		return false;
