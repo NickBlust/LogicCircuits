@@ -19,8 +19,10 @@ import gui.TiledCanvas.TileType;
 public class ImageStorage {
     
     EnumMap<TileType, BufferedImage> imageMap;
+    LogicBoardGUI boardGUI;
     
-    public ImageStorage() {
+    public ImageStorage(LogicBoardGUI boardGUI_) {
+    	boardGUI = boardGUI_;
     	imageMap = new EnumMap<TileType, BufferedImage>(TileType.class);
     	loadTileImages();
     }
@@ -67,8 +69,8 @@ public class ImageStorage {
 			imageMap.put(TileType.XOR_FALSE, ImageIO.read(new File(absolutePath + "bin\\assets\\XOR_FALSE.png")));
             
             for(TileType t : TileType.values()) {
-              assert imageMap.get(t).getHeight() == LogicBoardGUI.TILE_HEIGHT &&
-              imageMap.get(t).getWidth() == LogicBoardGUI.TILE_WIDTH;
+              assert imageMap.get(t).getHeight() == boardGUI.getTileHeight() &&
+              imageMap.get(t).getWidth() == boardGUI.getTileWidth();
             }
 
         } catch (IOException e) {

@@ -34,8 +34,8 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	 * specifically the display height and width of tiles on the board. Tile sizes 
 	 * should match the size of the image files used.
 	 */
-	public static final int TILE_WIDTH = 64;
-	public static final int TILE_HEIGHT = 64;
+	private final int TILE_WIDTH = 64;
+	private final int TILE_HEIGHT = 64;
 	
 	private int boardWidth = 8;
 	private int boardHeight = 5;
@@ -45,12 +45,13 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	TiledCanvas canvas;
 	JMenuBar menuBar;
 	ButtonPalette buttonPalette;
+	PositionCalculator positionCalculator;
 
 	
 	public LogicBoardGUI(Controller controller_) {
 		
 		controller = controller_;
-		images = new ImageStorage();
+		images = new ImageStorage(this);
 
 		
 		setSize(816, 615);
@@ -67,6 +68,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
 
+        positionCalculator = new PositionCalculator(TILE_WIDTH, TILE_HEIGHT);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
@@ -86,8 +88,8 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
     	Vector2Int v = new Vector2Int(e.getX(), e.getY());
 		if(!validateMousePosition(v)) { return; }
 		// convert mouse position to (row, column)-coordinates on the board
-    	controller.handleMouseClick(PositionCalculator.mousePositionToGridCoordinates(v));
-    	System.out.println("Clicked at " + PositionCalculator.mousePositionToGridCoordinates(v));
+    	controller.handleMouseClick(positionCalculator.mousePositionToGridCoordinates(v));
+    	System.out.println("Clicked at " + positionCalculator.mousePositionToGridCoordinates(v));
     }
     
     // TODO: encapsulate public variables with getters and setters?
@@ -108,17 +110,27 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	}
 
 
-	@Override public void mouseReleased(MouseEvent e) { }
+	@Override public void mouseReleased(MouseEvent e) { 
+		if(canvas.drawTentativeLine) {
+			canvas.drawTentativeLine = false;
+//			if(isValidEnd(new Vector2Int(e.getX(),e.getY())))
+//				addConnection();
+			repaint();
+		}
+		canvas.startedDragging = false;
+	}
 
 	// HELPERS
 	public int getBoardGUIWidth() { return boardWidth; }
 	public int getBoardGUIHeight() { return boardHeight; }
+	public int getTileWidth() { return TILE_WIDTH; }
+	public int getTileHeight() { return TILE_HEIGHT; }
 	
 	
 	
 	private boolean validateMousePosition(Vector2Int v) {
-		if(boardWidth * LogicBoardGUI.TILE_WIDTH < v.x 
-				|| boardHeight * LogicBoardGUI.TILE_HEIGHT < v.y)
+		if(boardWidth * TILE_WIDTH < v.x 
+				|| boardHeight * TILE_HEIGHT < v.y)
 			return false;
 		return true;
 	}

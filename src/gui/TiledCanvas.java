@@ -35,6 +35,8 @@ public class TiledCanvas extends JPanel {
 	LogicBoardGUI boardGUI;
 	ImageStorage images;
 	BufferedImage emptyTileImage;
+	private int tileWidth;
+	private int tileHeight;
 	
 	// Stuff required for drawing a line for previewing a connection.
 	public boolean startedDragging = false;
@@ -45,6 +47,8 @@ public class TiledCanvas extends JPanel {
 	public TiledCanvas(LogicBoardGUI boardGUI_, ImageStorage imageStorage) {
 		images = imageStorage;
 		boardGUI = boardGUI_;
+		tileWidth = boardGUI.getTileWidth();
+		tileHeight = boardGUI.getTileHeight();
 		emptyTileImage = images.getImage(TileType.EMPTY);
 		tilesToDraw = new TreeMap<Vector2Int, TileType>();
 		repaint();
@@ -74,8 +78,8 @@ public class TiledCanvas extends JPanel {
 		for (int i = 0; i < columns; i++) {
             for (int k = 0; k < rows; k++) {
             	g2.drawImage(emptyTileImage, 
-            			i * LogicBoardGUI.TILE_WIDTH, 
-            			k * LogicBoardGUI.TILE_HEIGHT, null);            			
+            			i * tileWidth, 
+            			k * tileHeight, null);            			
             }
         }
 	}
@@ -84,8 +88,8 @@ public class TiledCanvas extends JPanel {
     	for(Vector2Int key : tilesToDraw.keySet()) {
             Graphics2D g2 = (Graphics2D) g;
     		g2.drawImage(images.getImage(tilesToDraw.get(key)),
-    				key.x * LogicBoardGUI.TILE_WIDTH, 
-            		key.y * LogicBoardGUI.TILE_HEIGHT, null);
+    				key.x * tileWidth, 
+            		key.y * tileHeight, null);
     	}
     }
 }

@@ -9,6 +9,7 @@ import utility.PositionCalculator;
 import utility.Vector2Int;
 
 import command.*;
+import gates.Gate.GateIndex;
 
 import java.util.Stack;
 
@@ -24,6 +25,7 @@ public class Controller {
 	public TileType selectedTileToPlace = TileType.OR;
 	
 	Stack<Command> pastCommands;
+	PositionCalculator positionCalculator;
 	
 	public Controller() { }
 	
@@ -32,6 +34,7 @@ public class Controller {
 		theGUI = new LogicBoardGUI(this);
 		theBoard = new LogicBoard(theGUI);
 		theBoard.test();
+		positionCalculator = new PositionCalculator(theGUI.getTileWidth(), theGUI.getTileHeight());
 	}
 
 	/**
@@ -83,10 +86,11 @@ public class Controller {
 	public boolean isValidStart(Vector2Int v) {
 
 		// check if model has tile at said coordinate
-		Vector2Int pos = PositionCalculator.mousePositionToGridCoordinates(v);
+		Vector2Int pos = positionCalculator.mousePositionToGridCoordinates(v);
 		TileType t = theBoard.getGateType(pos);
 		if(t != TileType.EMPTY) {
-			System.out.println("HELP:" + v + " " + (PositionCalculator.validPositionOnTile(t, v, pos)));
+			GateIndex index = null;
+			System.out.println("HELP:" + v + " " + (positionCalculator.validPositionOnTile(t, v, pos, index)));
 			// if it is at the right position on the tile, return true
 		}
 		
