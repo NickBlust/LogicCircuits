@@ -3,7 +3,6 @@
  */
 package gates;
 
-import gates.Gate.GateIndex;
 
 /**
  * @author Dominik Baumann, Philipp Grzywaczyk

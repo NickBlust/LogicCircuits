@@ -3,20 +3,29 @@
  */
 package gui;
 
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.TreeMap;
 
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+
+import app.Controller;
+import gates.Gate;
+import gui.TiledCanvas.TileType;
+import utility.Vector2Int;
 
 /**
  * @author domin
  *
  */
-public class LogicBoardGUI extends JFrame {
+public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionListener {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * The two final int attributes below set the size of some graphical elements,
@@ -26,100 +35,89 @@ public class LogicBoardGUI extends JFrame {
 	public static final int TILE_WIDTH = 64;
 	public static final int TILE_HEIGHT = 64;
 	
-	TiledCanvas canvas;
-
-	JMenuBar menuBar;
+	private int boardWidth = 8;
+	private int boardHeight = 5;
 	
-	public LogicBoardGUI() {
+	Controller controller;
+	TiledCanvas canvas;
+	JMenuBar menuBar;
+
+	
+	public LogicBoardGUI(Controller controller_) {
+		
+		controller = controller_;
+		
 		setSize(816, 615);
 		setTitle("Logic Circuits Simulator");
 		setLocationRelativeTo(null); //sets position of frame on screen
 		
-		getContentPane().add(canvas = new TiledCanvas());
+		getContentPane().add(canvas = new TiledCanvas(this));
+		setJMenuBar(menuBar = new LogicBoardMenu(controller));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
-		
-		initCanvas();
-		initMenuBar();
+		/* get the position of mouse (events) relative 
+		 * to the canvas representing the board */
+		canvas.addMouseListener(this);
+		canvas.addMouseMotionListener(this);
 	}
 
-	/**
-	 * 
-	 */
-	private void initMenuBar() {
-    	menuBar = new JMenuBar();
-        setJMenuBar(menuBar);
-        
-        JMenu fileMenu = new JMenu("File");
-        menuBar.add(fileMenu);
-        
-        JMenuItem menuItem_SaveToFile = new JMenuItem("Save Board to File");
-        fileMenu.add(menuItem_SaveToFile);
-    	menuItem_SaveToFile.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-//        		clickedSave();
-        	}
-        });
-    	
-        
-        JMenuItem menuItem_LoadFromFile = new JMenuItem("Load Board from File");
-        fileMenu.add(menuItem_LoadFromFile);
-        menuItem_LoadFromFile.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-//        		clickedLoad();
-        	}
-        });
-        
-        JMenu editMenu = new JMenu("Edit");
-        menuBar.add(editMenu);
-        
-        JMenuItem menuItem_ResetBoard = new JMenuItem("Reset Board");
-        editMenu.add(menuItem_ResetBoard);
-        menuItem_ResetBoard.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-//        		resetBoard();
-        	}
-        });
-        
-        
-        JMenuItem menuItem_Evaluate = new JMenuItem("Evaluate");
-        editMenu.add(menuItem_Evaluate);
-        menuItem_Evaluate.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-//        		evaluateCircuits();
-        	}
-        });
-        
-        
-        JMenu helpMenu = new JMenu("About & Help");
-        menuBar.add(helpMenu);
-        
-        JMenuItem menuItem_About = new JMenuItem("About");
-        helpMenu.add(menuItem_About);
-        menuItem_About.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		EventQueue.invokeLater(new Runnable()
-                { @Override
-                    public void run() { /*showInformationAboutProgram();*/ } });
-        	}
-        });
-        
-        JMenuItem menuItem_Help = new JMenuItem("Help");
-        helpMenu.add(menuItem_Help);
-        menuItem_Help.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		EventQueue.invokeLater(new Runnable()
-                { @Override
-                    public void run() { /*openHelpMenu();*/ } }); }
-        });    
+
+    
+    
+    // MOUSE EVENTS
+    
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    	Vector2Int v = new Vector2Int(e.getX(), e.getY());
+		if(!validateMousePosition(v)) { return; }
+		// convert mouse position to (row, column)-coordinates on the board
+    	controller.handleMouseClick(mousePositionToGridCoordinates(v));
+    	System.out.println("Cliecked at " + mousePositionToGridCoordinates(v));
     }
+    
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		
+	}
+
+	@Override public void mouseReleased(MouseEvent e) { }
+
+	// HELPERS
+	public int getBoardGUIWidth() { return boardWidth; }
+	public int getBoardGUIHeight() { return boardHeight; }
+	
+	
+	
+	private boolean validateMousePosition(Vector2Int v) {
+		if(boardWidth * LogicBoardGUI.TILE_WIDTH < v.x 
+				|| boardHeight * LogicBoardGUI.TILE_HEIGHT < v.y)
+			return false;
+		return true;
+	}
+	
+	private Vector2Int mousePositionToGridCoordinates(Vector2Int pos) {
+		return new Vector2Int((int) Math.ceil(pos.x / LogicBoardGUI.TILE_WIDTH),
+				(int) Math.ceil(pos.y / LogicBoardGUI.TILE_HEIGHT));
+	}
+	
+	// UNUSED MOUSE EVENTS
+	@Override public void mouseMoved(MouseEvent e) { }
+	@Override public void mousePressed(MouseEvent e) { }
+	@Override public void mouseEntered(MouseEvent e) { }
+	@Override public void mouseExited(MouseEvent e) { }
+
+
 
 	/**
-	 * 
+	 * @param tiles
+	 * @param connections
 	 */
-	private void initCanvas() {
+	public void setTilesAndConnections(TreeMap<Vector2Int, TileType> tiles,
+			TreeMap<Vector2Int, Vector2Int> connections) {
+		canvas.tilesToDraw = tiles;
+		repaint();
+		System.out.println("Setting stuff to draw");
 		// TODO Auto-generated method stub
 		
 	}
-
 }
