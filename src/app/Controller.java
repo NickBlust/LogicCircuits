@@ -33,9 +33,9 @@ public class Controller {
 	public void start() {
 		pastCommands = new Stack<Command>();
 		theGUI = new LogicBoardGUI(this);
-		theBoard = new LogicBoard(theGUI);
-		theBoard.test();
 		positionCalculator = theGUI.getPositionCalculatorFromGUI();
+		theBoard = new LogicBoard(theGUI, positionCalculator);
+//		theBoard.test();
 	}
 
 	/**
@@ -79,6 +79,29 @@ public class Controller {
 		if(c.execute())
 			pastCommands.add(c);	
 	}
+	
+	/**
+	 * 
+	 */
+	public void addConnection(Vector2Int end, Vector2Int start) {
+		Command c;
+		Vector2Int endCoord = positionCalculator.mousePositionToGridCoordinates(end);
+		Vector2Int startCoord = positionCalculator.mousePositionToGridCoordinates(start);
+		
+		TileType type = theBoard.getGateType(startCoord);
+		GateIndex index = positionCalculator.getGateIndexFromPositionOnTile(type, start);
+		if(index != null) { // end provides the output value
+			c = new ConnectGates(theBoard, endCoord, startCoord, index);
+		}
+		else { // start provides the output value
+			type = theBoard.getGateType(endCoord);
+			index = positionCalculator.getGateIndexFromPositionOnTile(type, end);
+			c = new ConnectGates(theBoard, startCoord, endCoord, index);
+		}
+
+		if(c.execute())
+			pastCommands.add(c);
+	}
 
 	/**
 	 * @param v
@@ -120,9 +143,9 @@ public class Controller {
 			// i.e. do not allow connections from one input to another input etc.
 			GateIndex startIndex = positionCalculator
 					.getGateIndexFromPositionOnTile(theBoard.getGateType(startCoord), start);
-			System.out.println("Comparing " + theBoard.getGateType(startCoord) + " index " 
-					+ startIndex + " at " + startCoord + "  with  " 
-					+ t + " index " + endIndex + " at " + endCoord);
+//			System.out.println("Comparing " + theBoard.getGateType(startCoord) + " index " 
+//					+ startIndex + " at " + startCoord + "  with  " 
+//					+ t + " index " + endIndex + " at " + endCoord);
 			if(startIndex == null && !(endIndex == GateIndex.TOP || endIndex == GateIndex.BOTTOM)) {
 				System.out.println("1");				
 				return false;
@@ -139,5 +162,4 @@ public class Controller {
 		}
 		return false;
 	}
-
 }

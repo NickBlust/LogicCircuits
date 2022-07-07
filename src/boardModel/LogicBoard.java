@@ -10,6 +10,7 @@ import gates.*;
 import gates.Gate.GateIndex;
 import gui.LogicBoardGUI;
 import gui.TiledCanvas.TileType;
+import utility.PositionCalculator;
 import utility.Vector2Int;
 
 /**
@@ -19,10 +20,12 @@ import utility.Vector2Int;
 public class LogicBoard {
 	
 	LogicBoardGUI boardGUI;
+	PositionCalculator positionCalculator; // TODO get this from gui, rather than over instructor
 	TreeMap<Vector2Int, Gate> gates;
 	
-	public LogicBoard(LogicBoardGUI gui_) {
+	public LogicBoard(LogicBoardGUI gui_, PositionCalculator positionCalculator_) {
 		boardGUI = gui_;
+		positionCalculator = positionCalculator_;
 		gates = new TreeMap<Vector2Int, Gate>();
 	}
 	
@@ -42,9 +45,9 @@ public class LogicBoard {
 	
 	
 	public void addGate(Gate g, Vector2Int v) { 
-		System.out.println("Adding " + g + " at " + v);
-		for(Vector2Int points : gates.keySet())
-			System.out.println(points);
+//		System.out.println("Adding " + g + " at " + v);
+//		for(Vector2Int points : gates.keySet())
+//			System.out.println(points);
 		if(gates.containsKey(v)) { // keep connections when replacing gates
 			Gate temp = gates.get(v);
 			if(temp != null) {
@@ -62,9 +65,17 @@ public class LogicBoard {
 		// TODO: this is precarious, as the GUI should not be allowed to modify the gates!
 		updateGUI();
 	}
-	
-	public void validateConnection(Vector2Int v1, Vector2Int v2) {
-		
+
+	/**
+	 * @param fromOutput
+	 * @param toInput
+	 * @param inputIndex
+	 */
+	public void addConnection(Vector2Int fromOutput, Vector2Int toInput, GateIndex inputIndex) {
+		gates.get(toInput).setInput(gates.get(fromOutput), inputIndex);
+		System.out.println("Connected gate at " + fromOutput + " with gate at " + toInput + " ("
+				+ inputIndex + ")");
+		updateGUI();
 	}
 	
 	// create a list of tiles to paint
@@ -78,10 +89,13 @@ public class LogicBoard {
 			
 			Gate input = temp.getInput(GateIndex.TOP);
 			if(input != null) 
-				connections.put(getPositionOfGate(input), key);
+				connections.put(
+						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
+						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.TOP));
 			input = temp.getInput(GateIndex.BOTTOM);
 			if(input != null) 
-				connections.put(getPositionOfGate(input), key);
+				connections.put(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
+						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.BOTTOM));
 		}
 			// translate to map of 
 		// draw empty board
@@ -101,25 +115,38 @@ public class LogicBoard {
 	public void test() {
 		TRUEgate t = new TRUEgate();
 		FALSEgate f = new FALSEgate();
-		ANDgate g1 = new ANDgate();
+//		ANDgate g1 = new ANDgate();
 		ORgate g2 = new ORgate();
+		ORgate g3 = new ORgate();
+		ORgate g4 = new ORgate();
 		
-		g1.setInput(t, GateIndex.TOP);
-		g1.setInput(f, GateIndex.BOTTOM);
+		addGate(t, new Vector2Int(1,2));
+		addGate(f, new Vector2Int(1,3));
+//		addGate(g1, new Vector2Int(4,3));
+		addGate(g2, new Vector2Int(4,2));
+		addGate(g3, new Vector2Int(6,1));
+		addGate(g4, new Vector2Int(2,4));
 		
-		g2.setInput(t, GateIndex.TOP);
-		g2.setInput(f, GateIndex.BOTTOM);
+//		g1.setInput(t, GateIndex.TOP);
+//		g1.setInput(f, GateIndex.BOTTOM);
 		
-		System.out.println(g1.output());
-		System.out.println(g2.output());
+//		g2.setInput(t, GateIndex.TOP);
+//		g2.setInput(f, GateIndex.BOTTOM);
+		g2.setInput(g3, GateIndex.TOP);
+		g3.setInput(g2, GateIndex.BOTTOM);		
+//		g4.setInput(g2, GateIndex.BOTTOM);		
+		hasCycle(new Vector2Int(4,2));
+		updateGUI();
+//		System.out.println(g1.output());
+//		System.out.println(g2.output());
 		
-		g1.setInput(t, GateIndex.BOTTOM);
-		g2.setInput(f, GateIndex.TOP);
-
-		System.out.println(g1.output());
-		System.out.println(g2.output());
-		
-		System.out.println(t.getClass().toString());
+//		g1.setInput(t, GateIndex.BOTTOM);
+//		g2.setInput(f, GateIndex.TOP);
+//
+//		System.out.println(g1.output());
+//		System.out.println(g2.output());
+//		
+//		System.out.println(t.getClass().toString());
 	}
 
 	/** Check if a connection would form a cycle
@@ -145,9 +172,10 @@ public class LogicBoard {
 		else { // connection was drawn FROM an output TO an input
 			Gate toSetInput = gates.get(end);
 			Gate oldInput = toSetInput.getInput(endIndex);
-			
-			toSetInput.setInput(gates.get(end), endIndex);
+			toSetInput.setInput(gates.get(start), endIndex);
 			// make test and reset status to before the test
+			testResult = hasCycle(start);
+			// reset status
 			toSetInput.setInput(oldInput, endIndex);
 		}
 		
@@ -161,42 +189,83 @@ public class LogicBoard {
 	 * @return
 	 */
 	private boolean hasCycle(Vector2Int start) {
-		System.out.println("Checking for cycles");
+//		System.out.println("\n\n" + this.toString() + "\n\n");
+//		System.out.println("Checking for cycles");
+		for(Vector2Int key : gates.keySet()) {
+			gates.get(key).getInput(GateIndex.TOP);
+			gates.get(key).getInput(GateIndex.BOTTOM);
+		}
+		
 		ArrayList<Gate> frontier = new ArrayList<Gate>();
 		ArrayList<Gate> discovered = new ArrayList<Gate>();
 		
 		Gate current = gates.get(start);
+//		System.out.println(start + " " + (current == null));
 		Gate candidate = current.getInput(GateIndex.TOP);
-			if(!discovered.contains(candidate)) {
+			if(candidate != null && !discovered.contains(candidate)) {
 				discovered.add(candidate);
 				frontier.add(candidate);
 			}
 			
 		candidate = current.getInput(GateIndex.BOTTOM);
-		if(!discovered.contains(candidate)) {
+		if(candidate != null && !discovered.contains(candidate)) {
 			frontier.add(candidate);
 			discovered.add(candidate);
 		}
 		
+//		System.out.println("Gates in list: " + frontier.size());
+//		for(Gate g : frontier)
+//			System.out.println(g + " at " + getPositionOfGate(g));
+		
 		while(frontier.size() > 0) {
 			current = frontier.remove(0);
-			if(current == gates.get(start))
-				return true;
-			if(!discovered.contains(current)) {
+//			System.out.println("Under investigation: " + current);
+
+//			if(!discovered.contains(current)) {
 				candidate = current.getInput(GateIndex.TOP);
-				if(!discovered.contains(candidate)) {
-					frontier.add(candidate);
-					discovered.add(candidate);
-				}
-				
-				candidate = current.getInput(GateIndex.BOTTOM);
-				if(!discovered.contains(candidate)) {
-					frontier.add(candidate);
-					discovered.add(candidate);
-				}
+//			if(candidate != null) {
+//				System.out.println(getPositionOfGate(current) + " : " + current + "'s TOP is connected to "
+//						+ getPositionOfGate(candidate) + " : " + candidate);
+//			}
+			if(candidate == gates.get(start))
+				return true;
+			if(candidate != null && !discovered.contains(candidate)) {
+				frontier.add(candidate);
+				discovered.add(candidate);
 			}
+				
+			candidate = current.getInput(GateIndex.BOTTOM);
+//			if(candidate != null) {
+//				System.out.println(getPositionOfGate(current) + " : " + current + "'s BOTTOM is connected to "
+//						+ getPositionOfGate(candidate) + " : " + candidate);
+//			}
+			if(candidate == gates.get(start))
+				return true;
+			if(candidate != null && !discovered.contains(candidate)) {
+				frontier.add(candidate);
+				discovered.add(candidate);
+			}
+//			}
 		}
 		
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		String s = "Gates:\n";
+		for(Vector2Int key : gates.keySet()) {
+			s += key + " " + Converter.getTypeFromGate(gates.get(key)) + " " + gates.get(key) + "\n";
+		}
+		s += "Connections:\n";
+		for(Vector2Int key : gates.keySet()) {
+			Gate top = gates.get(key).getInput(GateIndex.TOP);
+			if(top != null)
+				s += gates.get(key) + " at " + getPositionOfGate(gates.get(key)) + " connects to " + getPositionOfGate(top) + " " + Converter.getTypeFromGate(top) + " " + top + " via TOP\n";
+			Gate bottom = gates.get(key).getInput(GateIndex.BOTTOM);
+			if(bottom != null)
+				s += gates.get(key) + " at " + getPositionOfGate(gates.get(key)) + " connects to " + getPositionOfGate(bottom) + " " + Converter.getTypeFromGate(bottom) + " " + bottom + " via BOTTOM\n";
+		}
+		return s;
 	}
 }

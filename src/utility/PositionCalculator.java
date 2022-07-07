@@ -133,4 +133,32 @@ public class PositionCalculator {
 		System.out.println("ERROR (PositionCalculator): Could not determine GateIndex " + t + " at " + v);
 		return null;
 	}
+	
+	/**
+	 * Compute the position at the center of an input / output on a tile.
+	 * @param t
+	 * @param coord
+	 * @param index
+	 * @return
+	 */
+	public Vector2Int getLinePoint(TileType t, Vector2Int coord, GateIndex index) {
+	
+		// if not and not null => not input
+		if(t == TileType.NOT && index != null) {
+			return new Vector2Int(tileWidth * coord.x + 5, tileHeight * coord.y + (tileHeight / 2));
+		}
+		// else if not TRUE and not FALSE and not null => Bottom or Top input
+		else if (t != TileType.TRUE && t != TileType.FALSE && index != null) {
+			if(index == GateIndex.TOP) {
+				return new Vector2Int(tileWidth * coord.x + 5, tileHeight * coord.y + 5);
+			}
+			else { // index is GateIndex.BOTTOM
+				return new Vector2Int(tileWidth * coord.x + 5, tileHeight * (coord.y + 1) - 4);
+			}			
+		}
+		// else its an output => universal formula for that
+		else {
+			return new Vector2Int(tileWidth * (coord.x + 1) - 4, tileHeight * coord.y + (tileHeight / 2));
+		}
+	}
 }

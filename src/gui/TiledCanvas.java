@@ -30,6 +30,7 @@ public class TiledCanvas extends JPanel {
 	}
 	
 	public TreeMap<Vector2Int, TileType> tilesToDraw;
+	public TreeMap<Vector2Int, Vector2Int> connectionsToDraw;
 	
 	/** The {@link gui.LogicBoardGUI gui parent} this canvas sits on. */
 	LogicBoardGUI boardGUI;
@@ -43,6 +44,7 @@ public class TiledCanvas extends JPanel {
 	public boolean drawTentativeLine = false;
 	public Vector2Int lineStart;
 	public Vector2Int lineEnd;
+
 	
 	public TiledCanvas(LogicBoardGUI boardGUI_, ImageStorage imageStorage) {
 		images = imageStorage;
@@ -51,6 +53,7 @@ public class TiledCanvas extends JPanel {
 		tileHeight = boardGUI.getTileHeight();
 		emptyTileImage = images.getImage(TileType.EMPTY);
 		tilesToDraw = new TreeMap<Vector2Int, TileType>();
+		connectionsToDraw = new TreeMap<Vector2Int, Vector2Int>();
 		repaint();
 	}
 
@@ -59,7 +62,7 @@ public class TiledCanvas extends JPanel {
 		super.paintComponent(g);
 		drawBoard(g); // split this into: drawEmptyBoard and drawGatesOnBoard
 		drawTiles(g);
-//		drawConnections(g);
+		drawConnections(g);
 		/* when the user clicked somewhere without releasing and is dragging the mouse
 		 * draw a line between the original click position and the current mouse position. */
         if(drawTentativeLine) { 
@@ -67,8 +70,8 @@ public class TiledCanvas extends JPanel {
         	g.drawLine(lineStart.x, lineStart.y,  lineEnd.x, lineEnd.y);
         }
 	}
-	
-    /**
+
+	/**
      * Draws graphical elements to the screen.
      * @param g ()
      */
@@ -94,4 +97,17 @@ public class TiledCanvas extends JPanel {
             		key.y * tileHeight, null);
     	}
     }
+    
+    /**
+	 * @param g
+	 */
+	private void drawConnections(Graphics g) {
+		for(Vector2Int key : connectionsToDraw.keySet()) {
+			Vector2Int end = connectionsToDraw.get(key);
+			g.drawLine(key.x, key.y, end.x, end.y);
+			// figure out where to draw from
+//			System.out.println("Should draw line from " + key + " to " + connectionsToDraw.get(key));
+		}
+		
+	}
 }

@@ -89,7 +89,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 		if(!positionCalculator.validateMousePosition(v)) { return; }
 		// convert mouse position to (row, column)-coordinates on the board
     	controller.handleMouseClick(positionCalculator.mousePositionToGridCoordinates(v));
-    	System.out.println("Clicked at " + positionCalculator.mousePositionToGridCoordinates(v));
+//    	System.out.println("Clicked at " + positionCalculator.mousePositionToGridCoordinates(v));
     }
     
     // TODO: encapsulate public variables with getters and setters?
@@ -117,9 +117,9 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 			
 			if(positionCalculator.validateMousePosition(v) 
 					&& controller.isValidEnd(v, canvas.lineStart)) {
-				System.out.println("This connection was valid!");
+//				System.out.println("This connection was valid!");
+				controller.addConnection(v, canvas.lineStart);
 			}
-//				addConnection();
 			canvas.repaint();
 		}
 		canvas.startedDragging = false;
@@ -135,9 +135,9 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	public void setTilesAndConnections(TreeMap<Vector2Int, TileType> tiles,
 			TreeMap<Vector2Int, Vector2Int> connections) {
 		canvas.tilesToDraw = tiles;
+		canvas.connectionsToDraw = connections;
 		repaint();
-		System.out.println("Setting stuff to draw");
-		// TODO Auto-generated method stub
+//		System.out.println("Setting stuff to draw");
 	}
 	
 	
