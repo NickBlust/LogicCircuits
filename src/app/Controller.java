@@ -34,7 +34,7 @@ public class Controller {
 		theGUI = new LogicBoardGUI(this);
 		theBoard = new LogicBoard(theGUI);
 		theBoard.test();
-		positionCalculator = new PositionCalculator(theGUI.getTileWidth(), theGUI.getTileHeight());
+		positionCalculator = theGUI.getPositionCalculatorFromGUI();
 	}
 
 	/**
@@ -90,10 +90,44 @@ public class Controller {
 		TileType t = theBoard.getGateType(pos);
 		if(t != TileType.EMPTY) {
 			GateIndex index = null;
-			System.out.println("HELP:" + v + " " + (positionCalculator.validPositionOnTile(t, v, pos, index)));
+//			System.out.println("HELP:" + v + " " + (positionCalculator.validPositionOnTile(t, v, pos, index)));
 			// if it is at the right position on the tile, return true
+			return positionCalculator.validStartPositionOnTile(t, v, pos, index);
 		}
 		
+		return false;
+	}
+
+	/**
+	 * @param v Position of mouse release
+	 * @param start Start of the current line
+	 * @return
+	 */
+	public boolean isValidEnd(Vector2Int v, Vector2Int start) {
+		Vector2Int pos = positionCalculator.mousePositionToGridCoordinates(v);
+		Vector2Int startCoord = positionCalculator.mousePositionToGridCoordinates(start);
+		TileType t = theBoard.getGateType(pos);
+		
+		if(t != TileType.EMPTY && !startCoord.equals(pos)) {
+			GateIndex index = null;
+			// hit an input or output on another gate?
+			boolean preliminaryResult = positionCalculator.validEndPositionOnTile(t, v, pos, index);
+			if(!preliminaryResult)
+				return false;
+			
+			// check if we are connecting from an input to an output or vice versa,
+			// i.e. do not allow connections from one input to another input etc.
+			GateIndex otherIndex = positionCalculator
+					.getGateIndexFromPositionOnTile(theBoard.getGateType(pos), v);
+			System.out.println("Comparing " + t + " index " + index + " at " + startCoord
+					+ "  with  " + theBoard.getGateType(pos) + " index " + otherIndex + " at " + pos);
+			
+			
+			
+			// check if we would form a cycle
+			return !theBoard.formsCycle(start, v, index);
+			
+		}
 		return false;
 	}
 

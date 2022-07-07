@@ -68,7 +68,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
 
-        positionCalculator = new PositionCalculator(TILE_WIDTH, TILE_HEIGHT);
+        positionCalculator = new PositionCalculator(TILE_WIDTH, TILE_HEIGHT, boardWidth, boardHeight);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
@@ -86,7 +86,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
     @Override
     public void mouseClicked(MouseEvent e) {
     	Vector2Int v = new Vector2Int(e.getX(), e.getY());
-		if(!validateMousePosition(v)) { return; }
+		if(!positionCalculator.validateMousePosition(v)) { return; }
 		// convert mouse position to (row, column)-coordinates on the board
     	controller.handleMouseClick(positionCalculator.mousePositionToGridCoordinates(v));
     	System.out.println("Clicked at " + positionCalculator.mousePositionToGridCoordinates(v));
@@ -106,34 +106,25 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 			canvas.lineEnd = v;
 		}
 		canvas.startedDragging = true;
-		repaint();
+		canvas.repaint();
 	}
 
 
 	@Override public void mouseReleased(MouseEvent e) { 
 		if(canvas.drawTentativeLine) {
 			canvas.drawTentativeLine = false;
-//			if(isValidEnd(new Vector2Int(e.getX(),e.getY())))
+			Vector2Int v = new Vector2Int(e.getX(), e.getY());
+			
+			if(positionCalculator.validateMousePosition(v) 
+					&& controller.isValidEnd(v, canvas.lineStart)) {
+				System.out.println("This connection was valid!");
+			}
 //				addConnection();
-			repaint();
+			canvas.repaint();
 		}
 		canvas.startedDragging = false;
 	}
 
-	// HELPERS
-	public int getBoardGUIWidth() { return boardWidth; }
-	public int getBoardGUIHeight() { return boardHeight; }
-	public int getTileWidth() { return TILE_WIDTH; }
-	public int getTileHeight() { return TILE_HEIGHT; }
-	
-	
-	
-	private boolean validateMousePosition(Vector2Int v) {
-		if(boardWidth * TILE_WIDTH < v.x 
-				|| boardHeight * TILE_HEIGHT < v.y)
-			return false;
-		return true;
-	}
 
 
 
@@ -148,7 +139,17 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 		System.out.println("Setting stuff to draw");
 		// TODO Auto-generated method stub
 	}
-		
+	
+	
+	// HELPERS
+	public int getBoardGUIWidth() { return boardWidth; }
+	public int getBoardGUIHeight() { return boardHeight; }
+	public int getTileWidth() { return TILE_WIDTH; }
+	public int getTileHeight() { return TILE_HEIGHT; }
+	
+	public PositionCalculator getPositionCalculatorFromGUI() {
+		return positionCalculator;
+	}
 	
 	// UNUSED MOUSE EVENTS
 	@Override public void mouseMoved(MouseEvent e) { }

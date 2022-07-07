@@ -121,4 +121,32 @@ public class LogicBoard {
 		
 		System.out.println(t.getClass().toString());
 	}
+
+	/** Check if a connection would form a cycle
+	 * @param start
+	 * @param v
+	 * @param index
+	 * @return
+	 */
+	public boolean formsCycle(Vector2Int start, Vector2Int end, GateIndex index) {
+		boolean testResult = false;
+//		if(index == null) { // connection was drawn FROM an input TO an output
+//			Gate toSetInput = gates.get(start);
+//			Gate oldInput = toSetInput.getInput(index);
+//			
+//			toSetInput.setInput(gates.get(end), index);
+//			// make test and reset status to before the test
+//			toSetInput.setInput(oldInput, index);
+//		}
+//		else { // connection was drawn FROM an output TO an input
+//			Gate toSetInput = gates.get(end);
+//			Gate oldInput = toSetInput.getInput(index);
+//			
+//			toSetInput.setInput(gates.get(end), index);
+//			// make test and reset status to before the test
+//			toSetInput.setInput(oldInput, index);
+//		}
+
+		return testResult;
+	}
 }

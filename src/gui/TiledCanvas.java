@@ -56,12 +56,14 @@ public class TiledCanvas extends JPanel {
 
 	@Override
 	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		drawBoard(g); // split this into: drawEmptyBoard and drawGatesOnBoard
 		drawTiles(g);
 //		drawConnections(g);
 		/* when the user clicked somewhere without releasing and is dragging the mouse
 		 * draw a line between the original click position and the current mouse position. */
         if(drawTentativeLine) { 
+//        	System.out.println("Drawing line between " + lineStart + " and " + lineEnd);
         	g.drawLine(lineStart.x, lineStart.y,  lineEnd.x, lineEnd.y);
         }
 	}
