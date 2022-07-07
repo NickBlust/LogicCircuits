@@ -36,6 +36,12 @@ public class TiledCanvas extends JPanel {
 	ImageStorage images;
 	BufferedImage emptyTileImage;
 	
+	// Stuff required for drawing a line for previewing a connection.
+	public boolean startedDragging = false;
+	public boolean drawTentativeLine = false;
+	public Vector2Int lineStart;
+	public Vector2Int lineEnd;
+	
 	public TiledCanvas(LogicBoardGUI boardGUI_, ImageStorage imageStorage) {
 		images = imageStorage;
 		boardGUI = boardGUI_;
@@ -48,6 +54,12 @@ public class TiledCanvas extends JPanel {
 	public void paintComponent(Graphics g) {
 		drawBoard(g); // split this into: drawEmptyBoard and drawGatesOnBoard
 		drawTiles(g);
+//		drawConnections(g);
+		/* when the user clicked somewhere without releasing and is dragging the mouse
+		 * draw a line between the original click position and the current mouse position. */
+        if(drawTentativeLine) { 
+        	g.drawLine(lineStart.x, lineStart.y,  lineEnd.x, lineEnd.y);
+        }
 	}
 	
     /**
@@ -56,7 +68,6 @@ public class TiledCanvas extends JPanel {
      */
     private void drawBoard(Graphics g) 
     {
-    	System.out.println("Images null??? = " + (images == null));
     	int columns = boardGUI.getBoardGUIWidth();
     	int rows = boardGUI.getBoardGUIHeight();
         Graphics2D g2 = (Graphics2D) g;
@@ -70,7 +81,6 @@ public class TiledCanvas extends JPanel {
 	}
     
     public void drawTiles(Graphics g) {
-    	System.out.println("Images null? = " + (images == null));
     	for(Vector2Int key : tilesToDraw.keySet()) {
             Graphics2D g2 = (Graphics2D) g;
     		g2.drawImage(images.getImage(tilesToDraw.get(key)),

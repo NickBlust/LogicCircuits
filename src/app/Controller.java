@@ -5,6 +5,7 @@ package app;
 
 import gui.LogicBoardGUI;
 import gui.TiledCanvas.TileType;
+import utility.PositionCalculator;
 import utility.Vector2Int;
 
 import command.*;
@@ -73,6 +74,23 @@ public class Controller {
 		Command c = new PlaceTileAt(theBoard, v, selectedTileToPlace);
 		if(c.execute())
 			pastCommands.add(c);	
+	}
+
+	/**
+	 * @param v
+	 * @return
+	 */
+	public boolean isValidStart(Vector2Int v) {
+
+		// check if model has tile at said coordinate
+		Vector2Int pos = PositionCalculator.mousePositionToGridCoordinates(v);
+		TileType t = theBoard.getGateType(pos);
+		if(t != TileType.EMPTY) {
+			System.out.println("HELP:" + v + " " + (PositionCalculator.validPositionOnTile(t, v, pos)));
+			// if it is at the right position on the tile, return true
+		}
+		
+		return false;
 	}
 
 }

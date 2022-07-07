@@ -34,6 +34,12 @@ public class LogicBoard {
 		return null;
 	}
 	
+	public TileType getGateType(Vector2Int v) {
+		if(hasGate(v))
+			return Converter.getTypeFromGate(gates.get(v));
+		return TileType.EMPTY;
+	}
+	
 	
 	public void addGate(Gate g, Vector2Int v) { 
 		System.out.println("Adding " + g + " at " + v);

@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 
 import app.Controller;
 import gui.TiledCanvas.TileType;
+import utility.PositionCalculator;
 import utility.Vector2Int;
 
 /**
@@ -85,14 +86,27 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
     	Vector2Int v = new Vector2Int(e.getX(), e.getY());
 		if(!validateMousePosition(v)) { return; }
 		// convert mouse position to (row, column)-coordinates on the board
-    	controller.handleMouseClick(mousePositionToGridCoordinates(v));
-    	System.out.println("Cliecked at " + mousePositionToGridCoordinates(v));
+    	controller.handleMouseClick(PositionCalculator.mousePositionToGridCoordinates(v));
+    	System.out.println("Clicked at " + PositionCalculator.mousePositionToGridCoordinates(v));
     }
     
+    // TODO: encapsulate public variables with getters and setters?
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		
+		Vector2Int v = new Vector2Int(e.getX(), e.getY());
+//		System.out.println("idk " + v);
+		if(!canvas.drawTentativeLine && !canvas.startedDragging && controller.isValidStart(v)) {
+			canvas.lineStart = v;
+			canvas.lineEnd = canvas.lineStart;
+			canvas.drawTentativeLine = true;
+		}
+		else {
+			canvas.lineEnd = v;
+		}
+		canvas.startedDragging = true;
+		repaint();
 	}
+
 
 	@Override public void mouseReleased(MouseEvent e) { }
 
@@ -108,17 +122,6 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 			return false;
 		return true;
 	}
-	
-	private Vector2Int mousePositionToGridCoordinates(Vector2Int pos) {
-		return new Vector2Int((int) Math.ceil(pos.x / LogicBoardGUI.TILE_WIDTH),
-				(int) Math.ceil(pos.y / LogicBoardGUI.TILE_HEIGHT));
-	}
-	
-	// UNUSED MOUSE EVENTS
-	@Override public void mouseMoved(MouseEvent e) { }
-	@Override public void mousePressed(MouseEvent e) { }
-	@Override public void mouseEntered(MouseEvent e) { }
-	@Override public void mouseExited(MouseEvent e) { }
 
 
 
@@ -132,6 +135,12 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 		repaint();
 		System.out.println("Setting stuff to draw");
 		// TODO Auto-generated method stub
-		
 	}
+		
+	
+	// UNUSED MOUSE EVENTS
+	@Override public void mouseMoved(MouseEvent e) { }
+	@Override public void mousePressed(MouseEvent e) { }
+	@Override public void mouseEntered(MouseEvent e) { }
+	@Override public void mouseExited(MouseEvent e) { }
 }

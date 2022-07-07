@@ -3,7 +3,6 @@
  */
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -13,7 +12,6 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import app.Controller;
 import gui.TiledCanvas.TileType;
@@ -76,22 +74,12 @@ public class ButtonPalette extends JPanel {
         		public void actionPerformed(ActionEvent e){  
     	            controller.selectedTileToPlace = tileTypes[k]; } });  
         	this.add(tileButtons[i], new GBConstraints(0, i, 5));
-        
-//        for(int i = 0; i < tileButtons.length; i++) {
-//        	final int k = i; // later the index has to final for access to tileTypes
-//        	tileButtons[i] = new JButton(new ImageIcon(BoardGUI.class.getResource(
-//        			"/Assets/" + fileLocations[i] + ".png")));
-//        	tileButtons[i].setText(buttonTexts[i]);
-//        	tileButtons[i].addActionListener(new ActionListener(){  
-//        		public void actionPerformed(ActionEvent e){  
-//    	            boardEditor.selectTileToPlace(tileTypes[k]); } });  
-//        	panel.add(tileButtons[i], new GBConstraints(0, i, 5));
         }
     }
 	
 	/**
 	 * Internal class to simplify the button instantiation in 
-	 * {@link gui.BoardGUI initButtons}.
+	 * {@link gui.ButtonPalette#initPalette() initPalette}.
 	 */
 	class GBConstraints extends GridBagConstraints {
 
