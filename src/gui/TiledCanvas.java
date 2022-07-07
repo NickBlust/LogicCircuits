@@ -36,8 +36,8 @@ public class TiledCanvas extends JPanel {
 	ImageStorage images;
 	BufferedImage emptyTileImage;
 	
-	public TiledCanvas(LogicBoardGUI boardGUI_) {
-		images = new ImageStorage();
+	public TiledCanvas(LogicBoardGUI boardGUI_, ImageStorage imageStorage) {
+		images = imageStorage;
 		boardGUI = boardGUI_;
 		emptyTileImage = images.getImage(TileType.EMPTY);
 		tilesToDraw = new TreeMap<Vector2Int, TileType>();
@@ -73,9 +73,9 @@ public class TiledCanvas extends JPanel {
     	System.out.println("Images null? = " + (images == null));
     	for(Vector2Int key : tilesToDraw.keySet()) {
             Graphics2D g2 = (Graphics2D) g;
-    		g2.drawImage(images.getImage(tilesToDraw.get(key)), 0,0,null);
-//    				key.x * LogicBoardGUI.TILE_WIDTH, 
-//            		key.y * LogicBoardGUI.TILE_HEIGHT, null);
+    		g2.drawImage(images.getImage(tilesToDraw.get(key)),
+    				key.x * LogicBoardGUI.TILE_WIDTH, 
+            		key.y * LogicBoardGUI.TILE_HEIGHT, null);
     	}
     }
 }

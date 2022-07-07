@@ -20,7 +20,7 @@ import boardModel.LogicBoard;
 public class Controller {
 	LogicBoardGUI theGUI;
 	LogicBoard theBoard;
-	TileType selectedTileToPlace = TileType.OR;
+	public TileType selectedTileToPlace = TileType.OR;
 	
 	Stack<Command> pastCommands;
 	

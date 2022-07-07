@@ -3,6 +3,7 @@
  */
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -10,9 +11,9 @@ import java.util.TreeMap;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
+import javax.swing.JScrollPane;
 
 import app.Controller;
-import gates.Gate;
 import gui.TiledCanvas.TileType;
 import utility.Vector2Int;
 
@@ -39,20 +40,33 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	private int boardHeight = 5;
 	
 	Controller controller;
+	ImageStorage images;
 	TiledCanvas canvas;
 	JMenuBar menuBar;
+	ButtonPalette buttonPalette;
 
 	
 	public LogicBoardGUI(Controller controller_) {
 		
 		controller = controller_;
+		images = new ImageStorage();
+
 		
 		setSize(816, 615);
 		setTitle("Logic Circuits Simulator");
 		setLocationRelativeTo(null); //sets position of frame on screen
 		
-		getContentPane().add(canvas = new TiledCanvas(this));
+		getContentPane().add(canvas = new TiledCanvas(this, images));
 		setJMenuBar(menuBar = new LogicBoardMenu(controller));
+		getContentPane().add(buttonPalette = new ButtonPalette(images, controller), BorderLayout.EAST);
+        
+        JScrollPane scroll = new JScrollPane(buttonPalette);
+        getContentPane().add(scroll, BorderLayout.EAST);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 		/* get the position of mouse (events) relative 
