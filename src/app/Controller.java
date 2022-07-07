@@ -104,14 +104,14 @@ public class Controller {
 	 * @return
 	 */
 	public boolean isValidEnd(Vector2Int v, Vector2Int start) {
-		Vector2Int pos = positionCalculator.mousePositionToGridCoordinates(v); // end of line
 		Vector2Int startCoord = positionCalculator.mousePositionToGridCoordinates(start); // start of line
-		TileType t = theBoard.getGateType(pos); // Tile at end of line
+		Vector2Int endCoord = positionCalculator.mousePositionToGridCoordinates(v); // end of line
+		TileType t = theBoard.getGateType(endCoord); // Tile at end of line
 		
-		if(t != TileType.EMPTY && !startCoord.equals(pos)) {
+		if(t != TileType.EMPTY && !startCoord.equals(endCoord)) {
 			GateIndex endIndex = null;
 			// hit an input or output on another gate?
-			BoolGateIndexTuple preliminaryResult = positionCalculator.validEndPositionOnTile(t, v, pos);
+			BoolGateIndexTuple preliminaryResult = positionCalculator.validEndPositionOnTile(t, v, endCoord);
 			if(!preliminaryResult.key())
 				return false;
 			endIndex = preliminaryResult.value();
@@ -122,7 +122,7 @@ public class Controller {
 					.getGateIndexFromPositionOnTile(theBoard.getGateType(startCoord), start);
 			System.out.println("Comparing " + theBoard.getGateType(startCoord) + " index " 
 					+ startIndex + " at " + startCoord + "  with  " 
-					+ t + " index " + endIndex + " at " + pos);
+					+ t + " index " + endIndex + " at " + endCoord);
 			if(startIndex == null && !(endIndex == GateIndex.TOP || endIndex == GateIndex.BOTTOM)) {
 				System.out.println("1");				
 				return false;
@@ -134,7 +134,7 @@ public class Controller {
 			
 			
 			// check if we would form a cycle
-			return !theBoard.formsCycle(start, v, endIndex);
+			return !theBoard.formsCycle(startCoord, endCoord, startIndex, endIndex);
 			
 		}
 		return false;

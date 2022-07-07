@@ -123,30 +123,80 @@ public class LogicBoard {
 	}
 
 	/** Check if a connection would form a cycle
-	 * @param start
-	 * @param v
+	 * @param start Start coordinates of connection
+	 * @param v end coordinates of connection
 	 * @param index
+	 * @param endIndex 
 	 * @return
 	 */
-	public boolean formsCycle(Vector2Int start, Vector2Int end, GateIndex index) {
-		boolean testResult = false;
-//		if(index == null) { // connection was drawn FROM an input TO an output
-//			Gate toSetInput = gates.get(start);
-//			Gate oldInput = toSetInput.getInput(index);
-//			
-//			toSetInput.setInput(gates.get(end), index);
-//			// make test and reset status to before the test
-//			toSetInput.setInput(oldInput, index);
-//		}
-//		else { // connection was drawn FROM an output TO an input
-//			Gate toSetInput = gates.get(end);
-//			Gate oldInput = toSetInput.getInput(index);
-//			
-//			toSetInput.setInput(gates.get(end), index);
-//			// make test and reset status to before the test
-//			toSetInput.setInput(oldInput, index);
-//		}
-
+	public boolean formsCycle(Vector2Int start, Vector2Int end, 
+			GateIndex startIndex, GateIndex endIndex) {
+		boolean testResult = false; 
+		if(endIndex == null) { // connection was drawn FROM an input TO an output
+			Gate toSetInput = gates.get(start);
+			Gate oldInput = toSetInput.getInput(startIndex);
+			
+			toSetInput.setInput(gates.get(end), startIndex);
+			// make test and reset status to before the test
+			testResult = hasCycle(start);
+			// reset status
+			toSetInput.setInput(oldInput, startIndex);
+		}
+		else { // connection was drawn FROM an output TO an input
+			Gate toSetInput = gates.get(end);
+			Gate oldInput = toSetInput.getInput(endIndex);
+			
+			toSetInput.setInput(gates.get(end), endIndex);
+			// make test and reset status to before the test
+			toSetInput.setInput(oldInput, endIndex);
+		}
+		
+		if(!testResult)
+			System.out.println("No cycle found!");
 		return testResult;
+	}
+
+	/**
+	 * @param start
+	 * @return
+	 */
+	private boolean hasCycle(Vector2Int start) {
+		System.out.println("Checking for cycles");
+		ArrayList<Gate> frontier = new ArrayList<Gate>();
+		ArrayList<Gate> discovered = new ArrayList<Gate>();
+		
+		Gate current = gates.get(start);
+		Gate candidate = current.getInput(GateIndex.TOP);
+			if(!discovered.contains(candidate)) {
+				discovered.add(candidate);
+				frontier.add(candidate);
+			}
+			
+		candidate = current.getInput(GateIndex.BOTTOM);
+		if(!discovered.contains(candidate)) {
+			frontier.add(candidate);
+			discovered.add(candidate);
+		}
+		
+		while(frontier.size() > 0) {
+			current = frontier.remove(0);
+			if(current == gates.get(start))
+				return true;
+			if(!discovered.contains(current)) {
+				candidate = current.getInput(GateIndex.TOP);
+				if(!discovered.contains(candidate)) {
+					frontier.add(candidate);
+					discovered.add(candidate);
+				}
+				
+				candidate = current.getInput(GateIndex.BOTTOM);
+				if(!discovered.contains(candidate)) {
+					frontier.add(candidate);
+					discovered.add(candidate);
+				}
+			}
+		}
+		
+		return false;
 	}
 }

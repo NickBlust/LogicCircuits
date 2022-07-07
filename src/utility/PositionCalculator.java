@@ -125,9 +125,8 @@ public class PositionCalculator {
 				return null;
 			
 			BoolGateIndexTuple temp = overDoubleInput(v, mousePositionToGridCoordinates(v));
-			System.out.println("Checking " + v + " " + mousePositionToGridCoordinates(v));
-//			System.out.println(overDoubleInput(v, mousePositionToGridCoordinates(v), result));
-			System.out.println(temp.key());
+//			System.out.println("Checking " + v + " " + mousePositionToGridCoordinates(v));
+//			System.out.println(temp.key());
 			return temp.value();
 				
 		}
