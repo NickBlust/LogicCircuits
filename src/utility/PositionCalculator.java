@@ -3,7 +3,7 @@
  */
 package utility;
 
-import gates.Gate.GateIndex;
+import gates.GateIndex;
 import gui.TiledCanvas.TileType;
 
 /**

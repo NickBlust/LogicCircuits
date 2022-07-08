@@ -4,7 +4,7 @@
 package command;
 
 import boardModel.LogicBoard;
-import gates.Gate.GateIndex;
+import gates.GateIndex;
 import utility.Vector2Int;
 
 /**

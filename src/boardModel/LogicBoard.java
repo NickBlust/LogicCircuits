@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import gates.*;
-import gates.Gate.GateIndex;
+import gates.GateIndex;
 import gui.LogicBoardGUI;
 import gui.TiledCanvas.TileType;
 import utility.PointTuple;
@@ -24,19 +24,17 @@ public class LogicBoard {
 	PositionCalculator positionCalculator; // TODO get this from gui, rather than over instructor
 	TreeMap<Vector2Int, Gate> gates;
 	ArrayList<Gate> outputGates;
-	TreeMap<Vector2Int, Boolean> truthValues;
 	boolean inEvaluatedState = false;
 	
-	public LogicBoard(LogicBoardGUI gui_, PositionCalculator positionCalculator_) {
+	public LogicBoard(LogicBoardGUI gui_) {
 		boardGUI = gui_;
-		positionCalculator = positionCalculator_;
+		positionCalculator = boardGUI.getPositionCalculatorFromGUI();
 		gates = new TreeMap<Vector2Int, Gate>();
 		outputGates = new ArrayList<Gate>();
-		truthValues = new TreeMap<Vector2Int, Boolean>();
 	}
 	
 	public void addGate(Gate g, Vector2Int v) {
-		inEvaluatedState = false;
+		if(inEvaluatedState) { resetStatusOnBoards(); }
 		
 		if(gates.containsKey(v)) { // keep connections when replacing gates
 			Gate temp = gates.get(v);
@@ -57,7 +55,7 @@ public class LogicBoard {
 	}
 
 	public void removeGate(Vector2Int v) {
-		inEvaluatedState = false;
+		if(inEvaluatedState) { resetStatusOnBoards(); }
 	}
 	
 	/**
@@ -66,7 +64,7 @@ public class LogicBoard {
 	 * @param inputIndex
 	 */
 	public void addConnection(Vector2Int fromOutput, Vector2Int toInput, GateIndex inputIndex) {
-		inEvaluatedState = false;
+		if(inEvaluatedState) { resetStatusOnBoards(); }
 		
 		Gate givingOutput = gates.get(fromOutput);
 		outputGates.remove(givingOutput);
@@ -79,12 +77,15 @@ public class LogicBoard {
 	}
 	
 	public void removeConnection(Vector2Int fromOutput, Vector2Int toInput, GateIndex inputIndex) {
-		inEvaluatedState = false;
+		if(inEvaluatedState) { resetStatusOnBoards(); }
 		
 	}
 
-	public void evaluate() {
 
+	public void evaluate() {
+		for(Gate g : outputGates)
+			g.output();
+		
 		inEvaluatedState = true;
 		updateGUI();
 	}
@@ -95,13 +96,9 @@ public class LogicBoard {
 	private void updateGUI() {
 		TreeMap<Vector2Int, TileType> tiles = new TreeMap<Vector2Int, TileType>();
 		ArrayList<PointTuple> connections = new ArrayList<PointTuple>();
-		TreeMap<Vector2Int, Boolean> truthValues = new TreeMap<Vector2Int, Boolean>();
 		for(Vector2Int key : gates.keySet()) {
 			Gate temp = gates.get(key);
-			System.out.println(inEvaluatedState);
-			tiles.put(key, inEvaluatedState ? Converter.getTypeFromGate(temp, truthValues.get(key)) 
-											: Converter.getTypeFromGate(temp));
-			
+			tiles.put(key, Converter.getTypeFromGate(temp));
 				
 				
 			
@@ -110,21 +107,14 @@ public class LogicBoard {
 				connections.add(new PointTuple(
 						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
 						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.TOP)));
-				System.out.println(						
-						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null) + "  " + 
-						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.TOP));
 			}
 			input = temp.getInput(GateIndex.BOTTOM);
 			if(input != null) {
 				connections.add(new PointTuple(
 						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
 						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.BOTTOM)));
-				System.out.println(
-						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null) + "         " + 
-						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.BOTTOM)
-				);
 			}
-		}
+		} // end for
 		boardGUI.setTilesAndConnections(tiles, connections);
 	}
 	
@@ -266,6 +256,15 @@ public class LogicBoard {
 		if(hasGate(v))
 			return Converter.getTypeFromGate(gates.get(v));
 		return TileType.EMPTY;
+	}
+
+	/**
+	 * 
+	 */
+	private void resetStatusOnBoards() {
+		inEvaluatedState = false;
+		for(Vector2Int key : gates.keySet())
+			gates.get(key).resetStatus();
 	}
 	
 	@Override

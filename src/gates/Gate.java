@@ -16,20 +16,6 @@ package gates;
  * @see ConstGate
  */
 public abstract class Gate {
-	
-	/**
-	 * Used to for indexing which of the inputs to set in a Gate
-	 * and on a tile representing a gate in the GUI.
-	 * "TOP" and "BOTTOM" are references to how the gates are 
-	 * displayed in the GUI!
-	 */
-	public enum GateIndex { 
-		/** Use this one for setting the input gate at the top of the tile. */
-		TOP, 
-		/** Use this one for setting the input gate at the bottom of the tile. */		
-		BOTTOM 
-		};
-	
 	/** Compute the output truth value of this gate, 
 	 * depending on the type of gate and its input gates/values.
 	 * If an input gate is not set to an object (i.e. is null),
@@ -51,4 +37,12 @@ public abstract class Gate {
 	 * @param i The identifier of the gate which should be changed. Does nothing if the identifier is not valid.
 	 */
 	public abstract void setInput(Gate g, GateIndex i);
+	
+	private Status status = Status.UNEVALUATED;
+	
+	public Status status() { return status; }
+	
+	public void resetStatus() { status = Status.UNEVALUATED; }
+	
+	protected void setStatus(boolean b) { status = (b ? Status.TRUE : Status.FALSE); }
 }

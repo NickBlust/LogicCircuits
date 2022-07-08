@@ -25,4 +25,23 @@ public abstract class InputGate extends Gate {
 	 * @param i The identifier of the gate which should be changed. Does nothing if the identifier is not valid.
 	 */
 	public void setInput(Gate g, GateIndex i) { inputs.put(i, g); }
+	
+	@Override
+	public boolean output() { 
+		boolean result = computeOutput(topInput(), bottomInput());
+		setStatus(result);
+		return result;
+	}
+	
+	protected abstract boolean computeOutput(boolean a, boolean b);
+	
+	protected boolean topInput() {
+		try { return inputs.get(GateIndex.TOP).output();
+		} catch (NullPointerException e) { return false; }
+	}
+	
+	protected boolean bottomInput() {
+		try { return inputs.get(GateIndex.BOTTOM).output();
+		} catch (NullPointerException e) { return false; }
+	}
 }

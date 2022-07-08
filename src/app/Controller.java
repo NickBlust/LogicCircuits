@@ -10,7 +10,7 @@ import utility.PositionCalculator;
 import utility.Vector2Int;
 
 import command.*;
-import gates.Gate.GateIndex;
+import gates.GateIndex;
 
 import java.util.Stack;
 
@@ -34,7 +34,7 @@ public class Controller {
 		pastCommands = new Stack<Command>();
 		theGUI = new LogicBoardGUI(this);
 		positionCalculator = theGUI.getPositionCalculatorFromGUI();
-		theBoard = new LogicBoard(theGUI, positionCalculator);
+		theBoard = new LogicBoard(theGUI);
 //		theBoard.test();
 	}
 
