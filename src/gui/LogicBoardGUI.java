@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 import javax.swing.JFrame;
@@ -15,6 +16,7 @@ import javax.swing.JScrollPane;
 
 import app.Controller;
 import gui.TiledCanvas.TileType;
+import utility.PointTuple;
 import utility.PositionCalculator;
 import utility.Vector2Int;
 
@@ -89,6 +91,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 		if(!positionCalculator.validateMousePosition(v)) { return; }
 		// convert mouse position to (row, column)-coordinates on the board
     	controller.handleMouseClick(positionCalculator.mousePositionToGridCoordinates(v));
+    	canvas.repaint();
 //    	System.out.println("Clicked at " + positionCalculator.mousePositionToGridCoordinates(v));
     }
     
@@ -133,7 +136,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	 * @param connections
 	 */
 	public void setTilesAndConnections(TreeMap<Vector2Int, TileType> tiles,
-			TreeMap<Vector2Int, Vector2Int> connections) {
+			ArrayList<PointTuple> connections) {
 		canvas.tilesToDraw = tiles;
 		canvas.connectionsToDraw = connections;
 		repaint();

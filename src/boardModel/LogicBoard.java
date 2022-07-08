@@ -10,6 +10,7 @@ import gates.*;
 import gates.Gate.GateIndex;
 import gui.LogicBoardGUI;
 import gui.TiledCanvas.TileType;
+import utility.PointTuple;
 import utility.PositionCalculator;
 import utility.Vector2Int;
 
@@ -82,22 +83,34 @@ public class LogicBoard {
 	// a list of points for which to draw lines + boolean with one input or two inputs
 	private void updateGUI() {
 		TreeMap<Vector2Int, TileType> tiles = new TreeMap<Vector2Int, TileType>();
-		TreeMap<Vector2Int, Vector2Int> connections = new TreeMap<Vector2Int, Vector2Int>();
+		ArrayList<PointTuple> connections = new ArrayList<PointTuple>();
 		for(Vector2Int key : gates.keySet()) {
 			Gate temp = gates.get(key);
 			tiles.put(key, Converter.getTypeFromGate(temp));
 			
 			Gate input = temp.getInput(GateIndex.TOP);
-			if(input != null) 
-				connections.put(
+			if(input != null) {
+				connections.add(new PointTuple(
 						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
+						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.TOP)));
+				System.out.println(						
+						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null) + "  " + 
 						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.TOP));
+			}
 			input = temp.getInput(GateIndex.BOTTOM);
-			if(input != null) 
-				connections.put(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
-						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.BOTTOM));
+			if(input != null) {
+				connections.add(new PointTuple(
+						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
+						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.BOTTOM)));
+				System.out.println(
+						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null) + "         " + 
+						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.BOTTOM)
+				);
+			}
 		}
-			// translate to map of 
+		for(PointTuple k : connections) 
+			System.out.println(k.a + "   -->   " + k.b);
+			// translate to map of  
 		// draw empty board
 		// for each tile in the map draw the tile
 			// and each connection

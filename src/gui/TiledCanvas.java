@@ -6,10 +6,12 @@ package gui;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 import javax.swing.JPanel;
 
+import utility.PointTuple;
 import utility.Vector2Int;
 
 /**
@@ -30,7 +32,7 @@ public class TiledCanvas extends JPanel {
 	}
 	
 	public TreeMap<Vector2Int, TileType> tilesToDraw;
-	public TreeMap<Vector2Int, Vector2Int> connectionsToDraw;
+	public ArrayList<PointTuple> connectionsToDraw;
 	
 	/** The {@link gui.LogicBoardGUI gui parent} this canvas sits on. */
 	LogicBoardGUI boardGUI;
@@ -53,7 +55,7 @@ public class TiledCanvas extends JPanel {
 		tileHeight = boardGUI.getTileHeight();
 		emptyTileImage = images.getImage(TileType.EMPTY);
 		tilesToDraw = new TreeMap<Vector2Int, TileType>();
-		connectionsToDraw = new TreeMap<Vector2Int, Vector2Int>();
+		connectionsToDraw = new ArrayList<PointTuple>();
 		repaint();
 	}
 
@@ -102,9 +104,9 @@ public class TiledCanvas extends JPanel {
 	 * @param g
 	 */
 	private void drawConnections(Graphics g) {
-		for(Vector2Int key : connectionsToDraw.keySet()) {
-			Vector2Int end = connectionsToDraw.get(key);
-			g.drawLine(key.x, key.y, end.x, end.y);
+		for(PointTuple c : connectionsToDraw) {
+//			Vector2Int end = connectionsToDraw.get(key);
+			g.drawLine(c.a.x, c.a.y, c.b.x, c.b.y);
 			// figure out where to draw from
 //			System.out.println("Should draw line from " + key + " to " + connectionsToDraw.get(key));
 		}
