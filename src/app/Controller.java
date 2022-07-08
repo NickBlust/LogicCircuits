@@ -65,10 +65,7 @@ public class Controller {
 	/**
 	 * 
 	 */
-	public void evaluateCircuits() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void evaluateCircuits() { theBoard.evaluate(); }
 
 	/**
 	 * @param point 

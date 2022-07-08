@@ -23,32 +23,21 @@ public class LogicBoard {
 	LogicBoardGUI boardGUI;
 	PositionCalculator positionCalculator; // TODO get this from gui, rather than over instructor
 	TreeMap<Vector2Int, Gate> gates;
+	ArrayList<Gate> outputGates;
+	TreeMap<Vector2Int, Boolean> truthValues;
+	boolean inEvaluatedState = false;
 	
 	public LogicBoard(LogicBoardGUI gui_, PositionCalculator positionCalculator_) {
 		boardGUI = gui_;
 		positionCalculator = positionCalculator_;
 		gates = new TreeMap<Vector2Int, Gate>();
+		outputGates = new ArrayList<Gate>();
+		truthValues = new TreeMap<Vector2Int, Boolean>();
 	}
 	
-	public boolean hasGate(Vector2Int v) { return gates.containsKey(v); }
-	
-	public Gate getGate(Vector2Int v) {
-		if(hasGate(v))
-			return gates.get(v);
-		return null;
-	}
-	
-	public TileType getGateType(Vector2Int v) {
-		if(hasGate(v))
-			return Converter.getTypeFromGate(gates.get(v));
-		return TileType.EMPTY;
-	}
-	
-	
-	public void addGate(Gate g, Vector2Int v) { 
-//		System.out.println("Adding " + g + " at " + v);
-//		for(Vector2Int points : gates.keySet())
-//			System.out.println(points);
+	public void addGate(Gate g, Vector2Int v) {
+		inEvaluatedState = false;
+		
 		if(gates.containsKey(v)) { // keep connections when replacing gates
 			Gate temp = gates.get(v);
 			if(temp != null) {
@@ -62,31 +51,59 @@ public class LogicBoard {
 					g.setInput(tempInput, GateIndex.TOP);
 			}
 		}
-		gates.put(v, g); 
-		// TODO: this is precarious, as the GUI should not be allowed to modify the gates!
+		gates.put(v, g);
+		outputGates.add(g);
 		updateGUI();
 	}
 
+	public void removeGate(Vector2Int v) {
+		inEvaluatedState = false;
+	}
+	
 	/**
 	 * @param fromOutput
 	 * @param toInput
 	 * @param inputIndex
 	 */
 	public void addConnection(Vector2Int fromOutput, Vector2Int toInput, GateIndex inputIndex) {
-		gates.get(toInput).setInput(gates.get(fromOutput), inputIndex);
+		inEvaluatedState = false;
+		
+		Gate givingOutput = gates.get(fromOutput);
+		outputGates.remove(givingOutput);
+		gates.get(toInput).setInput(givingOutput, inputIndex);
 		System.out.println("Connected gate at " + fromOutput + " with gate at " + toInput + " ("
 				+ inputIndex + ")");
+		for(Gate g : outputGates)
+			System.out.println(g);
+		updateGUI();
+	}
+	
+	public void removeConnection(Vector2Int fromOutput, Vector2Int toInput, GateIndex inputIndex) {
+		inEvaluatedState = false;
+		
+	}
+
+	public void evaluate() {
+
+		inEvaluatedState = true;
 		updateGUI();
 	}
 	
 	// create a list of tiles to paint
 	// a list of points for which to draw lines + boolean with one input or two inputs
+	// looks like extra work, but the gui should not be allowed to modify the model
 	private void updateGUI() {
 		TreeMap<Vector2Int, TileType> tiles = new TreeMap<Vector2Int, TileType>();
 		ArrayList<PointTuple> connections = new ArrayList<PointTuple>();
+		TreeMap<Vector2Int, Boolean> truthValues = new TreeMap<Vector2Int, Boolean>();
 		for(Vector2Int key : gates.keySet()) {
 			Gate temp = gates.get(key);
-			tiles.put(key, Converter.getTypeFromGate(temp));
+			System.out.println(inEvaluatedState);
+			tiles.put(key, inEvaluatedState ? Converter.getTypeFromGate(temp, truthValues.get(key)) 
+											: Converter.getTypeFromGate(temp));
+			
+				
+				
 			
 			Gate input = temp.getInput(GateIndex.TOP);
 			if(input != null) {
@@ -108,21 +125,7 @@ public class LogicBoard {
 				);
 			}
 		}
-		for(PointTuple k : connections) 
-			System.out.println(k.a + "   -->   " + k.b);
-			// translate to map of  
-		// draw empty board
-		// for each tile in the map draw the tile
-			// and each connection
 		boardGUI.setTilesAndConnections(tiles, connections);
-	}
-	
-	private Vector2Int getPositionOfGate(Gate g) {
-		for(Vector2Int key : gates.keySet())
-			if(g == gates.get(key))
-				return key;
-		System.out.println("ERROR (LogicBoard): Could not get position of gate: " + g);
-		return null;
 	}
 	
 	public void test() {
@@ -174,22 +177,17 @@ public class LogicBoard {
 		boolean testResult = false; 
 		if(endIndex == null) { // connection was drawn FROM an input TO an output
 			Gate toSetInput = gates.get(start);
-			Gate oldInput = toSetInput.getInput(startIndex);
-			
-			toSetInput.setInput(gates.get(end), startIndex);
-			// make test and reset status to before the test
-			testResult = hasCycle(start);
-			// reset status
-			toSetInput.setInput(oldInput, startIndex);
+			Gate oldInput = toSetInput.getInput(startIndex); 
+			toSetInput.setInput(gates.get(end), startIndex); // set the new connection 
+			testResult = hasCycle(start); // make test 
+			toSetInput.setInput(oldInput, startIndex); // reset status (i.e. remove the new connection)
 		}
 		else { // connection was drawn FROM an output TO an input
 			Gate toSetInput = gates.get(end);
 			Gate oldInput = toSetInput.getInput(endIndex);
-			toSetInput.setInput(gates.get(start), endIndex);
-			// make test and reset status to before the test
-			testResult = hasCycle(start);
-			// reset status
-			toSetInput.setInput(oldInput, endIndex);
+			toSetInput.setInput(gates.get(start), endIndex); // set the new connection
+			testResult = hasCycle(start); // make test
+			toSetInput.setInput(oldInput, endIndex); // reset status (i.e. remove the new connection)
 		}
 		
 		if(!testResult)
@@ -202,8 +200,6 @@ public class LogicBoard {
 	 * @return
 	 */
 	private boolean hasCycle(Vector2Int start) {
-//		System.out.println("\n\n" + this.toString() + "\n\n");
-//		System.out.println("Checking for cycles");
 		for(Vector2Int key : gates.keySet()) {
 			gates.get(key).getInput(GateIndex.TOP);
 			gates.get(key).getInput(GateIndex.BOTTOM);
@@ -213,7 +209,6 @@ public class LogicBoard {
 		ArrayList<Gate> discovered = new ArrayList<Gate>();
 		
 		Gate current = gates.get(start);
-//		System.out.println(start + " " + (current == null));
 		Gate candidate = current.getInput(GateIndex.TOP);
 			if(candidate != null && !discovered.contains(candidate)) {
 				discovered.add(candidate);
@@ -226,20 +221,10 @@ public class LogicBoard {
 			discovered.add(candidate);
 		}
 		
-//		System.out.println("Gates in list: " + frontier.size());
-//		for(Gate g : frontier)
-//			System.out.println(g + " at " + getPositionOfGate(g));
-		
 		while(frontier.size() > 0) {
 			current = frontier.remove(0);
-//			System.out.println("Under investigation: " + current);
+			candidate = current.getInput(GateIndex.TOP);
 
-//			if(!discovered.contains(current)) {
-				candidate = current.getInput(GateIndex.TOP);
-//			if(candidate != null) {
-//				System.out.println(getPositionOfGate(current) + " : " + current + "'s TOP is connected to "
-//						+ getPositionOfGate(candidate) + " : " + candidate);
-//			}
 			if(candidate == gates.get(start))
 				return true;
 			if(candidate != null && !discovered.contains(candidate)) {
@@ -248,22 +233,41 @@ public class LogicBoard {
 			}
 				
 			candidate = current.getInput(GateIndex.BOTTOM);
-//			if(candidate != null) {
-//				System.out.println(getPositionOfGate(current) + " : " + current + "'s BOTTOM is connected to "
-//						+ getPositionOfGate(candidate) + " : " + candidate);
-//			}
 			if(candidate == gates.get(start))
 				return true;
 			if(candidate != null && !discovered.contains(candidate)) {
 				frontier.add(candidate);
 				discovered.add(candidate);
 			}
-//			}
 		}
 		
 		return false;
 	}
-
+	
+	// HELPERS
+	
+	private Vector2Int getPositionOfGate(Gate g) {
+		for(Vector2Int key : gates.keySet())
+			if(g == gates.get(key))
+				return key;
+		System.out.println("ERROR (LogicBoard): Could not get position of gate: " + g);
+		return null;
+	}
+	
+	public boolean hasGate(Vector2Int v) { return gates.containsKey(v); }
+	
+	public Gate getGate(Vector2Int v) {
+		if(hasGate(v))
+			return gates.get(v);
+		return null;
+	}
+	
+	public TileType getGateType(Vector2Int v) {
+		if(hasGate(v))
+			return Converter.getTypeFromGate(gates.get(v));
+		return TileType.EMPTY;
+	}
+	
 	@Override
 	public String toString() {
 		String s = "Gates:\n";

@@ -58,7 +58,35 @@ public class Converter {
 		else if (gate instanceof XORgate)
 			return TileType.XOR;
 		else {
-			System.out.println("ERROR: Evaluation failed: " + gate.toString());
+			System.out.println("ERROR (Converter): Evaluation failed: " + gate.toString());
+			return null;
+		}
+	}
+
+	/**
+	 * @param temp
+	 * @param boolean1
+	 * @return
+	 */
+	public static TileType getTypeFromGate(Gate gate, boolean b) {
+		if (gate instanceof FALSEgate)
+			return TileType.FALSE;
+		else if (gate instanceof TRUEgate)
+			return TileType.TRUE;
+		else if (gate instanceof ANDgate)
+			return b ? TileType.AND_TRUE : TileType.AND_FALSE;
+		else if (gate instanceof NANDgate)
+			return b ? TileType.NAND_TRUE : TileType.NAND_FALSE;
+		else if (gate instanceof NORgate)
+			return b ? TileType.NOR_TRUE : TileType.NOR_FALSE;
+		else if (gate instanceof NOTgate)
+			return b ? TileType.NOT_TRUE : TileType.NOT_FALSE;
+		else if (gate instanceof ORgate)
+			return b ? TileType.OR_TRUE : TileType.OR_FALSE;
+		else if (gate instanceof XORgate)
+			return b ? TileType.XOR_TRUE : TileType.XOR_FALSE;
+		else {
+			System.out.println("ERROR (Converter): Evaluation failed: " + gate.toString());
 			return null;
 		}
 	}
