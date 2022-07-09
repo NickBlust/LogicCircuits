@@ -1,10 +1,1 @@
-To add a gate: 
-Choose a type of gate on the right,
-and then click on the board where you want to place it.
-
-To connect two gates:
-Simply drag a line from the output of one gate to the input of another gate,
-or from the input of one gate to the output of another gate.
-Note: One gate's output can be the input for several gates.
-
-To evaluate the output, press Edit -> Evaluate.
+Help, Eclipse keeps deleting my folder ...

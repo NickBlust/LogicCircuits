@@ -50,10 +50,10 @@ public class BoardLoader {
     				int col = fileInfo.nextInt();
     				model.addGate(g, new Vector2Int(row, col));
 	    		}
-	    		String line = fileInfo.nextLine();
-	    		while(fileInfo.hasNextLine()) {
-	    			System.out.println(fileInfo.nextLine());
-	    		}
+//	    		String line = fileInfo.nextLine();
+//	    		while(fileInfo.hasNextLine()) {
+//	    			System.out.println(fileInfo.nextLine());
+//	    		}
 	    		fileInfo.close();	
 	    		return true;
     	} catch (FileNotFoundException 

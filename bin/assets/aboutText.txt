@@ -1,9 +1,1 @@
-Logical Circuits. 
-Designed and developed by Dominik Baumann,
-   based on the group project with Philipp Grzywaczyk and Cameron McGregor.
-
-Version 2.0, July 2022.
-
-This program allows the user to graphically design logical circuits,
-by adding and connecting the standard logical gates, and evaluating the circuits
-for specified inputs.
+Stuff about this v2
