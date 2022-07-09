@@ -8,7 +8,7 @@ import gui.TiledCanvas.TileType;
 import utility.BoolGateIndexTuple;
 import utility.PositionCalculator;
 import utility.Vector2Int;
-
+import utility.Vector3Int;
 import command.*;
 import gates.GateIndex;
 
@@ -75,11 +75,11 @@ public class Controller {
 		pastCommands = new Stack<Command>();
 	}
 
-	/**
+	/** add / remove gates & add connections with left click
 	 * @param point 
 	 * 
 	 */
-	public void handleMouseClick(Vector2Int v) {
+	public void handleLeftClick(Vector2Int v) {
 		if(selectedTileToPlace == null) { return; }
 		Command c;
 		
@@ -90,6 +90,14 @@ public class Controller {
 		else // delete a tile
 			c = new RemoveGateAt(theBoard, v);
 
+		executeCommand(c);
+	}
+
+	/** remove connections with right click, if they are close to a connection
+	 * @param v
+	 */
+	public void handleRightClick(Vector2Int v) {
+		Command c = new TryToRemoveConnection(theBoard, new Vector3Int(v));
 		executeCommand(c);
 	}
 	
@@ -174,4 +182,5 @@ public class Controller {
 		}
 		return false;
 	}
+
 }

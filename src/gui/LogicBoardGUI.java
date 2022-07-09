@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import app.Controller;
 import gui.TiledCanvas.TileType;
@@ -90,7 +91,10 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
     	Vector2Int v = new Vector2Int(e.getX(), e.getY());
 		if(!positionCalculator.validateMousePosition(v)) { return; }
 		// convert mouse position to (row, column)-coordinates on the board
-    	controller.handleMouseClick(positionCalculator.mousePositionToGridCoordinates(v));
+		if(SwingUtilities.isLeftMouseButton(e))
+			controller.handleLeftClick(positionCalculator.mousePositionToGridCoordinates(v));
+		else 
+			controller.handleRightClick(v);
     	canvas.repaint();
 //    	System.out.println("Clicked at " + positionCalculator.mousePositionToGridCoordinates(v));
     }

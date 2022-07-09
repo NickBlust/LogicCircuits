@@ -6,12 +6,14 @@ package boardModel;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import app.TryToRemoveConnection;
 import gates.*;
 import gui.LogicBoardGUI;
 import gui.TiledCanvas.TileType;
 import utility.PointTuple;
 import utility.PositionCalculator;
 import utility.Vector2Int;
+import utility.Vector3Int;
 
 /**
  * @author domin
@@ -33,38 +35,23 @@ public class LogicBoard {
 	}
 	
 	// TODO: check if connections from the output are maintained
+	// NOTE null check is performed before issuing the command
 	public void addGate(Gate g, Vector2Int v) {
 		if(inEvaluatedState) { resetStatusOnBoards(); }
 		
 		if(gates.containsKey(v)) { // if there is a gate at this position
 			Gate temp = gates.get(v); // get the gate
-//			if(temp != null) {
-				////if(g != null) { // if new gate is not the empty tile keep the connections
-					/* Try setting the BOTTOM input before also trying to set the TOP input.
-					 * If we set the BOTTOM input before the TOP input,
-					 * the TOP input will be kept for NOTgates (rather than the BOTTOM input),
-					 * unless the TOP input does not exist => then the NOTgate keeps the BOTTOM input. */
-					g.setInput(temp.getInput(GateIndex.BOTTOM), GateIndex.BOTTOM);
-					Gate tempInput = temp.getInput(GateIndex.TOP);
-					if(tempInput != null)
-						g.setInput(tempInput, GateIndex.TOP);
-				////}
-					updateGateInputs(temp, g);
-//			for(Vector2Int key : gates.keySet()) {
-//				Gate target = gates.get(key);
-//				if(target.getInput(GateIndex.TOP) == temp)
-//					target.setInput(g, GateIndex.TOP);
-//				if(target.getInput(GateIndex.BOTTOM) == temp)
-//					target.setInput(g, GateIndex.BOTTOM);
-//			}
-//				else { // new gate is empty tile => remove this position from the list of gate positions
-//					System.out.println("Removing");
-//					outputGates.remove(temp);
-//					gates.remove(v, temp);
-//				}
-			}
-//		}
-		System.out.println(toString());
+			//	keep the connections
+			/* Try setting the BOTTOM input before also trying to set the TOP input.
+			 * If we set the BOTTOM input before the TOP input,
+			 * the TOP input will be kept for NOTgates (rather than the BOTTOM input),
+			 * unless the TOP input does not exist => then the NOTgate keeps the BOTTOM input. */
+			g.setInput(temp.getInput(GateIndex.BOTTOM), GateIndex.BOTTOM);
+			Gate tempInput = temp.getInput(GateIndex.TOP);
+			if(tempInput != null)
+				g.setInput(tempInput, GateIndex.TOP);
+			updateGateInputs(temp, g);
+		}
 		gates.put(v, g);
 		outputGates.add(g);
 		updateGUI();
@@ -113,11 +100,125 @@ public class LogicBoard {
 		updateGUI();
 	}
 	
-	public void removeConnection(Vector2Int fromOutput, Vector2Int toInput, GateIndex inputIndex) {
-		if(inEvaluatedState) { resetStatusOnBoards(); }
+	public boolean attemptConnectionRemoval(Vector3Int clickPos, TryToRemoveConnection command) {
+
+//		Vector3Int a = new Vector3Int(1,2,3);
+//		Vector3Int b = new Vector3Int(-2,5,1);
+//		Vector3Int target = new Vector3Int(5,7,-1);
+//		System.out.println(target.distToLine(a, b));
+		for(Vector2Int key : gates.keySet()) {
+			Gate temp = gates.get(key);
+			if(clickedCloseToConnection(clickPos, temp, key, command)) {
+				System.out.println("Cliecked near LINE");
+				if(inEvaluatedState) { resetStatusOnBoards(); } // TODO: only if this action was successful
+				return true;
+			}
+//			Gate input = temp.getInput(GateIndex.TOP);
+//			if(input != null) {
+//				Vector3Int a = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null));
+//				Vector3Int b = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.TOP));
+//				if(clickPos.nearToLineSegment(a, b, 10))
+//					System.out.println("Clicked near line");
+//			}
+//			
+//			input = temp.getInput(GateIndex.BOTTOM);
+//			if(input != null) {
+//				Vector3Int a = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null)); 
+//				Vector3Int b = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.BOTTOM));
+//				if(clickPos.nearToLineSegment(a, b, 10))
+//					System.out.println("Clicked near line");
+//			}
+		} // end for
 		
+		return false;
 	}
 
+
+	/**
+	 * @param clickPos
+	 * @param g
+	 * @param key
+	 * @return
+	 */
+	private boolean clickedCloseToConnection(Vector3Int clickPos, Gate g, Vector2Int key, TryToRemoveConnection command) {
+		for(GateIndex ind : GateIndex.values()) {
+			System.out.println(ind);
+			if(ClickedNearConnection(clickPos, g, key, ind)) {
+				command.setGate(g);
+				command.setIndex(ind);
+				command.SetInputGivingGate(g.getInput(ind));
+				return true;
+				
+			}
+		}
+		
+//		if(clickedNearTOPconnection(clickPos, g, key)) {
+//			// do command stuff
+//			command.setGate(g);
+//			command.setIndex(GateIndex.TOP);
+//			command.SetInputGivingGate(g.getInput(GateIndex.TOP));
+//			return true;
+//		}
+//		if(clickedNearBOTTOMconnection(clickPos, g, key)) {
+//			// do command stuff
+//			command.setGate(g);
+//			command.setIndex(GateIndex.TOP);
+//			command.SetInputGivingGate(g.getInput(GateIndex.TOP));
+//			command.setIndex(GateIndex.BOTTOM);
+//
+//			return true;
+//		}
+		return false;
+	}
+
+	/**
+	 * @param clickPos
+	 * @param g
+	 * @param key
+	 * @param ind 
+	 * @return
+	 */
+	private boolean ClickedNearConnection(Vector3Int clickPos, Gate g, Vector2Int key, GateIndex ind) {
+		Gate input = g.getInput(ind);
+		if(input != null) {
+			Vector3Int a = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null)); 
+			Vector3Int b = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(g), key, ind));
+			return(clickPos.nearToLineSegment(a, b, 10));
+		}
+		return false;
+	}
+
+	/**
+	 * @param clickPos
+	 * @param g
+	 * @param key
+	 * @return
+	 */
+	private boolean clickedNearBOTTOMconnection(Vector3Int clickPos, Gate g, Vector2Int key) {
+		Gate input = g.getInput(GateIndex.BOTTOM);
+		if(input != null) {
+			Vector3Int a = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null)); 
+			Vector3Int b = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(g), key, GateIndex.BOTTOM));
+			return(clickPos.nearToLineSegment(a, b, 10));
+		}
+		return false;
+	}
+
+	/**
+	 * @param clickPos
+	 * @param g
+	 * @param key
+	 * @return
+	 */
+	private boolean clickedNearTOPconnection(Vector3Int clickPos, Gate g, Vector2Int key) {
+		Gate input = g.getInput(GateIndex.TOP);
+		if(input != null) {
+			Vector3Int a = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null));
+			Vector3Int b = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(g), key, GateIndex.TOP));
+			return(clickPos.nearToLineSegment(a, b, 10));
+		}
+		return false;
+	}
 
 	public void evaluate() {
 		for(Gate g : outputGates)
@@ -222,9 +323,6 @@ public class LogicBoard {
 			testResult = hasCycle(start); // make test
 			toSetInput.setInput(oldInput, endIndex); // reset status (i.e. remove the new connection)
 		}
-		
-		if(!testResult)
-			System.out.println("No cycle found!");
 		return testResult;
 	}
 
