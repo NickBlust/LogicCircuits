@@ -25,4 +25,7 @@ public class TRUEgate extends ConstGate {
 
 	@Override
 	public void setInput(Gate g, GateIndex i) { /* do nothing */ }
+
+	@Override
+	public String name() { return "TRUE";}
 }

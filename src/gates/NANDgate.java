@@ -16,4 +16,7 @@ public class NANDgate extends InputGate {
 	protected boolean computeOutput(boolean a, boolean b) {
 		return !(a && b);
 	}
+
+	@Override
+	public String name() { return "NAND";}
 }

@@ -16,4 +16,7 @@ public class NOTgate extends InputGate {
 	protected boolean computeOutput(boolean a, boolean b) {
 		return !a;
 	}
+	
+	@Override
+	public String name() { return "NOT";}
 }

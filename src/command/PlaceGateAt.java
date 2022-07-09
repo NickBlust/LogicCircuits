@@ -5,7 +5,7 @@ package command;
 
 import boardModel.Converter;
 import boardModel.LogicBoard;
-import gui.TiledCanvas.TileType;
+import gui.TileType;
 import utility.Vector2Int;
 
 /**

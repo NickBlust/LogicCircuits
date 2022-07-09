@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import app.TryToRemoveConnection;
 import gates.*;
 import gui.LogicBoardGUI;
-import gui.TiledCanvas.TileType;
+import gui.TileType;
 import utility.PointTuple;
 import utility.PositionCalculator;
 import utility.Vector2Int;
@@ -187,10 +187,6 @@ public class LogicBoard {
 		} // end for
 		boardGUI.setTilesAndConnections(tiles, connections);
 	}
-	
-	public void setBoard(TreeMap<Vector2Int, Gate> gates_, HashMap<Gate, Integer> outputGates_) {
-		gates = gates_; outputGates = outputGates_;
-	}
 
 	/** Check if a connection would form a cycle
 	 * @param start Start coordinates of connection
@@ -340,5 +336,44 @@ public class LogicBoard {
 		for(Gate g : outputGates.keySet())
 			outputGatesCopy.add(g);
 		return outputGatesCopy;
+	}
+
+	/**
+	 * @return The number of gates in the model
+	 */
+	public int numberOfGates() { return gates.size(); }
+
+	/**
+	 * @return
+	 */
+	public String toStorageString() {
+		String s = "";
+		for(Vector2Int key : gates.keySet()) {
+			if(key == gates.lastKey())
+				break;
+			s += gates.get(key).name() + " " + key.x + " " + key.y + "\n"; 
+		}
+		s += gates.lastEntry().getValue().name() + " " + gates.lastKey().x + " " + gates.lastKey().y + "\n"; 
+		
+		for(Vector2Int key : gates.keySet()) {
+			for(GateIndex ind : GateIndex.values()) {
+				Gate g = gates.get(key).getInput(ind);
+				if(g != null) {
+					Vector2Int inPos = getPositionOfGate(g);
+					s += inPos.x + " " + inPos.y + " " + key.x + " " + key.y + " " + ind + "\n";
+				} 
+			}
+//			Gate top = gates.get(key).getInput(GateIndex.TOP);
+//			if(top != null) {
+//				Vector2Int inPos = getPositionOfGate(top);
+//				s += inPos.x + " " + inPos.y + " " + key.x + " " + key.y + " " + "TOP";
+//			}
+//			Gate bottom = gates.get(key).getInput(GateIndex.BOTTOM);
+//			if(bottom != null) {
+//				Vector2Int inPos = getPositionOfGate(bottom);
+//				s += inPos.x + " " + inPos.y + " " + key.x + " " + key.y + " " + "BOTTOM";
+//			}
+		}
+		return s;
 	}
 }

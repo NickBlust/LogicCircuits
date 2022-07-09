@@ -15,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import app.Controller;
-import gui.TiledCanvas.TileType;
 
 /**
  * @author domin

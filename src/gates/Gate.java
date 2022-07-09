@@ -16,6 +16,8 @@ package gates;
  * @see ConstGate
  */
 public abstract class Gate {
+	public abstract String name();
+	
 	/** Compute the output truth value of this gate, 
 	 * depending on the type of gate and its input gates/values.
 	 * If an input gate is not set to an object (i.e. is null),

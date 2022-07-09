@@ -16,7 +16,6 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import app.Controller;
-import gui.TiledCanvas.TileType;
 import utility.PointTuple;
 import utility.PositionCalculator;
 import utility.Vector2Int;
@@ -39,6 +38,9 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	 */
 	private final int TILE_WIDTH = 64;
 	private final int TILE_HEIGHT = 64;
+	
+	private final int DEFAULT_BOARD_WIDTH = 8;
+	private final int DEFAULT_BOARD_HEIGHT = 5;
 	
 	private int boardWidth = 8;
 	private int boardHeight = 5;
@@ -147,6 +149,10 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 //		System.out.println("Setting stuff to draw");
 	}
 	
+	public void setDimensions(int rows, int cols) {
+		boardWidth = (cols >= 2 ? cols : 2); 
+		boardHeight = (rows >= 2 ? rows : 2);
+	}
 	
 	// HELPERS
 	public int getBoardGUIWidth() { return boardWidth; }

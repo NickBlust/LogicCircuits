@@ -4,7 +4,7 @@
 package utility;
 
 import gates.GateIndex;
-import gui.TiledCanvas.TileType;
+import gui.TileType;
 
 /**
  * @author domin

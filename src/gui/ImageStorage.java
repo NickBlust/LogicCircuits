@@ -10,8 +10,6 @@ import java.util.EnumMap;
 
 import javax.imageio.ImageIO;
 
-import gui.TiledCanvas.TileType;
-
 /**
  * @author domin
  *
