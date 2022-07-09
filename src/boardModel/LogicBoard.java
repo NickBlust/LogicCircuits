@@ -4,6 +4,7 @@
 package boardModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 
 import app.TryToRemoveConnection;
@@ -24,14 +25,14 @@ public class LogicBoard {
 	LogicBoardGUI boardGUI;
 	PositionCalculator positionCalculator; // TODO get this from gui, rather than over instructor
 	TreeMap<Vector2Int, Gate> gates;
-	ArrayList<Gate> outputGates;
+	HashMap<Gate, Integer> outputGates;
 	boolean inEvaluatedState = false;
 	
 	public LogicBoard(LogicBoardGUI gui_) {
 		boardGUI = gui_;
 		positionCalculator = boardGUI.getPositionCalculatorFromGUI();
 		gates = new TreeMap<Vector2Int, Gate>();
-		outputGates = new ArrayList<Gate>();
+		outputGates = new HashMap<Gate, Integer>();
 	}
 	
 	// TODO: check if connections from the output are maintained
@@ -53,14 +54,14 @@ public class LogicBoard {
 			updateGateInputs(temp, g);
 		}
 		gates.put(v, g);
-		outputGates.add(g);
+		addOutputGate(g);
 		updateGUI();
 	}
 
 	public void removeGate(Vector2Int v) {
 		if(inEvaluatedState) { resetStatusOnBoards(); }
 		Gate g = gates.get(v);
-		outputGates.remove(g);
+		removeOutputGate(g);
 		gates.remove(v, g);
 		updateGateInputs(g, null);
 		updateGUI();
@@ -75,10 +76,10 @@ public class LogicBoard {
 	private void updateGateInputs(Gate from, Gate to) {
 		for(Vector2Int key : gates.keySet()) {
 			Gate target = gates.get(key);
-			if(target.getInput(GateIndex.TOP) == from)
-				target.setInput(to, GateIndex.TOP);
-			if(target.getInput(GateIndex.BOTTOM) == from)
-				target.setInput(to, GateIndex.BOTTOM);
+			for(GateIndex ind : GateIndex.values()) {
+				if(target.getInput(ind) == from)
+					target.setInput(to, ind);
+			}
 		}
 	}
 	
@@ -91,84 +92,53 @@ public class LogicBoard {
 		if(inEvaluatedState) { resetStatusOnBoards(); }
 		
 		Gate givingOutput = gates.get(fromOutput);
-		outputGates.remove(givingOutput);
+		addOutputGate(givingOutput);
 		gates.get(toInput).setInput(givingOutput, inputIndex);
-		System.out.println("Connected gate at " + fromOutput + " with gate at " + toInput + " ("
-				+ inputIndex + ")");
-		for(Gate g : outputGates)
-			System.out.println(g);
 		updateGUI();
 	}
 	
-	public boolean attemptConnectionRemoval(Vector3Int clickPos, TryToRemoveConnection command) {
-
-//		Vector3Int a = new Vector3Int(1,2,3);
-//		Vector3Int b = new Vector3Int(-2,5,1);
-//		Vector3Int target = new Vector3Int(5,7,-1);
-//		System.out.println(target.distToLine(a, b));
-		for(Vector2Int key : gates.keySet()) {
-			Gate temp = gates.get(key);
-			if(clickedCloseToConnection(clickPos, temp, key, command)) {
-				System.out.println("Cliecked near LINE");
-				if(inEvaluatedState) { resetStatusOnBoards(); } // TODO: only if this action was successful
-				return true;
-			}
-//			Gate input = temp.getInput(GateIndex.TOP);
-//			if(input != null) {
-//				Vector3Int a = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null));
-//				Vector3Int b = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.TOP));
-//				if(clickPos.nearToLineSegment(a, b, 10))
-//					System.out.println("Clicked near line");
-//			}
-//			
-//			input = temp.getInput(GateIndex.BOTTOM);
-//			if(input != null) {
-//				Vector3Int a = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null)); 
-//				Vector3Int b = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.BOTTOM));
-//				if(clickPos.nearToLineSegment(a, b, 10))
-//					System.out.println("Clicked near line");
-//			}
-		} // end for
-		
-		return false;
+	/**
+	 * @param g
+	 */
+	private void removeOutputGate(Gate g) {
+		if(outputGates.get(g) > 1)
+			outputGates.put(g, outputGates.get(g) - 1);		
+		else if(outputGates.get(g) == 1)
+			outputGates.remove(g);
+		else {
+			System.out.println("ERROR (LogicBoard): something went wrong with the outputgates: " 
+		+ "g serves as output for " + outputGates.get(g) + " gate(s)");
+		}
 	}
-
+	
 
 	/**
-	 * @param clickPos
 	 * @param g
-	 * @param key
-	 * @return
 	 */
-	private boolean clickedCloseToConnection(Vector3Int clickPos, Gate g, Vector2Int key, TryToRemoveConnection command) {
-		for(GateIndex ind : GateIndex.values()) {
-			System.out.println(ind);
-			if(ClickedNearConnection(clickPos, g, key, ind)) {
-				command.setGate(g);
-				command.setIndex(ind);
-				command.SetInputGivingGate(g.getInput(ind));
-				return true;
-				
+	private void addOutputGate(Gate g) {
+		if(!outputGates.containsKey(g))
+			outputGates.put(g, 1);
+		else
+			outputGates.put(g, outputGates.get(g) + 1);
+	}
+
+	public boolean attemptConnectionRemoval(Vector3Int clickPos, TryToRemoveConnection command) {
+		for(Vector2Int key : gates.keySet()) {
+			Gate temp = gates.get(key);
+
+			// check both inputs
+			for(GateIndex ind : GateIndex.values()) {
+				if(ClickedNearConnection(clickPos, temp, key, ind)) {
+					command.setInfo(temp, ind,  temp.getInput(ind));
+					removeOutputGate(temp.getInput(ind));
+					temp.setInput(null, ind); // actually remove connection
+					if(inEvaluatedState) { resetStatusOnBoards(); } // TODO: only if this action was successful
+					updateGUI();
+					return true;					
+				}
 			}
 		}
-		
-//		if(clickedNearTOPconnection(clickPos, g, key)) {
-//			// do command stuff
-//			command.setGate(g);
-//			command.setIndex(GateIndex.TOP);
-//			command.SetInputGivingGate(g.getInput(GateIndex.TOP));
-//			return true;
-//		}
-//		if(clickedNearBOTTOMconnection(clickPos, g, key)) {
-//			// do command stuff
-//			command.setGate(g);
-//			command.setIndex(GateIndex.TOP);
-//			command.SetInputGivingGate(g.getInput(GateIndex.TOP));
-//			command.setIndex(GateIndex.BOTTOM);
-//
-//			return true;
-//		}
-		return false;
+		return false; // right click was not near any connection
 	}
 
 	/**
@@ -188,40 +158,8 @@ public class LogicBoard {
 		return false;
 	}
 
-	/**
-	 * @param clickPos
-	 * @param g
-	 * @param key
-	 * @return
-	 */
-	private boolean clickedNearBOTTOMconnection(Vector3Int clickPos, Gate g, Vector2Int key) {
-		Gate input = g.getInput(GateIndex.BOTTOM);
-		if(input != null) {
-			Vector3Int a = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null)); 
-			Vector3Int b = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(g), key, GateIndex.BOTTOM));
-			return(clickPos.nearToLineSegment(a, b, 10));
-		}
-		return false;
-	}
-
-	/**
-	 * @param clickPos
-	 * @param g
-	 * @param key
-	 * @return
-	 */
-	private boolean clickedNearTOPconnection(Vector3Int clickPos, Gate g, Vector2Int key) {
-		Gate input = g.getInput(GateIndex.TOP);
-		if(input != null) {
-			Vector3Int a = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null));
-			Vector3Int b = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(g), key, GateIndex.TOP));
-			return(clickPos.nearToLineSegment(a, b, 10));
-		}
-		return false;
-	}
-
 	public void evaluate() {
-		for(Gate g : outputGates)
+		for(Gate g : outputGates.keySet())
 			g.output();
 		
 		inEvaluatedState = true;
@@ -234,69 +172,24 @@ public class LogicBoard {
 	private void updateGUI() {
 		TreeMap<Vector2Int, TileType> tiles = new TreeMap<Vector2Int, TileType>();
 		ArrayList<PointTuple> connections = new ArrayList<PointTuple>();
-		System.out.println(gates.keySet().size());
 		for(Vector2Int key : gates.keySet()) {
 			Gate temp = gates.get(key);
 			tiles.put(key, Converter.getTypeFromGate(temp));
 				
-				
-			
-			Gate input = temp.getInput(GateIndex.TOP);
-			if(input != null) {
-				System.out.println(input + " " + getPositionOfGate(input) + " was input for " + temp + " " + getPositionOfGate(temp));
-				connections.add(new PointTuple(
-						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
-						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.TOP)));
-			}
-			input = temp.getInput(GateIndex.BOTTOM);
-			if(input != null) {
-				connections.add(new PointTuple(
-						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
-						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.BOTTOM)));
+			for(GateIndex ind : GateIndex.values())  {
+				Gate input = temp.getInput(ind);
+				if(input != null) {
+					connections.add(new PointTuple(
+							positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
+							positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, ind)));
+				}
 			}
 		} // end for
 		boardGUI.setTilesAndConnections(tiles, connections);
 	}
 	
-	public void setBoard(TreeMap<Vector2Int, Gate> gates_, ArrayList<Gate> outputGates_) {
+	public void setBoard(TreeMap<Vector2Int, Gate> gates_, HashMap<Gate, Integer> outputGates_) {
 		gates = gates_; outputGates = outputGates_;
-	}
-	
-	public void test() {
-		TRUEgate t = new TRUEgate();
-		FALSEgate f = new FALSEgate();
-//		ANDgate g1 = new ANDgate();
-		ORgate g2 = new ORgate();
-		ORgate g3 = new ORgate();
-		ORgate g4 = new ORgate();
-		
-		addGate(t, new Vector2Int(1,2));
-		addGate(f, new Vector2Int(1,3));
-//		addGate(g1, new Vector2Int(4,3));
-		addGate(g2, new Vector2Int(4,2));
-		addGate(g3, new Vector2Int(6,1));
-		addGate(g4, new Vector2Int(2,4));
-		
-//		g1.setInput(t, GateIndex.TOP);
-//		g1.setInput(f, GateIndex.BOTTOM);
-		
-//		g2.setInput(t, GateIndex.TOP);
-//		g2.setInput(f, GateIndex.BOTTOM);
-		g2.setInput(g3, GateIndex.TOP);
-		g3.setInput(g2, GateIndex.BOTTOM);		
-//		g4.setInput(g2, GateIndex.BOTTOM);		
-		hasCycle(new Vector2Int(4,2));
-		updateGUI();
-//		System.out.println(g1.output());
-//		System.out.println(g2.output());
-		
-//		g1.setInput(t, GateIndex.BOTTOM);
-//		g2.setInput(f, GateIndex.TOP);
-//
-//		System.out.println(g1.output());
-//		System.out.println(g2.output());
-//		
-//		System.out.println(t.getClass().toString());
 	}
 
 	/** Check if a connection would form a cycle
@@ -340,35 +233,25 @@ public class LogicBoard {
 		ArrayList<Gate> discovered = new ArrayList<Gate>();
 		
 		Gate current = gates.get(start);
-		Gate candidate = current.getInput(GateIndex.TOP);
+		Gate candidate;
+		for(GateIndex ind : GateIndex.values()) {
+			candidate = current.getInput(ind);
 			if(candidate != null && !discovered.contains(candidate)) {
 				discovered.add(candidate);
 				frontier.add(candidate);
 			}
-			
-		candidate = current.getInput(GateIndex.BOTTOM);
-		if(candidate != null && !discovered.contains(candidate)) {
-			frontier.add(candidate);
-			discovered.add(candidate);
 		}
 		
 		while(frontier.size() > 0) {
 			current = frontier.remove(0);
-			candidate = current.getInput(GateIndex.TOP);
-
-			if(candidate == gates.get(start))
-				return true;
-			if(candidate != null && !discovered.contains(candidate)) {
-				frontier.add(candidate);
-				discovered.add(candidate);
-			}
-				
-			candidate = current.getInput(GateIndex.BOTTOM);
-			if(candidate == gates.get(start))
-				return true;
-			if(candidate != null && !discovered.contains(candidate)) {
-				frontier.add(candidate);
-				discovered.add(candidate);
+			for(GateIndex ind : GateIndex.values()) {
+				candidate = current.getInput(ind);
+				if(candidate == gates.get(start))
+					return true;			
+				if(candidate != null && !discovered.contains(candidate)) {
+					discovered.add(candidate);
+					frontier.add(candidate);
+				}
 			}
 		}
 		
@@ -431,11 +314,11 @@ public class LogicBoard {
 	 */
 	public void reset() {
 		gates = new TreeMap<Vector2Int, Gate>();
-		outputGates = new ArrayList<Gate>();
+		outputGates = new HashMap<Gate, Integer>();
 		updateGUI();
 	}
 	
-	public void setGates(TreeMap<Vector2Int, Gate> gates_, ArrayList<Gate> outputGates_) {
+	public void setGates(TreeMap<Vector2Int, Gate> gates_, HashMap<Gate, Integer> outputGates_) {
 		gates = gates_; outputGates = outputGates_;
 	}
 
@@ -454,7 +337,7 @@ public class LogicBoard {
 	 */
 	public ArrayList<Gate> getOutputGates() {
 		ArrayList<Gate> outputGatesCopy = new ArrayList<Gate>();
-		for(Gate g : outputGates)
+		for(Gate g : outputGates.keySet())
 			outputGatesCopy.add(g);
 		return outputGatesCopy;
 	}

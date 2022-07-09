@@ -3,10 +3,15 @@
  */
 package gui;
 
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -24,10 +29,26 @@ public class LogicBoardMenu extends JMenuBar {
 	private static final long serialVersionUID = 1L;
 	
 	Controller controller;
+	JFrame helpWindow;
+	JFrame aboutWindow;
+	String helpText;
+	String aboutText;
 	
+	// TODO refactor the stuff in the constructor
 	public LogicBoardMenu(Controller controller_) {
 		controller = controller_;
-        
+    	try {
+			helpText = Files.readString(Path.of("bin\\assets\\helpText.txt"));
+		} catch (IOException e1) {
+			helpText = "Failed to load \'Help\' text"; 
+			e1.printStackTrace();
+		}
+    	try {
+			aboutText = Files.readString(Path.of("bin\\assets\\aboutText.txt"));
+		} catch (IOException e1) {
+			aboutText = "Failed to load \'About\' text"; 
+			e1.printStackTrace();
+		}
 		
 		// FILE MENU => Load / Save Files
 		JMenu fileMenu = new JMenu("File");
@@ -91,7 +112,7 @@ public class LogicBoardMenu extends JMenuBar {
         	public void actionPerformed(ActionEvent e) {
         		EventQueue.invokeLater(new Runnable()
                 { @Override
-                    public void run() { /*showInformationAboutProgram();*/ } });
+                    public void run() { showInformationAboutProgram(); } });
         	}
         });
         
@@ -101,14 +122,21 @@ public class LogicBoardMenu extends JMenuBar {
         	public void actionPerformed(ActionEvent e) {
         		EventQueue.invokeLater(new Runnable()
                 { @Override
-                    public void run() { /*openHelpMenu();*/ } }); }
+                    public void run() { openHelpMenu(); } }); }
         });    
     }
 	
 	// TODO
-	// private void openHelpMenu() {}
+	private void openHelpMenu() { // TODO: complete help text
+		if(helpWindow != null) // only allow one open help window at a time
+			helpWindow.dispatchEvent(new WindowEvent(helpWindow, WindowEvent.WINDOW_CLOSING));
+		helpWindow = new InfoWindow("Help", 700, 250, helpText);
+	}
 	
 	// TODO
-	// private void showInformationAboutProgram() {}
-	
+	private void showInformationAboutProgram() {
+		if(aboutWindow != null) // only allow one open about window at a time
+			aboutWindow.dispatchEvent(new WindowEvent(aboutWindow, WindowEvent.WINDOW_CLOSING));
+        aboutWindow = new InfoWindow("About", 700, 220, aboutText);
+	}
 }

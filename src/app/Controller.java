@@ -40,7 +40,6 @@ public class Controller {
 		theGUI = new LogicBoardGUI(this);
 		positionCalculator = theGUI.getPositionCalculatorFromGUI();
 		theBoard = new LogicBoard(theGUI);
-//		theBoard.test();
 	}
 
 	/**
@@ -151,36 +150,28 @@ public class Controller {
 		Vector2Int endCoord = positionCalculator.mousePositionToGridCoordinates(v); // end of line
 		TileType t = theBoard.getGateType(endCoord); // Tile at end of line
 		
-		if(t != TileType.EMPTY && !startCoord.equals(endCoord)) {
-			GateIndex endIndex = null;
-			// hit an input or output on another gate?
-			BoolGateIndexTuple preliminaryResult = positionCalculator.validEndPositionOnTile(t, v, endCoord);
-			if(!preliminaryResult.key())
-				return false;
-			endIndex = preliminaryResult.value();
-			
-			// check if we are connecting from an input to an output or vice versa,
-			// i.e. do not allow connections from one input to another input etc.
-			GateIndex startIndex = positionCalculator
-					.getGateIndexFromPositionOnTile(theBoard.getGateType(startCoord), start);
-//			System.out.println("Comparing " + theBoard.getGateType(startCoord) + " index " 
-//					+ startIndex + " at " + startCoord + "  with  " 
-//					+ t + " index " + endIndex + " at " + endCoord);
-			if(startIndex == null && !(endIndex == GateIndex.TOP || endIndex == GateIndex.BOTTOM)) {
-				System.out.println("1");				
-				return false;
-			}
-			else if(startIndex != null && endIndex != null) {
-				System.out.println("2");				
-				return false;
-			}
-			
-			
-			// check if we would form a cycle
-			return !theBoard.formsCycle(startCoord, endCoord, startIndex, endIndex);
-			
-		}
-		return false;
+		if(t == TileType.EMPTY || startCoord.equals(endCoord)) 
+			return false;
+
+		GateIndex endIndex = null;
+		// hit an input or output on another gate?
+		BoolGateIndexTuple preliminaryResult = positionCalculator.validEndPositionOnTile(t, v, endCoord);
+		if(!preliminaryResult.key())
+			return false;
+		endIndex = preliminaryResult.value();
+		
+		// check if we are connecting from an input to an output or vice versa,
+		// i.e. do not allow connections from one input to another input etc.
+		GateIndex startIndex = positionCalculator
+				.getGateIndexFromPositionOnTile(theBoard.getGateType(startCoord), start);
+		if(startIndex == null && !(endIndex == GateIndex.TOP || endIndex == GateIndex.BOTTOM)) 
+			return false; 
+		else if(startIndex != null && endIndex != null) 
+			return false;
+		
+		
+		// check if we would form a cycle
+		return !theBoard.formsCycle(startCoord, endCoord, startIndex, endIndex);
 	}
 
 }

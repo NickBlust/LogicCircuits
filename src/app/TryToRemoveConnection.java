@@ -36,8 +36,9 @@ public class TryToRemoveConnection implements Command {
 		return result;
 	}
 	
-	public void setGate(Gate g) { getsInput = g; }
-	public void setIndex(GateIndex i) { index = i; }
-	public void SetInputGivingGate(Gate g) { providesInput = g; }
-	
+	public void setInfo(Gate receivesInput, GateIndex ind, Gate providesInput_) {
+		getsInput = receivesInput;
+		index = ind;
+		providesInput = providesInput_;
+	}
 }
