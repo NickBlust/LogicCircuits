@@ -4,7 +4,7 @@
 package app;
 
 import gui.LogicBoardGUI;
-import gui.TiledCanvas.TileType;
+import gui.TileType;
 import utility.BoolGateIndexTuple;
 import utility.PositionCalculator;
 import utility.Vector2Int;
@@ -46,16 +46,15 @@ public class Controller {
 	 * 
 	 */
 	public void clickedSave() {
-		// TODO Auto-generated method stub
-		
+		BoardSaver.save(theBoard, theGUI.getBoardGUIWidth(), theGUI.getBoardGUIHeight());
 	}
 
 	/**
 	 * 
 	 */
 	public void clickedLoad() {
-		// TODO Auto-generated method stub
-		pastCommands = new Stack<Command>();		
+		if(BoardLoader.load(theBoard, theGUI))
+			pastCommands = new Stack<Command>();		
 	}
 
 	/**
