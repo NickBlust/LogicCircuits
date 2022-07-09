@@ -23,12 +23,17 @@ import boardModel.LogicBoard;
 public class Controller {
 	LogicBoardGUI theGUI;
 	LogicBoard theBoard;
-	public TileType selectedTileToPlace = TileType.OR;
+	public TileType selectedTileToPlace = TileType.EMPTY;
 	
 	Stack<Command> pastCommands;
 	PositionCalculator positionCalculator;
 	
 	public Controller() { }
+	
+	private void executeCommand(Command c) {
+		if(c.execute())
+			pastCommands.add(c);
+	}
 	
 	public void start() {
 		pastCommands = new Stack<Command>();
@@ -51,30 +56,41 @@ public class Controller {
 	 */
 	public void clickedLoad() {
 		// TODO Auto-generated method stub
-		
+		pastCommands = new Stack<Command>();		
 	}
 
 	/**
 	 * 
 	 */
 	public void resetBoard() {
-		// TODO Auto-generated method stub
-		
+		Command c = new ResetBoard(theBoard);
+		executeCommand(c);
 	}
 
 	/**
 	 * 
 	 */
-	public void evaluateCircuits() { theBoard.evaluate(); }
+	public void evaluateCircuits() { 
+		theBoard.evaluate(); 
+		pastCommands = new Stack<Command>();
+	}
 
 	/**
 	 * @param point 
 	 * 
 	 */
 	public void handleMouseClick(Vector2Int v) {
-		Command c = new PlaceTileAt(theBoard, v, selectedTileToPlace);
-		if(c.execute())
-			pastCommands.add(c);	
+		if(selectedTileToPlace == null) { return; }
+		Command c;
+		
+		if (selectedTileToPlace != TileType.EMPTY)
+			c = new PlaceGateAt(theBoard, v, selectedTileToPlace);
+		else if(!theBoard.hasGate(v))
+			return; // nothing to do
+		else // delete a tile
+			c = new RemoveGateAt(theBoard, v);
+
+		executeCommand(c);
 	}
 	
 	/**
@@ -96,8 +112,7 @@ public class Controller {
 			c = new ConnectGates(theBoard, startCoord, endCoord, index);
 		}
 
-		if(c.execute())
-			pastCommands.add(c);
+		executeCommand(c);
 	}
 
 	/**

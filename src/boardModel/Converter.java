@@ -41,6 +41,9 @@ public class Converter {
 	 * @return
 	 */
 	public static TileType getTypeFromGate(Gate gate) {
+		if(gate == null)
+			return TileType.EMPTY;
+		
 		Status s = gate.status();
 		if (gate instanceof FALSEgate)
 			return TileType.FALSE;

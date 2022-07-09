@@ -12,7 +12,7 @@ import utility.Vector2Int;
  * @author domin
  *
  */
-public class PlaceTileAt implements Command {
+public class PlaceGateAt implements Command {
 
 	LogicBoard model;
 	Vector2Int v;
@@ -22,7 +22,7 @@ public class PlaceTileAt implements Command {
 	 * @param point
 	 * @param selectedTileToPlace
 	 */
-	public PlaceTileAt(LogicBoard model_, Vector2Int v_, TileType type_) {
+	public PlaceGateAt(LogicBoard model_, Vector2Int v_, TileType type_) {
 		model = model_; v = v_; type = type_;
 	}
 

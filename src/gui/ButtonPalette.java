@@ -3,6 +3,7 @@
  */
 package gui;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -29,6 +30,7 @@ public class ButtonPalette extends JPanel {
 
 	private ImageStorage images;
 	private Controller controller;
+	private int indexOfLastSelectedTile = 0;
 	
 	public ButtonPalette(ImageStorage imageStorage, Controller controller_) {
 		images = imageStorage;
@@ -72,7 +74,17 @@ public class ButtonPalette extends JPanel {
         	tileButtons[i].addActionListener(new ActionListener(){  
         		@Override
         		public void actionPerformed(ActionEvent e){  
-    	            controller.selectedTileToPlace = tileTypes[k]; } });  
+        			tileButtons[indexOfLastSelectedTile].setBackground(null);
+        			controller.selectedTileToPlace = tileTypes[k];
+        			if(k == indexOfLastSelectedTile) {
+        				controller.selectedTileToPlace = null;
+        			}
+        			else {
+        				indexOfLastSelectedTile = k;
+        				tileButtons[indexOfLastSelectedTile].setBackground(Color.ORANGE);        				
+        			}
+    	            
+        		} });  
         	this.add(tileButtons[i], new GBConstraints(0, i, 5));
         }
     }

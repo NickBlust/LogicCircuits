@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import gates.*;
-import gates.GateIndex;
 import gui.LogicBoardGUI;
 import gui.TiledCanvas.TileType;
 import utility.PointTuple;
@@ -33,22 +32,39 @@ public class LogicBoard {
 		outputGates = new ArrayList<Gate>();
 	}
 	
+	// TODO: check if connections from the output are maintained
 	public void addGate(Gate g, Vector2Int v) {
 		if(inEvaluatedState) { resetStatusOnBoards(); }
 		
-		if(gates.containsKey(v)) { // keep connections when replacing gates
-			Gate temp = gates.get(v);
-			if(temp != null) {
-				/* Try setting the BOTTOM input before also trying to set the TOP input.
-				 * If we set the BOTTOM input before the TOP input,
-				 * the TOP input will be kept for NOTgates (rather than the BOTTOM input),
-				 * unless the TOP input does not exist => then the NOTgate keeps the BOTTOM input. */
-				g.setInput(temp.getInput(GateIndex.BOTTOM), GateIndex.BOTTOM);
-				Gate tempInput = temp.getInput(GateIndex.TOP);
-				if(tempInput != null)
-					g.setInput(tempInput, GateIndex.TOP);
+		if(gates.containsKey(v)) { // if there is a gate at this position
+			Gate temp = gates.get(v); // get the gate
+//			if(temp != null) {
+				////if(g != null) { // if new gate is not the empty tile keep the connections
+					/* Try setting the BOTTOM input before also trying to set the TOP input.
+					 * If we set the BOTTOM input before the TOP input,
+					 * the TOP input will be kept for NOTgates (rather than the BOTTOM input),
+					 * unless the TOP input does not exist => then the NOTgate keeps the BOTTOM input. */
+					g.setInput(temp.getInput(GateIndex.BOTTOM), GateIndex.BOTTOM);
+					Gate tempInput = temp.getInput(GateIndex.TOP);
+					if(tempInput != null)
+						g.setInput(tempInput, GateIndex.TOP);
+				////}
+					updateGateInputs(temp, g);
+//			for(Vector2Int key : gates.keySet()) {
+//				Gate target = gates.get(key);
+//				if(target.getInput(GateIndex.TOP) == temp)
+//					target.setInput(g, GateIndex.TOP);
+//				if(target.getInput(GateIndex.BOTTOM) == temp)
+//					target.setInput(g, GateIndex.BOTTOM);
+//			}
+//				else { // new gate is empty tile => remove this position from the list of gate positions
+//					System.out.println("Removing");
+//					outputGates.remove(temp);
+//					gates.remove(v, temp);
+//				}
 			}
-		}
+//		}
+		System.out.println(toString());
 		gates.put(v, g);
 		outputGates.add(g);
 		updateGUI();
@@ -56,6 +72,27 @@ public class LogicBoard {
 
 	public void removeGate(Vector2Int v) {
 		if(inEvaluatedState) { resetStatusOnBoards(); }
+		Gate g = gates.get(v);
+		outputGates.remove(g);
+		gates.remove(v, g);
+		updateGateInputs(g, null);
+		updateGUI();
+	}
+	
+	/** 
+	 * Checks all gates on the board if they have "from" as an input,
+	 * and if so, replace that input with "to".
+	 * @param from
+	 * @param to
+	 */
+	private void updateGateInputs(Gate from, Gate to) {
+		for(Vector2Int key : gates.keySet()) {
+			Gate target = gates.get(key);
+			if(target.getInput(GateIndex.TOP) == from)
+				target.setInput(to, GateIndex.TOP);
+			if(target.getInput(GateIndex.BOTTOM) == from)
+				target.setInput(to, GateIndex.BOTTOM);
+		}
 	}
 	
 	/**
@@ -96,6 +133,7 @@ public class LogicBoard {
 	private void updateGUI() {
 		TreeMap<Vector2Int, TileType> tiles = new TreeMap<Vector2Int, TileType>();
 		ArrayList<PointTuple> connections = new ArrayList<PointTuple>();
+		System.out.println(gates.keySet().size());
 		for(Vector2Int key : gates.keySet()) {
 			Gate temp = gates.get(key);
 			tiles.put(key, Converter.getTypeFromGate(temp));
@@ -104,6 +142,7 @@ public class LogicBoard {
 			
 			Gate input = temp.getInput(GateIndex.TOP);
 			if(input != null) {
+				System.out.println(input + " " + getPositionOfGate(input) + " was input for " + temp + " " + getPositionOfGate(temp));
 				connections.add(new PointTuple(
 						positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
 						positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, GateIndex.TOP)));
@@ -116,6 +155,10 @@ public class LogicBoard {
 			}
 		} // end for
 		boardGUI.setTilesAndConnections(tiles, connections);
+	}
+	
+	public void setBoard(TreeMap<Vector2Int, Gate> gates_, ArrayList<Gate> outputGates_) {
+		gates = gates_; outputGates = outputGates_;
 	}
 	
 	public void test() {
@@ -283,5 +326,38 @@ public class LogicBoard {
 				s += gates.get(key) + " at " + getPositionOfGate(gates.get(key)) + " connects to " + getPositionOfGate(bottom) + " " + Converter.getTypeFromGate(bottom) + " " + bottom + " via BOTTOM\n";
 		}
 		return s;
+	}
+
+	/**
+	 * 
+	 */
+	public void reset() {
+		gates = new TreeMap<Vector2Int, Gate>();
+		outputGates = new ArrayList<Gate>();
+		updateGUI();
+	}
+	
+	public void setGates(TreeMap<Vector2Int, Gate> gates_, ArrayList<Gate> outputGates_) {
+		gates = gates_; outputGates = outputGates_;
+	}
+
+	/**
+	 * @return
+	 */
+	public TreeMap<Vector2Int, Gate> getGates() {
+		TreeMap<Vector2Int, Gate> gatesCopy = new TreeMap<Vector2Int, Gate>();
+		for(Vector2Int key : gates.keySet())
+			gatesCopy.put(key, gates.get(key));
+		return gatesCopy;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList<Gate> getOutputGates() {
+		ArrayList<Gate> outputGatesCopy = new ArrayList<Gate>();
+		for(Gate g : outputGates)
+			outputGatesCopy.add(g);
+		return outputGatesCopy;
 	}
 }

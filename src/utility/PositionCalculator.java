@@ -144,7 +144,8 @@ public class PositionCalculator {
 	public Vector2Int getLinePoint(TileType t, Vector2Int coord, GateIndex index) {
 	
 		// if not and not null => not input
-		if(t == TileType.NOT && index != null) {
+		if((t == TileType.NOT || t == TileType.NOT_TRUE || t == TileType.NOT_FALSE) && index != null) {
+			System.out.println("Drawing line at NOT gate input");
 			return new Vector2Int(tileWidth * coord.x + 5, tileHeight * coord.y + (tileHeight / 2));
 		}
 		// else if not TRUE and not FALSE and not null => Bottom or Top input
