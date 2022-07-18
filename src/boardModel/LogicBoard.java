@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-import app.TryToRemoveConnection;
+import command.TryToRemoveConnection;
 import gates.*;
 import gui.LogicBoardGUI;
 import gui.TileType;

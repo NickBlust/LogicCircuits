@@ -150,8 +150,8 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	}
 	
 	public void setDimensions(int rows, int cols) {
-		boardWidth = (cols >= 2 ? cols : 2); 
-		boardHeight = (rows >= 2 ? rows : 2);
+		boardWidth = (cols >= 2 ? cols : DEFAULT_BOARD_WIDTH); 
+		boardHeight = (rows >= 2 ? rows : DEFAULT_BOARD_HEIGHT);
 	}
 	
 	// HELPERS

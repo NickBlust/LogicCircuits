@@ -1,10 +1,9 @@
 /**
  * 
  */
-package app;
+package command;
 
 import boardModel.LogicBoard;
-import command.Command;
 import gates.Gate;
 import gates.GateIndex;
 import utility.Vector3Int;
