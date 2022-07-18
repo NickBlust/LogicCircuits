@@ -33,20 +33,24 @@ public class Controller {
 	public int numberOfUndoableCommands() { return pastCommands.size(); }
 	
 	private void executeCommand(Command c) {
-		if(c.execute())
+		if(c.execute()) {
 			pastCommands.add(c);
+			theGUI.updateUndoMenu(pastCommands.size());
+		}
 	}
 	
 	public void undoCommand() {
 		if(pastCommands.size() > 0) {
 			Command c = pastCommands.pop();
 			c.undo();
+			theGUI.updateUndoMenu(pastCommands.size());
 		}
 	}
 	
 	public void start() {
 		pastCommands = new Stack<Command>();
 		theGUI = new LogicBoardGUI(this);
+		theGUI.updateUndoMenu(pastCommands.size());
 		positionCalculator = theGUI.getPositionCalculatorFromGUI();
 		theBoard = new LogicBoard(theGUI);
 	}
@@ -63,8 +67,13 @@ public class Controller {
 	 */
 	public void clickedLoad() {
 		resetBoard();
-		if(BoardLoader.load(theBoard, theGUI))
-			pastCommands = new Stack<Command>();		
+		if(BoardLoader.load(theBoard, theGUI)) {
+			
+			pastCommands = new Stack<Command>();
+			theGUI.updateUndoMenu(pastCommands.size());
+		}
+		else // if loading fails, undo resetting the board 
+			undoCommand();
 	}
 
 	/**

@@ -42,6 +42,6 @@ public class TryToRemoveConnection implements Command {
 
 	@Override
 	public void undo() {
-		model.addConnection(null, null, index);
+		model.addConnection(getsInput, index, providesInput);
 	}
 }

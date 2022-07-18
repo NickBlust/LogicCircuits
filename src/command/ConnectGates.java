@@ -31,7 +31,7 @@ public class ConnectGates implements Command {
 	@Override
 	public boolean execute() {
 		model.addConnection(fromOutput, toInput, inputIndex);
-		return false;
+		return true;
 	}
 
 	@Override

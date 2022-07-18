@@ -34,6 +34,8 @@ public class LogicBoardMenu extends JMenuBar {
 	String helpText;
 	String aboutText;
 	
+	JMenuItem menuItem_Undo;
+	
 	// TODO refactor the stuff in the constructor
 	public LogicBoardMenu(Controller controller_) {
 		controller = controller_;
@@ -81,7 +83,7 @@ public class LogicBoardMenu extends JMenuBar {
         JMenu editMenu = new JMenu("Edit");
         this.add(editMenu);
 
-        JMenuItem menuItem_Undo = new JMenuItem("Undo");
+        menuItem_Undo = new JMenuItem("Undo");
         editMenu.add(menuItem_Undo);
         menuItem_Undo.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -155,5 +157,9 @@ public class LogicBoardMenu extends JMenuBar {
 		if(aboutWindow != null) // only allow one open about window at a time
 			aboutWindow.dispatchEvent(new WindowEvent(aboutWindow, WindowEvent.WINDOW_CLOSING));
         aboutWindow = new InfoWindow("About", 700, 220, aboutText);
+	}
+	
+	public void updateUndoMenu(int undoCount) {
+		menuItem_Undo.setEnabled(undoCount > 0);
 	}
 }

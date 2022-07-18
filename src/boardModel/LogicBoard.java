@@ -11,6 +11,7 @@ import command.TryToRemoveConnection;
 import gates.*;
 import gui.LogicBoardGUI;
 import gui.TileType;
+import utility.GateWithIndexTuple;
 import utility.PointTuple;
 import utility.PositionCalculator;
 import utility.Vector2Int;
@@ -63,13 +64,14 @@ public class LogicBoard {
 		updateGUI();
 	}
 
-	public void removeGate(Vector2Int v) {
+	public ArrayList<GateWithIndexTuple> removeGate(Vector2Int v) {
 		if(inEvaluatedState) { resetStatusOnBoards(); }
 		Gate g = gates.get(v);
 		removeOutputGate(g);
 		gates.remove(v, g);
-		updateGateInputs(g, null);
+		ArrayList<GateWithIndexTuple> receivers = updateGateInputs(g, null);
 		updateGUI();
+		return receivers;
 	}
 	
 	/** 
@@ -78,14 +80,19 @@ public class LogicBoard {
 	 * @param from
 	 * @param to
 	 */
-	private void updateGateInputs(Gate from, Gate to) {
+	private ArrayList<GateWithIndexTuple> updateGateInputs(Gate from, Gate to) {
+		// store gates which are having "from" as input
+		ArrayList<GateWithIndexTuple> receivers = new ArrayList<GateWithIndexTuple>();
 		for(Vector2Int key : gates.keySet()) {
 			Gate target = gates.get(key);
 			for(GateIndex ind : GateIndex.values()) {
-				if(target.getInput(ind) == from)
+				if(target.getInput(ind) == from) {
 					target.setInput(to, ind);
+					receivers.add(new GateWithIndexTuple(target, ind));
+				}
 			}
 		}
+		return receivers;
 	}
 	
 	/**
@@ -105,6 +112,7 @@ public class LogicBoard {
 	public void addConnection(Gate receivesInput, GateIndex ind, Gate providesInput) {
 		if(inEvaluatedState) { resetStatusOnBoards(); }
 		receivesInput.setInput(providesInput, ind);
+		updateGUI();
 	}
 	
 	/**
@@ -138,7 +146,7 @@ public class LogicBoard {
 
 			// check both inputs
 			for(GateIndex ind : GateIndex.values()) {
-				if(ClickedNearConnection(clickPos, temp, key, ind)) {
+				if(clickedNearConnection(clickPos, temp, key, ind)) {
 					command.setInfo(temp, ind,  temp.getInput(ind));
 					removeOutputGate(temp.getInput(ind));
 					temp.setInput(null, ind); // actually remove connection
@@ -153,6 +161,7 @@ public class LogicBoard {
 	
 	public void removeConnection(Vector2Int pos, GateIndex ind) {
 		gates.get(pos).setInput(null, ind);
+		updateGUI();
 	}
 
 	/**
@@ -162,7 +171,7 @@ public class LogicBoard {
 	 * @param ind 
 	 * @return
 	 */
-	private boolean ClickedNearConnection(Vector3Int clickPos, Gate g, Vector2Int key, GateIndex ind) {
+	private boolean clickedNearConnection(Vector3Int clickPos, Gate g, Vector2Int key, GateIndex ind) {
 		Gate input = g.getInput(ind);
 		if(input != null) {
 			Vector3Int a = new Vector3Int(positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null)); 

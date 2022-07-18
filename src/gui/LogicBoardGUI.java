@@ -48,7 +48,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	Controller controller;
 	ImageStorage images;
 	TiledCanvas canvas;
-	JMenuBar menuBar;
+	LogicBoardMenu menuBar;
 	ButtonPalette buttonPalette;
 	PositionCalculator positionCalculator;
 
@@ -157,6 +157,14 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	public void setDimensions(int rows, int cols) {
 		boardWidth = (cols >= 2 ? cols : DEFAULT_BOARD_WIDTH); 
 		boardHeight = (rows >= 2 ? rows : DEFAULT_BOARD_HEIGHT);
+	}
+	
+	
+	// I considered handling this via events, 
+	// but thats seems unnecessarily complicated for
+	// what we are trying to achieve
+	public void updateUndoMenu(int undoCount) {
+		menuBar.updateUndoMenu(undoCount);
 	}
 	
 	// HELPERS
