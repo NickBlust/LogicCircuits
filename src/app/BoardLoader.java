@@ -3,6 +3,8 @@
  */
 package app;
 
+import java.awt.EventQueue;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -13,6 +15,7 @@ import boardModel.Converter;
 import boardModel.LogicBoard;
 import gates.Gate;
 import gates.GateIndex;
+import gui.InfoWindow;
 import gui.LogicBoardGUI;
 import utility.Vector2Int;
 
@@ -21,6 +24,8 @@ import utility.Vector2Int;
  *
  */
 public class BoardLoader {
+	
+	static InfoWindow loadingFailedWindow;
 	
 	public static boolean load(LogicBoard model, LogicBoardGUI gui) {
 		JFileChooser chooser = new JFileChooser();
@@ -62,7 +67,15 @@ public class BoardLoader {
     			| java.lang.NullPointerException 
     			| java.util.NoSuchElementException ex) {
     		// TODO open window with error message but do nothing else
+    		EventQueue.invokeLater(new Runnable()
+            { @Override public void run() { openLoadingFailedWindow(); } });    		
 			return false;
     	}
+	}
+
+	private static void openLoadingFailedWindow() {
+		if(loadingFailedWindow != null) // only allow one open help window at a time
+			loadingFailedWindow.dispatchEvent(new WindowEvent(loadingFailedWindow, WindowEvent.WINDOW_CLOSING));
+		loadingFailedWindow = new InfoWindow("Saving Failed", 400, 120, "  Loading the board failed ... \n  Please make sure that the file is a .txt-file \n  and has the correct formatting!");
 	}
 }
