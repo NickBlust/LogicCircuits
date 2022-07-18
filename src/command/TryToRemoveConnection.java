@@ -31,13 +31,17 @@ public class TryToRemoveConnection implements Command {
 
 	@Override
 	public boolean execute() {
-		boolean result = model.attemptConnectionRemoval(pos, this);
-		return result;
+		return model.attemptConnectionRemoval(pos, this);
 	}
 	
 	public void setInfo(Gate receivesInput, GateIndex ind, Gate providesInput_) {
 		getsInput = receivesInput;
 		index = ind;
 		providesInput = providesInput_;
+	}
+
+	@Override
+	public void undo() {
+		model.addConnection(null, null, index);
 	}
 }

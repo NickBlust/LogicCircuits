@@ -74,7 +74,7 @@ public class TiledCanvas extends JPanel {
     {
     	int columns = boardGUI.getBoardGUIWidth();
     	int rows = boardGUI.getBoardGUIHeight();
-        Graphics2D g2 = (Graphics2D) g;
+    	Graphics2D g2 = (Graphics2D) g;
 		for (int i = 0; i < columns; i++) {
             for (int k = 0; k < rows; k++) {
             	g2.drawImage(emptyTileImage, 

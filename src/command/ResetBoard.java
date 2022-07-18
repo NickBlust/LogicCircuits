@@ -3,7 +3,7 @@
  */
 package command;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.TreeMap;
 
 import boardModel.LogicBoard;
@@ -18,7 +18,7 @@ public class ResetBoard implements Command {
 
 	LogicBoard board;
 	TreeMap<Vector2Int, Gate> gates_;
-	ArrayList<Gate> outputGates_;
+	HashMap<Gate, Integer> outputGates_;
 	
 	public ResetBoard(LogicBoard someBoard) {
 		board = someBoard;
@@ -30,5 +30,10 @@ public class ResetBoard implements Command {
 	public boolean execute() {
 		board.reset();
 		return true;
+	}
+
+	@Override
+	public void undo() {
+		board.setGates(gates_, outputGates_);
 	}
 }

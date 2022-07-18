@@ -102,6 +102,11 @@ public class LogicBoard {
 		updateGUI();
 	}
 	
+	public void addConnection(Gate receivesInput, GateIndex ind, Gate providesInput) {
+		if(inEvaluatedState) { resetStatusOnBoards(); }
+		receivesInput.setInput(providesInput, ind);
+	}
+	
 	/**
 	 * @param g
 	 */
@@ -112,7 +117,7 @@ public class LogicBoard {
 			outputGates.remove(g);
 		else {
 			System.out.println("ERROR (LogicBoard): something went wrong with the outputgates: " 
-		+ "g serves as output for " + outputGates.get(g) + " gate(s)");
+					+ "g serves as output for " + outputGates.get(g) + " gate(s)");
 		}
 	}
 	
@@ -144,6 +149,10 @@ public class LogicBoard {
 			}
 		}
 		return false; // right click was not near any connection
+	}
+	
+	public void removeConnection(Vector2Int pos, GateIndex ind) {
+		gates.get(pos).setInput(null, ind);
 	}
 
 	/**
@@ -177,10 +186,14 @@ public class LogicBoard {
 	private void updateGUI() {
 		TreeMap<Vector2Int, TileType> tiles = new TreeMap<Vector2Int, TileType>();
 		ArrayList<PointTuple> connections = new ArrayList<PointTuple>();
+		Vector2Int dim = new Vector2Int(0, 0);
 		for(Vector2Int key : gates.keySet()) {
 			Gate temp = gates.get(key);
 			tiles.put(key, Converter.getTypeFromGate(temp));
-				
+			
+			dim.x = (dim.x < key.x ? key.x : dim.x);
+			dim.y = (dim.y < key.y ? key.y : dim.y);
+			
 			for(GateIndex ind : GateIndex.values())  {
 				Gate input = temp.getInput(ind);
 				if(input != null) {
@@ -190,6 +203,7 @@ public class LogicBoard {
 				}
 			}
 		} // end for
+		boardGUI.updateDimensions(dim);
 		boardGUI.setTilesAndConnections(tiles, connections);
 	}
 
@@ -314,13 +328,18 @@ public class LogicBoard {
 	 * 
 	 */
 	public void reset() {
+		// reset model
 		gates = new TreeMap<Vector2Int, Gate>();
 		outputGates = new HashMap<Gate, Integer>();
-		updateGUI();
+
+		// reset gui
+		boardGUI.setDimensions(-1, -1);
+		boardGUI.setTilesAndConnections(new TreeMap<Vector2Int, TileType>(), new ArrayList<PointTuple>());
 	}
 	
 	public void setGates(TreeMap<Vector2Int, Gate> gates_, HashMap<Gate, Integer> outputGates_) {
 		gates = gates_; outputGates = outputGates_;
+		updateGUI();
 	}
 
 	/**
@@ -336,10 +355,10 @@ public class LogicBoard {
 	/**
 	 * @return
 	 */
-	public ArrayList<Gate> getOutputGates() {
-		ArrayList<Gate> outputGatesCopy = new ArrayList<Gate>();
+	public HashMap<Gate, Integer> getOutputGates() {
+		HashMap<Gate, Integer> outputGatesCopy = new HashMap<Gate, Integer>();
 		for(Gate g : outputGates.keySet())
-			outputGatesCopy.add(g);
+			outputGatesCopy.put(g,outputGates.get(g));
 		return outputGatesCopy;
 	}
 

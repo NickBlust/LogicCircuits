@@ -73,7 +73,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
 
-        positionCalculator = new PositionCalculator(TILE_WIDTH, TILE_HEIGHT, boardWidth, boardHeight);
+        positionCalculator = new PositionCalculator(TILE_WIDTH, TILE_HEIGHT, this);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
@@ -147,6 +147,11 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 		canvas.connectionsToDraw = connections;
 		repaint();
 //		System.out.println("Setting stuff to draw");
+	}
+	
+	public void updateDimensions(Vector2Int dim) {
+		if(boardWidth == dim.x + 1) { boardWidth++; }
+		if(boardHeight == dim.y + 1) { boardHeight++; }
 	}
 	
 	public void setDimensions(int rows, int cols) {

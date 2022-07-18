@@ -34,4 +34,9 @@ public class ConnectGates implements Command {
 		return false;
 	}
 
+	@Override
+	public void undo() {
+		model.removeConnection(toInput, inputIndex);	
+	}
+
 }

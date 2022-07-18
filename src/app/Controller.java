@@ -30,9 +30,18 @@ public class Controller {
 	
 	public Controller() { }
 	
+	public int numberOfUndoableCommands() { return pastCommands.size(); }
+	
 	private void executeCommand(Command c) {
 		if(c.execute())
 			pastCommands.add(c);
+	}
+	
+	public void undoCommand() {
+		if(pastCommands.size() > 0) {
+			Command c = pastCommands.pop();
+			c.undo();
+		}
 	}
 	
 	public void start() {
@@ -53,6 +62,7 @@ public class Controller {
 	 * 
 	 */
 	public void clickedLoad() {
+		resetBoard();
 		if(BoardLoader.load(theBoard, theGUI))
 			pastCommands = new Stack<Command>();		
 	}

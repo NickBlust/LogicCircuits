@@ -32,4 +32,9 @@ public class PlaceGateAt implements Command {
 		return true;
 	}
 
+	@Override
+	public void undo() {
+		model.removeGate(v);		
+	}
+
 }

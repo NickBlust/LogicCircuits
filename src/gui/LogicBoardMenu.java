@@ -80,6 +80,23 @@ public class LogicBoardMenu extends JMenuBar {
         // 				3) undo / redo placement of gates or connections // TODO
         JMenu editMenu = new JMenu("Edit");
         this.add(editMenu);
+
+        JMenuItem menuItem_Undo = new JMenuItem("Undo");
+        editMenu.add(menuItem_Undo);
+        menuItem_Undo.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		controller.undoCommand();
+        	}
+        });
+        
+        // TODO
+//        JMenuItem menuItem_Redo = new JMenuItem("Redo");
+//        editMenu.add(menuItem_Redo);
+//        menuItem_Redo.addActionListener(new ActionListener() {
+//        	public void actionPerformed(ActionEvent e) {
+//        		controller.redoCommand();
+//        	}
+//        });
         
         JMenuItem menuItem_ResetBoard = new JMenuItem("Reset Board");
         editMenu.add(menuItem_ResetBoard);

@@ -23,8 +23,12 @@ public class RemoveGateAt implements Command {
 	@Override
 	public boolean execute() {
 		model.removeGate(pos);
-		System.out.println("Blubbing");
 		return true;
+	}
+
+	@Override
+	public void undo() {
+		model.addGate(removedGate, pos);
 	}
 
 }

@@ -4,6 +4,7 @@
 package utility;
 
 import gates.GateIndex;
+import gui.LogicBoardGUI;
 import gui.TileType;
 
 /**
@@ -16,14 +17,16 @@ public class PositionCalculator {
 	
 	private int tileWidth;
 	private int tileHeight;
-	private int boardWidth;
-	private int boardHeight;
+	private LogicBoardGUI gui;
+//	private int boardWidth;
+//	private int boardHeight;
 	
-	public PositionCalculator(int tileWidth_, int tileHeight_, int boardWidth_, int boardHeight_) {
+	public PositionCalculator(int tileWidth_, int tileHeight_, LogicBoardGUI gui_) {
 		tileWidth = tileWidth_;
 		tileHeight = tileHeight_;
-		boardWidth = boardWidth_;
-		boardHeight = boardHeight_;
+		gui = gui_;
+//		boardWidth = boardWidth_;
+//		boardHeight = boardHeight_;
 	}
 	
 	public Vector2Int mousePositionToGridCoordinates(Vector2Int pos) {
@@ -96,7 +99,7 @@ public class PositionCalculator {
 	
 	
 	public boolean validateMousePosition(Vector2Int v) {
-		if(boardWidth * tileWidth < v.x || boardHeight * tileHeight < v.y)
+		if(gui.getBoardGUIWidth()* tileWidth < v.x || gui.getBoardGUIHeight() * tileHeight < v.y)
 			return false;
 		return true;
 	}
