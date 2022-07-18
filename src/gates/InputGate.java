@@ -24,6 +24,7 @@ public abstract class InputGate extends Gate {
 	 * @param g The new gate whose output value is to be input.
 	 * @param i The identifier of the gate which should be changed. Does nothing if the identifier is not valid.
 	 */
+	@Override
 	public void setInput(Gate g, GateIndex i) { inputs.put(i, g); }
 	
 	@Override

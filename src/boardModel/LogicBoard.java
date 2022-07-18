@@ -47,7 +47,12 @@ public class LogicBoard {
 			 * If we set the BOTTOM input before the TOP input,
 			 * the TOP input will be kept for NOTgates (rather than the BOTTOM input),
 			 * unless the TOP input does not exist => then the NOTgate keeps the BOTTOM input. */
+			// maintain the BOTTOM input
 			g.setInput(temp.getInput(GateIndex.BOTTOM), GateIndex.BOTTOM);
+			
+			// if the TOP input exists, maintain it
+			// Checking the existence of this input guarantees that
+			// an existing input to a NOT gate is not replaced by null (no input)
 			Gate tempInput = temp.getInput(GateIndex.TOP);
 			if(tempInput != null)
 				g.setInput(tempInput, GateIndex.TOP);

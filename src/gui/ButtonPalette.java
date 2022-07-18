@@ -29,7 +29,11 @@ public class ButtonPalette extends JPanel {
 
 	private ImageStorage images;
 	private Controller controller;
-	private int indexOfLastSelectedTile = 0;
+	
+	/** TODO: explain why this has to start as -1
+	 * 
+	 */
+	private int indexOfLastSelectedTile = -1;
 	
 	public ButtonPalette(ImageStorage imageStorage, Controller controller_) {
 		images = imageStorage;
@@ -72,17 +76,24 @@ public class ButtonPalette extends JPanel {
         	tileButtons[i].setText(buttonTexts[i]);
         	tileButtons[i].addActionListener(new ActionListener(){  
         		@Override
-        		public void actionPerformed(ActionEvent e){  
-        			tileButtons[indexOfLastSelectedTile].setBackground(null);
-        			controller.selectedTileToPlace = tileTypes[k];
-        			if(k == indexOfLastSelectedTile) {
-        				controller.selectedTileToPlace = null;
-        			}
-        			else {
+        		public void actionPerformed(ActionEvent e){
+        			// if no button selected = select it and color the button
+        			// if button is selected => deselect it and uncolor the button
+        			// if last selected button was now clicked button = don't reselect        			
+        			if(controller.selectedTileToPlace == null) {
         				indexOfLastSelectedTile = k;
-        				tileButtons[indexOfLastSelectedTile].setBackground(Color.ORANGE);        				
+        				controller.selectedTileToPlace = tileTypes[k];
+        				tileButtons[k].setBackground(Color.ORANGE);
         			}
-    	            
+        			else { // selectedTileToPlace != null => deselect
+        				tileButtons[indexOfLastSelectedTile].setBackground(null);
+        				controller.selectedTileToPlace = null;
+        				if(k != indexOfLastSelectedTile) { // try selecting new Tile
+            				indexOfLastSelectedTile = k;
+            				tileButtons[k].setBackground(Color.ORANGE);
+            				controller.selectedTileToPlace = tileTypes[k];
+        				} // end inner if
+        			} // end if/else
         		} });  
         	this.add(tileButtons[i], new GBConstraints(0, i, 5));
         }

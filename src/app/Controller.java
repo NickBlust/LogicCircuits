@@ -23,7 +23,7 @@ import boardModel.LogicBoard;
 public class Controller {
 	LogicBoardGUI theGUI;
 	LogicBoard theBoard;
-	public TileType selectedTileToPlace = TileType.EMPTY;
+	public TileType selectedTileToPlace = null;//TileType.EMPTY;
 	
 	Stack<Command> pastCommands;
 	PositionCalculator positionCalculator;
