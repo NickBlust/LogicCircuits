@@ -1,11 +1,9 @@
-/**
- * 
- */
 package gates;
 
 
 /**
  * @author Dominik Baumann, Philipp Grzywaczyk
+ * @version 2, July 2022
  * This gate always returns true!
  * Use this internally for user input.
  */

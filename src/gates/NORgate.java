@@ -1,11 +1,9 @@
-/**
- * 
- */
 package gates;
 
 /**
  * This gate returns true iff all input values are false.
  * @author Dominik Baumann, Philipp Grzywaczyk
+ * @version 2, July 2022
  */
 public class NORgate extends InputGate {
 

@@ -1,11 +1,9 @@
-/**
- * 
- */
 package gates;
 
 /**
  * This gate returns true iff one input value is true and the other is false.
  * @author Dominik Baumann, Philipp Grzywaczyk
+ * @version 2, July 2022
  */
 public class XORgate extends InputGate {
 

@@ -1,11 +1,8 @@
-/**
- * 
- */
 package gates;
 
 /**
- * @author domin
- *
+ * @author Dominik Baumann
+ * @version 2, July 2022
  */
 
 public enum Status {

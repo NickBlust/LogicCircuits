@@ -24,16 +24,16 @@ public class Controller {
 	
 	/**	The view / GUI displaying the {@link app.Controller#theBoard model}
 	 * of a {@link boardModel.LogicBoard Logic Circuit Board}. */
-	LogicBoardGUI theGUI;
+	private LogicBoardGUI theGUI;
 	
 	/**	The internal representation / model of a {@link boardModel.LogicBoard Logic Circuit Board}. */
-	LogicBoard theBoard;
+	private LogicBoard theBoard;
 	
 	/**	Provides a method for saving the current model as a .txt-file. */
-	BoardLoader boardLoader;
+	private BoardLoader boardLoader;
 	
 	/**	Provides a method for loading a model from a .txt-file. */
-	BoardSaver boardSaver;
+	private BoardSaver boardSaver;
 	
 	/**	What is the current type of {@link gates.Gate Gate} to be added to the model?
 	 * Equals "null" if no tile is to be placed when clicking on the GUI. 
@@ -66,8 +66,12 @@ public class Controller {
 	 * <li> when a board is successfully loaded from a file.
 	 * </ol>
 	 */
-	Stack<Command> pastCommands;
-	PositionCalculator positionCalculator;
+	private Stack<Command> pastCommands;
+	
+	/** Allows verification of positions on the visualization 
+	 * of the board and individual tiles / gates.
+	 */
+	private PositionCalculator positionCalculator;
 	
 	/** The constructor sets up the GUI and model, as well as any other required internals. */
 	public Controller() { 

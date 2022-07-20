@@ -1,11 +1,9 @@
-/**
- * 
- */
 package gates;
 
 /**
  * This gate returns true iff not all input values are true.
  * @author Dominik Baumann, Philipp Grzywaczyk
+ * @version 2, July 2022
  */
 public class NANDgate extends InputGate {
 

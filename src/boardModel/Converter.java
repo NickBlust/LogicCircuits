@@ -1,6 +1,3 @@
-/**
- * 
- */
 package boardModel;
 
 import gates.*;

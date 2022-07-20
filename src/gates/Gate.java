@@ -4,18 +4,24 @@
 package gates;
 
 /** 
- * @author Dominik Baumann, Philipp Grzywaczyk
- * @version 2, July 2022
  * Abstract class for representing a generic logic gate.
  * Any gate needs to be able to compute its output value.
  * For the purpose of computing the output value, each gate can get
  * one or more inputs from other gates (unless it is a {@link gates.ConstGate constant gate}).
+ * <p>
  *    ==> Input is not given as booleans, but as Gate!
+ * <p>
  *    ==> Missing input gates are treated as false!
+ * @author Dominik Baumann, Philipp Grzywaczyk
+ * @version 2, July 2022
  * @see InputGate
  * @see ConstGate
  */
 public abstract class Gate {
+	/** Each gate has a name,e.g. objects of type 
+	 * {@link gates.ANDgate ANDgate} will be referred to by "AND".
+	 * @return The name of this gate.
+	 */
 	public abstract String name();
 	
 	/** Compute the output truth value of this gate, 
@@ -40,11 +46,22 @@ public abstract class Gate {
 	 */
 	public abstract void setInput(Gate g, GateIndex i);
 	
+	/** The status of a gate is relevant for displayint it in the GUI. */
 	private Status status = Status.UNEVALUATED;
 	
+	/**
+	 * @return The Status of this gate.
+	 */
 	public Status status() { return status; }
 	
+	/** Reset the status to {@link gates.Status#UNEVALUATED UNEVALUATED}. */
 	public void resetStatus() { status = Status.UNEVALUATED; }
 	
+	/** Set the status of this gate to 
+	 * {@link gates.Status#TRUE TRUE} or 
+	 * {@link gates.Status#FALSE FALSE} depending
+	 * on its truth value in the current evaluation.
+	 * @param b The current truth value of this gates output.
+	 */
 	protected void setStatus(boolean b) { status = (b ? Status.TRUE : Status.FALSE); }
 }

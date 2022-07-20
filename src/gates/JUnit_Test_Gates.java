@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gates;
 
 import org.junit.After;
@@ -10,8 +7,9 @@ import org.junit.Test;
 import junit.framework.TestCase;
 
 /**
- * @author Dominik Baumann
  * This class tests the functionality of all gates.
+ * @author Dominik Baumann
+ * @version 2, July 2022
  * @see Gate
  */
 public class JUnit_Test_Gates extends TestCase {

@@ -1,11 +1,9 @@
-/**
- * 
- */
 package gates;
 
 /**
  * This gate returns true iff all input values are true.
  * @author Dominik Baumann, Philipp Grzywaczyk
+ * @version 2, July 2022
  */
 public class ANDgate extends InputGate {
 

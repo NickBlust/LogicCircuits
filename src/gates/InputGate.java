@@ -1,13 +1,11 @@
-/**
- * 
- */
 package gates;
 
 import java.util.EnumMap;
 
 /**
  * Inherit from this class for gates which have one or more input gates.
- * @author Dominik Baumann
+ * @author Dominik Baumann, Philipp Grzywaczyk
+ * @version 2, July 2022
  */
 public abstract class InputGate extends Gate {
 	
@@ -34,13 +32,25 @@ public abstract class InputGate extends Gate {
 		return result;
 	}
 	
+	/** Use this function to compute the truth value of a gate
+	 * (which depends on the type of gate).
+	 * @param a One input value of the gate (usually TOP).
+	 * @param b One input value of the gate (usually BOTTOM).
+	 * @return The truth value of the gates for the given input.
+	 */
 	protected abstract boolean computeOutput(boolean a, boolean b);
 	
+	/**
+	 * @return The Input value specified by index {@link gates.GateIndex#TOP TOP}.
+	 */
 	protected boolean topInput() {
 		try { return inputs.get(GateIndex.TOP).output();
 		} catch (NullPointerException e) { return false; }
 	}
 	
+	/**
+	 * @return The Input value specified by index {@link gates.GateIndex#BOTTOM BOTTOM}.
+	 */
 	protected boolean bottomInput() {
 		try { return inputs.get(GateIndex.BOTTOM).output();
 		} catch (NullPointerException e) { return false; }

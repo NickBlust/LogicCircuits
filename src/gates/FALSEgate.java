@@ -1,12 +1,10 @@
-/**
- * 
- */
 package gates;
 
 /**
- * @author Dominik Baumann, Philipp Grzywaczyk
  * This gate always returns false!
- * Use this internally for user input.
+ * <p> Use this internally for user input.
+ * @author Dominik Baumann, Philipp Grzywaczyk
+ * @version 2, July 2022
  */
 public class FALSEgate extends ConstGate {
 
