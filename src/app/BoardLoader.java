@@ -20,14 +20,27 @@ import gui.LogicBoardGUI;
 import utility.Vector2Int;
 
 /**
- * @author domin
- *
+ * @author Dominik Baumann
+ * @version 2, July 2022
+ * <p>
+ * This class provides the functionality to load a given
+ * {@link boardModel.LogicBoard LogicBoard} from a .txt-file
+ * with proper formatting. The proper formatting is described in 
+ * {@link app.BoardSaver BoardSaver}.
  */
 public class BoardLoader {
 	
-	static InfoWindow loadingFailedWindow;
+	/** A small window displaying a message that loading the board failed. */
+	InfoWindow loadingFailedWindow;
 	
-	public static boolean load(LogicBoard model, LogicBoardGUI gui) {
+	/** Load a logic circuit model from a .txt-file.
+	 * Failure to load the board will open a window with an error message.
+	 * @param model The {@link boardModel.LogicBoard LogicBoard}-Model the information
+	 * from the file will be applied to.
+	 * @param gui The {@link gui.LogicBoardGUI GUI} which is to display the loaded model.
+	 * @return "true" if loading was successful, false otherwise.
+	 */
+	public boolean load(LogicBoard model, LogicBoardGUI gui) {
 		JFileChooser chooser = new JFileChooser();
     	chooser.showOpenDialog(null);
     	
@@ -66,15 +79,15 @@ public class BoardLoader {
     	} catch (FileNotFoundException 
     			| java.lang.NullPointerException 
     			| java.util.NoSuchElementException ex) {
-    		// TODO open window with error message but do nothing else
+    		// open window with error message but do nothing else
     		EventQueue.invokeLater(new Runnable()
             { @Override public void run() { openLoadingFailedWindow(); } });    		
 			return false;
     	}
 	}
-
-	private static void openLoadingFailedWindow() {
-		if(loadingFailedWindow != null) // only allow one open help window at a time
+	/** Open a small window displaying a message that saving the board failed. */
+	private void openLoadingFailedWindow() {
+		if(loadingFailedWindow != null) // only allow one open window at a time
 			loadingFailedWindow.dispatchEvent(new WindowEvent(loadingFailedWindow, WindowEvent.WINDOW_CLOSING));
 		loadingFailedWindow = new InfoWindow("Saving Failed", 400, 120, "  Loading the board failed ... \n  Please make sure that the file is a .txt-file \n  and has the correct formatting!");
 	}

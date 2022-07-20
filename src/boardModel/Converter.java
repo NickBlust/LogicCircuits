@@ -7,15 +7,21 @@ import gates.*;
 import gui.TileType;
 
 /**
- * @author domin
- *
+ * @author Dominik Baumann
+ * @version 2, July 2022
+ * <p>
+ * Helper class which is used for example when loading a board from a file,
+ * or when determining which version of a tile / gate to display in the GUI.
  */
 public class Converter {
 	
-	public static Gate getGateFromType(TileType t) {
-		return getGateFromName(t.toString());
-	}
 	
+	/** When loading a board from a file,
+	 * we need to be able to convert a String representation of
+	 * a gate into an actual gate.
+	 * @param name Name of the desired gate
+	 * @return A new Gate object matching the name (or null if no proper name was given).
+	 */
 	public static Gate getGateFromName(String name) {
 		if(name.equals("EMPTY"))
 			return null;
@@ -41,9 +47,24 @@ public class Converter {
 		}
 	}
 	
-	/**
-	 * @param gate
-	 * @return
+	/** Get the proper (unevaluated) {@link gates.Gate Gate}
+	 *  for a certain {@link gui.TileType TileType}.
+	 * @param t Type of tile to be converted to a Gate.
+	 * @return A {@link gates.Gate Gate} represented by the input type.
+	 */
+	public static Gate getGateFromType(TileType t) {
+		return getGateFromName(t.toString());
+	}
+	
+	/** Uses:
+	 * <p>
+	 * For computing valid input / output positions and
+	 * connection lines, it is necessary to know the type of {@link gates.Gate Gate}.
+	 * <p>
+	 * The GUI needs to know which version of a tile / gate to display.
+	 * @param gate A gate whose type we want to know.
+	 * @return The {@link gui.TileType type of tile} representing this 
+	 * {@link gates.Gate Gate}.
 	 */
 	public static TileType getTypeFromGate(Gate gate) {
 		if(gate == null)
@@ -86,7 +107,7 @@ public class Converter {
 			return TileType.XOR;
 		}
 		else {
-			System.out.println("ERROR (Converter): Evaluation failed: " + gate.toString() + " with status: " + s);
+			System.out.println("ERROR (Converter): Conversion failed: " + gate.toString() + " with status: " + s);
 			return null;
 		}
 	}

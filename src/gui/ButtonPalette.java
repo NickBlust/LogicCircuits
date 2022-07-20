@@ -80,18 +80,18 @@ public class ButtonPalette extends JPanel {
         			// if no button selected = select it and color the button
         			// if button is selected => deselect it and uncolor the button
         			// if last selected button was now clicked button = don't reselect        			
-        			if(controller.selectedTileToPlace == null) {
+        			if(controller.isSelectedTileToPlace(null)) {
         				indexOfLastSelectedTile = k;
-        				controller.selectedTileToPlace = tileTypes[k];
+        				controller.setSelectedTileToPlace(tileTypes[k]);
         				tileButtons[k].setBackground(Color.ORANGE);
         			}
         			else { // selectedTileToPlace != null => deselect
         				tileButtons[indexOfLastSelectedTile].setBackground(null);
-        				controller.selectedTileToPlace = null;
+        				controller.setSelectedTileToPlace(null);
         				if(k != indexOfLastSelectedTile) { // try selecting new Tile
             				indexOfLastSelectedTile = k;
             				tileButtons[k].setBackground(Color.ORANGE);
-            				controller.selectedTileToPlace = tileTypes[k];
+            				controller.setSelectedTileToPlace(tileTypes[k]);
         				} // end inner if
         			} // end if/else
         		} });  

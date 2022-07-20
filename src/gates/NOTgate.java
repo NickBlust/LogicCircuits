@@ -19,6 +19,7 @@ public class NOTgate extends InputGate {
 	
 	@Override
 	public void setInput(Gate g, GateIndex i) {
+		if(g == null) { return; }
 		if(i.equals(GateIndex.TOP)) {
 			inputs.put(i, g); 
 			inputs.put(GateIndex.BOTTOM, null);

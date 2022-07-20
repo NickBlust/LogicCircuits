@@ -28,6 +28,11 @@ public class Vector2Int implements Comparable<Vector2Int> {
 		return v.x == x && v.y == y;
 	}
 	
+	public void componentwiseMaximum(Vector2Int a) {
+		x = x > a.x ? x : a.x;
+		y = y > a.y ? y : a.y;
+	}
+	
 	@Override
 	public int compareTo(Vector2Int v) {
         int retVal = x - v.x;

@@ -35,8 +35,8 @@ public class RemoveGateAt implements Command {
 	public void undo() {
 		model.addGate(removedGate, pos);
 		for(int i = 0; i < oldConnections.size(); i++) {
-			model.addConnection(oldConnections.get(i).gate, oldConnections.get(i).ind, removedGate);
+			model.addConnection(pos, model.getPositionOfGate(oldConnections.get(i).gate),
+					oldConnections.get(i).ind);
 		}
 	}
-
 }
