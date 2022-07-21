@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gui;
 
 import java.awt.BorderLayout;
@@ -11,17 +8,19 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
-/**
- * @author domin
- *
+/** A generic window which only displays a text.
+ * @author Dominik Baumann
+ * @version 2, July 2022
  */
 public class InfoWindow extends JFrame {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
+	/** Constructor for a window with a given name, width, height
+	 * containing a given text.
+	 * @param windowName The name of the window / frame.
+	 * @param width The width of the window / frame.
+	 * @param height The height of the window / frame.
+	 * @param infoText The text to be displayed in the window / frame.
+	 */
 	public InfoWindow(String windowName, int width, int height, String infoText) {
 		setTitle(windowName);
 		setPreferredSize(new Dimension(width, height));
@@ -37,4 +36,7 @@ public class InfoWindow extends JFrame {
 		setLocationByPlatform(true);
 		setVisible(true);
 	}
+	
+	/** This is just here because Eclipse complained about it. */
+	private static final long serialVersionUID = 1L;
 }

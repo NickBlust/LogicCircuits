@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gui;
 
 import java.awt.Color;
@@ -16,25 +13,47 @@ import javax.swing.JPanel;
 
 import app.Controller;
 
-/**
- * @author domin
- *
+/** The button palette is a scrollable panel
+ * displayed on the right of the main window.
+ * It allows the user to select which kind of 
+ * gate they want to place.
+ * @author Dominik Baumann
+ * @version 2, July 2022
  */
 public class ButtonPalette extends JPanel {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	private ImageStorage images;
+	/** Responsible for handling user input. */
 	private Controller controller;
 	
-	/** TODO: explain why this has to start as -1
-	 * 
+	/** Stores the images to place on the buttons
+	 * (as well as other images).
+	 */
+	private ImageStorage images;
+	
+	
+	/** The buttons are stored in an array, and the
+	 * this value stores the index of the last
+	 * gate / tile / button that was clicked.
+	 * <p>
+	 * Starts as -1 (could be any other value out of the array range)
+	 * because otherwise the user could not select the button
+	 * with this index in the array.
 	 */
 	private int indexOfLastSelectedTile = -1;
 	
+    /** The types of tiles / gates which are placed when the
+     * corresponding button is selected.
+     */
+    private TileType[] tileTypes;
+
+    /** The buttons for selecting which tile to place. */
+    private JButton[] tileButtons;
+	
+	
+	/** Construct the palette for selecting Gates.
+	 * @param imageStorage Load the images for the buttons from here.
+	 * @param controller_ TODO do we actually need this?
+	 */
 	public ButtonPalette(ImageStorage imageStorage, Controller controller_) {
 		images = imageStorage;
 		controller = controller_;
@@ -44,12 +63,10 @@ public class ButtonPalette extends JPanel {
 	/**
      * Provide all buttons for gate / tile selection 
      * in a scroll pane on the right-hand side of the main frame.
-     * It is CRUCIAL that the arrays for the button initialization
+     * It is <b>CRUCIAL</b> that the arrays for the button initialization
      * are ordered correctly!
      */
     private void initPalette() {
-//    	JPanel panel = new JPanel();
-//        getContentPane().add(panel, BorderLayout.EAST);
         GridBagLayout gbl_panel = new GridBagLayout();
         gbl_panel.columnWidths = new int[]{0, 0};
         gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -64,10 +81,10 @@ public class ButtonPalette extends JPanel {
         String[] buttonTexts = {"   Empty  ", "   FALSE  ", "    TRUE  ", "     AND  ",
         		"      OR  ", "     NOT  ", "     NOR  ", "    NAND  ", "     XOR  "};
         
-        TileType[] tileTypes = { TileType.EMPTY, TileType.FALSE, TileType.TRUE,
+        tileTypes = new TileType[] { TileType.EMPTY, TileType.FALSE, TileType.TRUE,
         		TileType.AND, TileType.OR, TileType.NOT, TileType.NOR, TileType.NAND, TileType.XOR };
         
-        JButton[] tileButtons = { button_Empty, button_FALSE, button_TRUE, 
+        tileButtons = new JButton[] { button_Empty, button_FALSE, button_TRUE, 
                 button_AND, button_OR, button_NOT, button_NOR, button_NAND, button_XOR };
 
         for(int i = 0; i < tileButtons.length; i++) {
@@ -76,28 +93,40 @@ public class ButtonPalette extends JPanel {
         	tileButtons[i].setText(buttonTexts[i]);
         	tileButtons[i].addActionListener(new ActionListener(){  
         		@Override
-        		public void actionPerformed(ActionEvent e){
-        			// if no button selected = select it and color the button
-        			// if button is selected => deselect it and uncolor the button
-        			// if last selected button was now clicked button = don't reselect        			
-        			if(controller.isSelectedTileToPlace(null)) {
-        				indexOfLastSelectedTile = k;
-        				controller.setSelectedTileToPlace(tileTypes[k]);
-        				tileButtons[k].setBackground(Color.ORANGE);
-        			}
-        			else { // selectedTileToPlace != null => deselect
-        				tileButtons[indexOfLastSelectedTile].setBackground(null);
-        				controller.setSelectedTileToPlace(null);
-        				if(k != indexOfLastSelectedTile) { // try selecting new Tile
-            				indexOfLastSelectedTile = k;
-            				tileButtons[k].setBackground(Color.ORANGE);
-            				controller.setSelectedTileToPlace(tileTypes[k]);
-        				} // end inner if
+        		public void actionPerformed(ActionEvent e){        			
+        			// no button selected => select it and color the button
+        			if(controller.isSelectedTileToPlace(null))
+        				selectButton(k);
+
+        			else { // if a button is selected => deselect it and uncolor the button 
+        				deselectButton(indexOfLastSelectedTile);
+        				
+        				// if last selected button was now clicked button => don't reselect
+        				if(k != indexOfLastSelectedTile) 
+        					selectButton(k);
         			} // end if/else
         		} });  
         	this.add(tileButtons[i], new GBConstraints(0, i, 5));
         }
     }
+    
+    /** Select the button with this index.
+     * @param k The index of a button in the palette.
+     */
+    private void selectButton(int k) {
+		indexOfLastSelectedTile = k;
+		controller.setSelectedTileToPlace(tileTypes[k]);
+		tileButtons[k].setBackground(Color.ORANGE);
+    }
+
+    /** Deselect the button with this index.
+     * @param k The index of a button in the palette.
+     */
+    private void deselectButton(int k) {
+		controller.setSelectedTileToPlace(null);
+		tileButtons[indexOfLastSelectedTile].setBackground(null);
+    }
+    
 	
 	/**
 	 * Internal class to simplify the button instantiation in 
@@ -105,10 +134,6 @@ public class ButtonPalette extends JPanel {
 	 */
 	class GBConstraints extends GridBagConstraints {
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
 
 		/** Constructor
 		 * @param x ()
@@ -121,5 +146,11 @@ public class ButtonPalette extends JPanel {
 			gridy = y;
 			insets = new Insets(0, 0, bottom, 0);
 		}
+		
+		/** This is just here because Eclipse complained about it. */
+		private static final long serialVersionUID = 1L;
 	}
+	
+	/** This is just here because Eclipse complained about it. */
+	private static final long serialVersionUID = 1L;
 }

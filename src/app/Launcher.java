@@ -17,7 +17,7 @@ public class Launcher {
      */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
-            /** The run method starts the board in a separate thread. It creates the GUI. */
+            /** The run method starts the board in a separate thread. */
             @Override
             public void run() {
             	@SuppressWarnings("unused")

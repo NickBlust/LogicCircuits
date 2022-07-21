@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gui;
 
 import java.awt.image.BufferedImage;
@@ -10,33 +7,48 @@ import java.util.EnumMap;
 
 import javax.imageio.ImageIO;
 
-/**
- * @author domin
- *
+/** This class maintains a mapping, which allows
+ * to get the proper visualization of each 
+ * {@link gates.gate gate} based on its
+ * {@link gates.TileType type}.
+ * @author Dominik Baumann, Cameron McGregor
+ * @version 2, July 2022
  */
 public class ImageStorage {
     
+    /** Store the images for easy future access. */
     EnumMap<TileType, BufferedImage> imageMap;
+    
+    
+    /** The GUI parent for displaying everything. */
     LogicBoardGUI boardGUI;
     
+    /** Load the images from their files and set up the mapping.
+     * @param boardGUI_ The GUI parent for displaying everything.
+     */
     public ImageStorage(LogicBoardGUI boardGUI_) {
     	boardGUI = boardGUI_;
     	imageMap = new EnumMap<TileType, BufferedImage>(TileType.class);
     	loadTileImages();
     }
     
+    /** Allow the GUI to get the proper visualization of a 
+     * {@link gates.gate gate} based on its {@link gates.TileType type}.
+     * @param t Identifier for the gate to be visualized.
+     * @return The proper image (tile) for visualizing the given gate.
+     */
     public BufferedImage getImage(TileType t) { return imageMap.get(t); }
     
-    /**
-     * Loads tiles images from a fixed folder location within the project directory
-     */
+    /**Loads tiles images from a fixed folder location within the project directory. */
     private void loadTileImages() {
-        try { // Took code for generating the filePath from here: https://stackoverflow.com/a/15804263
+        try { // Adapted code for generating the filePath from here: https://stackoverflow.com/a/15804263
         	
         	// path of project Folder
         	String absolutePath = new File(".").getAbsolutePath(); 
+        	
         	// remove the dot at the end of path
         	absolutePath = absolutePath.substring(0, absolutePath.length() - 1);
+        	
         	// load images directly into EnumMap
         	imageMap.put(TileType.EMPTY, ImageIO.read(new File(absolutePath + "bin\\assets\\tileEmpty64.png")));
 			imageMap.put(TileType.FALSE, ImageIO.read(new File(absolutePath + "bin\\assets\\FALSE.png")));

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gui;
 
 
@@ -19,26 +16,46 @@ import javax.swing.JMenuItem;
 import app.Controller;
 
 /**
- * @author domin
- *
+ * @author Dominik Baumann, Philipp Grzywaczyk, Cameron McGregor
+ * @version 2, July 2022
+ * The menu bar and all the menus + items for the GUI
+ * are implemented here.
  */
 public class LogicBoardMenu extends JMenuBar {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	
+	/** The controller can access information from the GUI and pass it on to the model. */
 	Controller controller;
+	
+	/** A window for displaying information on how to use this program. */
 	JFrame helpWindow;
-	JFrame aboutWindow;
+
+	/** The text displayed in the {@link gui.LogicBoardMenu#helpWindow Help window}. */
 	String helpText;
+	
+	/** A window for displaying information about the program. */
+	JFrame aboutWindow;
+
+	/** The text displayed in the {@link gui.LogicBoardMenu#aboutWindow About window}. */
 	String aboutText;
 	
+	/** The menu item in the "Edit" menu which can be 
+	 * used to undo commands (like placing gates etc.).
+	 */
 	JMenuItem menuItem_Undo;
 	
-	// TODO refactor the stuff in the constructor
 	public LogicBoardMenu(Controller controller_) {
 		controller = controller_;
+		setHelpAndAboutText();
+		initFileMenu(); // FILE MENU => Load / Save Files
+		initEditMenu(); // EDIT menu => reset board, evaluate circuits, undo / redo commands
+        initHelpAndAboutMenu(); // HELP MENU => Open "Help" and "About" windows
+    }
+
+	/** Fetch the texts that are displayed in the 
+	 * "{@link gui.LogicBoardMenu#aboutWindow Help}" window and 
+	 * "{@link gui.LogicBoardMenu#aboutWindow About}" window.
+	 */
+	private void setHelpAndAboutText() {
     	try {
 			helpText = Files.readString(Path.of("bin\\assets\\helpText.txt"));
 		} catch (IOException e1) {
@@ -51,8 +68,14 @@ public class LogicBoardMenu extends JMenuBar {
 			aboutText = "Failed to load \'About\' text"; 
 			e1.printStackTrace();
 		}
-		
-		// FILE MENU => Load / Save Files
+	}
+	
+	/** Create the menu that allows loading models from files
+	 * and saving models to files.
+	 * @see app.BoardLoader
+	 * @see app.BoardSaver
+	 */
+	private void initFileMenu() {
 		JMenu fileMenu = new JMenu("File");
 		this.add(fileMenu);
 
@@ -63,7 +86,6 @@ public class LogicBoardMenu extends JMenuBar {
         		controller.clickedSave();
         	}
         });
-    	
         
         JMenuItem menuItem_LoadFromFile = new JMenuItem("Load Board from File");
         fileMenu.add(menuItem_LoadFromFile);
@@ -72,14 +94,17 @@ public class LogicBoardMenu extends JMenuBar {
         		controller.clickedLoad();
         	}
         });
-        
-        
-        
-        
-        
-        // EDIT MENU => 1) reset board
-        // 				2) evaluate all circuits on board
-        // 				3) undo / redo placement of gates or connections // TODO
+	}
+	
+	/** Create the menu that allows
+	 * <ul>
+	 * <li> resetting the board
+	 * <li> evaluating circuits on the board
+	 * <li> undoing commands
+	 * <li> TODO redoing commands
+	 * </ul>
+	 */
+	private void initEditMenu() {
         JMenu editMenu = new JMenu("Edit");
         this.add(editMenu);
 
@@ -108,20 +133,20 @@ public class LogicBoardMenu extends JMenuBar {
         	}
         });
         
-        
         JMenuItem menuItem_Evaluate = new JMenuItem("Evaluate");
         editMenu.add(menuItem_Evaluate);
         menuItem_Evaluate.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		controller.evaluateCircuits();
         	}
-        });
-        
-        
-        
-        
-        
-        // HELP MENU => Open "Help" and "About" windows
+        });		
+	}
+
+	
+	/** Create the menu that gives access
+	 * to the "Help" and "About" window.
+	 */
+	private void initHelpAndAboutMenu() {
         JMenu helpMenu = new JMenu("About & Help");
         this.add(helpMenu);
         
@@ -142,24 +167,31 @@ public class LogicBoardMenu extends JMenuBar {
         		EventQueue.invokeLater(new Runnable()
                 { @Override
                     public void run() { openHelpMenu(); } }); }
-        });    
+        });   
     }
 	
-	// TODO
+	/** Open a window that displays information on how to use this program. */
 	private void openHelpMenu() { // TODO: complete help text
 		if(helpWindow != null) // only allow one open help window at a time
 			helpWindow.dispatchEvent(new WindowEvent(helpWindow, WindowEvent.WINDOW_CLOSING));
 		helpWindow = new InfoWindow("Help", 700, 250, helpText);
 	}
 	
-	// TODO
+	/** Open a window that displays information about this program. */
 	private void showInformationAboutProgram() {
 		if(aboutWindow != null) // only allow one open about window at a time
 			aboutWindow.dispatchEvent(new WindowEvent(aboutWindow, WindowEvent.WINDOW_CLOSING));
         aboutWindow = new InfoWindow("About", 700, 220, aboutText);
 	}
 	
+	/** Only have the "{@link gui.LogicBoardMenu#menuItem_Undo Undo}"
+	 *  menu item enabled, if the number
+	 * of commands that can be undone is positive.
+	 */
 	public void updateUndoMenu(int undoCount) {
 		menuItem_Undo.setEnabled(undoCount > 0);
 	}
+	
+	/** This is just here because Eclipse complained about it. */
+	private static final long serialVersionUID = 1L;
 }
