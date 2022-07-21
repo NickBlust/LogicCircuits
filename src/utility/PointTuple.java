@@ -12,7 +12,6 @@ public class PointTuple {
 	
 	/** Second point in the tuple. */
 	public Vector2Int b;
-
 	
 	/** Construct a tuple with two given points.
 	 * @param a_ First point in the tuple.

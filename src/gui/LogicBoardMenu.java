@@ -43,6 +43,11 @@ public class LogicBoardMenu extends JMenuBar {
 	 */
 	JMenuItem menuItem_Undo;
 	
+	
+	
+	/** Construct the menu bar and menus + menu items for the GUI.
+	 * @param controller_ Executes the actions and commands bound to the menu items.
+	 */
 	public LogicBoardMenu(Controller controller_) {
 		controller = controller_;
 		setHelpAndAboutText();
@@ -51,6 +56,8 @@ public class LogicBoardMenu extends JMenuBar {
         initHelpAndAboutMenu(); // HELP MENU => Open "Help" and "About" windows
     }
 
+	
+	
 	/** Fetch the texts that are displayed in the 
 	 * "{@link gui.LogicBoardMenu#aboutWindow Help}" window and 
 	 * "{@link gui.LogicBoardMenu#aboutWindow About}" window.
@@ -69,6 +76,8 @@ public class LogicBoardMenu extends JMenuBar {
 			e1.printStackTrace();
 		}
 	}
+	
+	
 	
 	/** Create the menu that allows loading models from files
 	 * and saving models to files.
@@ -95,6 +104,8 @@ public class LogicBoardMenu extends JMenuBar {
         	}
         });
 	}
+	
+	
 	
 	/** Create the menu that allows
 	 * <ul>
@@ -143,6 +154,7 @@ public class LogicBoardMenu extends JMenuBar {
 	}
 
 	
+	
 	/** Create the menu that gives access
 	 * to the "Help" and "About" window.
 	 */
@@ -170,6 +182,8 @@ public class LogicBoardMenu extends JMenuBar {
         });   
     }
 	
+	
+	
 	/** Open a window that displays information on how to use this program. */
 	private void openHelpMenu() { // TODO: complete help text
 		if(helpWindow != null) // only allow one open help window at a time
@@ -184,9 +198,12 @@ public class LogicBoardMenu extends JMenuBar {
         aboutWindow = new InfoWindow("About", 700, 220, aboutText);
 	}
 	
+	
+	
 	/** Only have the "{@link gui.LogicBoardMenu#menuItem_Undo Undo}"
 	 *  menu item enabled, if the number
 	 * of commands that can be undone is positive.
+	 * @param undoCount The current number of undoable commands.
 	 */
 	public void updateUndoMenu(int undoCount) {
 		menuItem_Undo.setEnabled(undoCount > 0);

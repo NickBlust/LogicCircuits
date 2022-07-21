@@ -39,6 +39,8 @@ public class BoardSaver {
 	/** A small window displaying a message that empty boards should and will not be saved. */
 	InfoWindow whySaveEmptyBoardWindow;
 	
+	
+	
 	/** Save the given model on a board with a given number of rows (height) and columns (width).
 	 * Failure to save the board or trying to save an empty board will open a window with a warning / error message. 
 	 * @param model The {@link boardModel.LogicBoard board} displayed on the GUI.
@@ -72,12 +74,16 @@ public class BoardSaver {
 	        }
 	}
 	
+	
+	
 	/** Open a small window displaying a message that saving the board failed. */
 	private void openSavingFailedWindow() {
 		if(savingFailedWindow != null) // only allow one open window at a time
 			savingFailedWindow.dispatchEvent(new WindowEvent(savingFailedWindow, WindowEvent.WINDOW_CLOSING));
 		savingFailedWindow = new InfoWindow("Saving Failed", 400, 80, "  The board could not be saved ...");
 	}
+	
+	
 	
 	/** Open a small window displaying a message that empty boards should and will not be saved. */
 	private void openWhySaveEmptyBoardWindow() {

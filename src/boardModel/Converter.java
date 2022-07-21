@@ -12,7 +12,6 @@ import gui.TileType;
  */
 public class Converter {
 	
-	
 	/** When loading a board from a file,
 	 * we need to be able to convert a String representation of
 	 * a gate into an actual gate.
@@ -44,6 +43,8 @@ public class Converter {
 		}
 	}
 	
+
+	
 	/** Get the proper (unevaluated) {@link gates.Gate Gate}
 	 *  for a certain {@link gui.TileType TileType}.
 	 * @param t Type of tile to be converted to a Gate.
@@ -52,6 +53,8 @@ public class Converter {
 	public static Gate getGateFromType(TileType t) {
 		return getGateFromName(t.toString());
 	}
+	
+	
 	
 	/** Uses:
 	 * <p>

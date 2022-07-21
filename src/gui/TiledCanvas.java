@@ -26,14 +26,14 @@ public class TiledCanvas extends JPanel {
 	
 	/** Store the positions and the types of gates
 	 * to draw. That information is provided by the 
-	 * {@link boardModel.logicBoard model}.
+	 * {@link boardModel.LogicBoard model}.
 	 */
 	public TreeMap<Vector2Int, TileType> tilesToDraw;
 	
 	
 	/** Store the endpoints of each connection that needs
 	 * to be drawn. That information is provided by the
-	 * {@link boardModel.logicBoard model}.
+	 * {@link boardModel.LogicBoard model}.
 	 */
 	public ArrayList<PointTuple> connectionsToDraw;
 	
@@ -56,8 +56,6 @@ public class TiledCanvas extends JPanel {
 	/** The height of an individual tile / cell / gate image (in pixels). */
 	private int tileHeight;
 	
-	// Some variables are required for drawing a line for previewing a connection.
-	
 	/** True iff the user clicked any mouse button over 
 	 * the output or an input of a gate on the board
 	 * and is still pressing the button. 
@@ -74,6 +72,7 @@ public class TiledCanvas extends JPanel {
 	 * (i.e. the current mouse cursor position). */
 	public Vector2Int lineEnd;
 
+	
 	
 	/** Constructor for the visualization of a grid,
 	 * on which the user can place gates and draw connection.
@@ -92,6 +91,10 @@ public class TiledCanvas extends JPanel {
 		repaint();
 	}
 
+	
+	/************** DRAWING THIS COMPONENT **************/
+	
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -105,6 +108,8 @@ public class TiledCanvas extends JPanel {
         }
 	}
 
+	
+	
 	/** Draws the empty board.
      * @param g ()
      */
@@ -122,6 +127,8 @@ public class TiledCanvas extends JPanel {
         }
 	}
     
+    
+    
     /** Draws all gates (i.e. the tiles representing them) on the board.
      * @param g ()
      */
@@ -134,6 +141,8 @@ public class TiledCanvas extends JPanel {
     	}
     }
     
+    
+    
     /** Draw all connections between gates on the board.
 	 * @param g ()
 	 */
@@ -142,6 +151,8 @@ public class TiledCanvas extends JPanel {
 			g.drawLine(c.a.x, c.a.y, c.b.x, c.b.y);
 		}		
 	}
+	
+	
 	
 	/** This is just here because Eclipse complained about it. */
 	private static final long serialVersionUID = 1L;

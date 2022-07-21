@@ -61,8 +61,8 @@ public class LogicBoard {
 	}
 	
 
-	/******* ADDITION AND REMOVAL OF GATES AND CONNECTIONS *******/
 	
+	/******* ADDITION AND REMOVAL OF GATES AND CONNECTIONS *******/
 	
 	/** Add a gate at a given position. If another
 	 * gate was previously present at this position,
@@ -142,9 +142,9 @@ public class LogicBoard {
 	 * is close to any connection on the board. If so, remove that connection.
 	 * <p>
 	 * If there are multiple connections nearby, only one gets removed.
-	 * @param clickPos
-	 * @param command
-	 * @return
+	 * @param clickPos Position of (right) mouse click.
+	 * @param command The command for attempting to remove the connection.
+	 * @return True iff the click was near an existing connection
 	 */
 	public boolean attemptConnectionRemoval(Vector3Int clickPos, TryToRemoveConnection command) {
 		for(Vector2Int key : gates.keySet()) {
@@ -165,8 +165,8 @@ public class LogicBoard {
 	}
 	
 
-	/******* COMMUNICATION WITH GUI *******/
 	
+	/******* COMMUNICATION WITH GUI *******/
 	
 	// create a list of tiles to paint
 	// a list of points for which to draw lines + boolean with one input or two inputs
@@ -264,8 +264,8 @@ public class LogicBoard {
 	}
 
 
-	/********************* CYCLE DETECTION *********************/
 
+	/********************* CYCLE DETECTION *********************/
 	
 	/** Given two gates (specified by their position on the grid),
 	 * add a new connection to the model and 
@@ -274,8 +274,8 @@ public class LogicBoard {
 	 * After the test, remove that connection again.
 	 * @param start Start coordinates of connection
 	 * @param end end coordinates of connection
-	 * @param startIndex
-	 * @param endIndex 
+	 * @param startIndex Identifier for the  input / output used at the start of the connection.
+	 * @param endIndex Identifier for the  input / output used at the end of the connection.
 	 * @return "true" iff the new connection forms a cycle
 	 */
 	public boolean formsCycle(Vector2Int start, Vector2Int end, 
@@ -295,8 +295,8 @@ public class LogicBoard {
 	 * then remove the connection again
 	 * @param start Start coordinates of connection
 	 * @param end end coordinates of connection
-	 * @param startIndex
-	 * @param endIndex 
+	 * @param startIndex Identifier for the  input / output used at the start of the connection.
+	 * @param endIndex Identifier for the  input / output used at the end of the connection.
 	 * @return "true" iff the new connection forms a cycle
 	 */
 	private boolean simulateNewConnection(Vector2Int start, Vector2Int end, 
@@ -357,8 +357,8 @@ public class LogicBoard {
 	}
 
 	
-	/******* RESETTING MODEL *******/
 	
+	/************** RESETTING MODEL **************/
 	
 	/** Remove all gates from the board
 	 * and tell the GUI to update accordingly.
@@ -389,7 +389,7 @@ public class LogicBoard {
 	}
 
 
-	/******* HELPERS *******/
+	/********************* HELPERS *********************/
 	
 
 	/**
@@ -493,7 +493,7 @@ public class LogicBoard {
 	 * @param gate A gate for which to investigate incoming connections.
 	 * @param gatePos The position of that gate.
 	 * @param ind The input identifier which is considered.
-	 * @return
+	 * @return True iff the click was near to an existing connection.
 	 */
 	private boolean clickedNearConnection(Vector3Int clickPos, Gate gate, Vector2Int gatePos, GateIndex ind) {
 		Gate input = gate.getInput(ind);

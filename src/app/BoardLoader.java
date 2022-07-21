@@ -30,6 +30,8 @@ public class BoardLoader {
 	/** A small window displaying a message that loading the board failed. */
 	InfoWindow loadingFailedWindow;
 	
+	
+	
 	/** Load a logic circuit model from a .txt-file.
 	 * Failure to load the board will open a window with an error message.
 	 * @param model The {@link boardModel.LogicBoard LogicBoard}-Model the information

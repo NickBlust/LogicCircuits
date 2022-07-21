@@ -26,7 +26,10 @@ public class PlaceGateAt implements Command {
 	/** The type of gate / tile to place. */
 	private TileType type;
 	
+	/** The gate that previously served as TOP input (potentially null). */
 	private Vector2Int previousInputTOP;
+	
+	/** The gate that previously served as BOTTOM input (potentially null). */
 	private Vector2Int previousInputBOTTOM;
 	
 	/** Constructs a command to place a gate at a given position.

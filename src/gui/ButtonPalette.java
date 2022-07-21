@@ -50,6 +50,7 @@ public class ButtonPalette extends JPanel {
     private JButton[] tileButtons;
 	
 	
+    
 	/** Construct the palette for selecting Gates.
 	 * @param imageStorage Load the images for the buttons from here.
 	 * @param controller_ TODO do we actually need this?
@@ -59,6 +60,8 @@ public class ButtonPalette extends JPanel {
 		controller = controller_;
 		initPalette();
 	}
+	
+	
 	
 	/**
      * Provide all buttons for gate / tile selection 
@@ -110,6 +113,8 @@ public class ButtonPalette extends JPanel {
         }
     }
     
+    
+    
     /** Select the button with this index.
      * @param k The index of a button in the palette.
      */
@@ -119,6 +124,8 @@ public class ButtonPalette extends JPanel {
 		tileButtons[k].setBackground(Color.ORANGE);
     }
 
+    
+    
     /** Deselect the button with this index.
      * @param k The index of a button in the palette.
      */
@@ -128,6 +135,7 @@ public class ButtonPalette extends JPanel {
     }
     
 	
+    
 	/**
 	 * Internal class to simplify the button instantiation in 
 	 * {@link gui.ButtonPalette#initPalette() initPalette}.

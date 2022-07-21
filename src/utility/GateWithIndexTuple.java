@@ -14,7 +14,6 @@ public class GateWithIndexTuple {
 	/** The gate in this tuple. */
 	public Gate gate;
 	
-	
 	/** The GateIndex in this tuple. */
 	public GateIndex ind;
 	

@@ -51,8 +51,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	
 	/** Stores the current number of rows in the model. */
 	private int boardHeight = 5;
-	
-	
+		
 	/**	The GUI informs the controller over user interactions,
 	 * which the controller then processes.
 	 */
@@ -76,15 +75,14 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	PositionCalculator positionCalculator;
 
 	
+	
 	/** Create the (parent) GUI.
 	 * @param controller_ The GUI informs the controller 
 	 * over user interactions, which the controller then processes.
 	 */
 	public LogicBoardGUI(Controller controller_) {
-		
 		controller = controller_;
 		images = new ImageStorage(this);
-
 		
 		setSize(816, 615);
 		setTitle("Logic Circuits Simulator");
@@ -127,6 +125,8 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
     	canvas.repaint();
     }
     
+    
+    
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		Vector2Int v = new Vector2Int(e.getX(), e.getY());
@@ -142,6 +142,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 		canvas.repaint();
 	}
 
+	
 
 	@Override public void mouseReleased(MouseEvent e) { 
 		if(canvas.drawTentativeLine) {
@@ -150,7 +151,6 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 			
 			if(positionCalculator.validateMousePosition(v) 
 					&& controller.isValidEnd(v, canvas.lineStart)) {
-//				System.out.println("This connection was valid!");
 				controller.addConnection(v, canvas.lineStart);
 			}
 			canvas.repaint();
@@ -158,6 +158,8 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 		canvas.startedDragging = false;
 	}
 
+	
+	
 	/** Allows the model to communicate which gates
 	 * are on the board at which position and
 	 * which connections between gates exist.
@@ -171,6 +173,8 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 		repaint();
 	}
 	
+	
+	
 	/** If a gate gets placed at the outermost column
 	 * or row of the current grid, expand the grid.
 	 * @param dim The grid coordinates of a gate.
@@ -179,6 +183,8 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 		if(boardWidth == dim.x + 1) { boardWidth++; }
 		if(boardHeight == dim.y + 1) { boardHeight++; }
 	}
+	
+	
 	
 	/** Change the number of rows and columns in the grid. 
 	 * Minimum size is 2 by 2.

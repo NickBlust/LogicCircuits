@@ -18,6 +18,8 @@ public class Vector2Int implements Comparable<Vector2Int> {
 	 */
 	public Vector2Int(int x_, int y_) { x = x_; y = y_; }
 	
+	
+	
 	/** Compute the square of the distance between the point
 	 * represented by this vector and another point in the plane.
 	 * <p> Used for validation of mouse positions in 
@@ -29,6 +31,8 @@ public class Vector2Int implements Comparable<Vector2Int> {
 		return (x - v.x) * (x - v.x) + (y - v.y) * (y - v.y);  
 	}
 	
+	
+	
 	/** Compare two vectors for equality.
 	 * @param v Another 2D vector.
 	 * @return "true" iff all components of this vector 
@@ -37,6 +41,8 @@ public class Vector2Int implements Comparable<Vector2Int> {
 	public boolean equals(Vector2Int v) {
 		return v.x == x && v.y == y;
 	}
+	
+	
 	
 	/** Compare this vector's components to those of another
 	 * vector, and set this vector's component to the 
@@ -48,6 +54,8 @@ public class Vector2Int implements Comparable<Vector2Int> {
 		y = y > a.y ? y : a.y;
 	}
 	
+	
+	
 	@Override
 	public int compareTo(Vector2Int v) {
         int retVal = x - v.x;
@@ -57,6 +65,8 @@ public class Vector2Int implements Comparable<Vector2Int> {
         return y - v.y;
 	}
 
+	
+	
 	@Override
 	public String toString() { return "(" + x + ", " + y + ")"; }
 }

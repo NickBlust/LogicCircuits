@@ -23,12 +23,12 @@ public class BoolGateIndexTuple {
 	 */
 	public BoolGateIndexTuple(boolean k, GateIndex v) { key = k; value = v; }
 	
-	/**
+	/** Get the boolean value stored in this tuple.
 	 * @return The boolean value stored in this tuple.
 	 */
 	public boolean key() { return key; }
 	
-	/**
+	/** Get the GateIndex stored in this tuple.
 	 * @return The GateIndex stored in this tuple.
 	 */
 	public GateIndex value() { return value; }

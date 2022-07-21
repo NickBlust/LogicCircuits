@@ -12,11 +12,15 @@ public abstract class InputGate extends Gate {
 	/** Stores the gates representing input (boolean) values. */
 	EnumMap<GateIndex, Gate> inputs = new EnumMap<GateIndex, Gate>(GateIndex.class);
 	
+	
+	
 	/**
 	 * @param i The identifier of the input gate.
 	 * @return The input gate with identifier i. Returns null if the identifier is not valid.
 	 */
 	public Gate getInput(GateIndex i) { return inputs.get(i); }
+	
+	
 	
 	/** Change the input of this gate.
 	 * @param g The new gate whose output value is to be input.
@@ -25,12 +29,16 @@ public abstract class InputGate extends Gate {
 	@Override
 	public void setInput(Gate g, GateIndex i) { inputs.put(i, g); }
 	
+	
+	
 	@Override
 	public boolean output() { 
 		boolean result = computeOutput(topInput(), bottomInput());
 		setStatus(result);
 		return result;
 	}
+	
+	
 	
 	/** Use this function to compute the truth value of a gate
 	 * (which depends on the type of gate).
@@ -40,6 +48,8 @@ public abstract class InputGate extends Gate {
 	 */
 	protected abstract boolean computeOutput(boolean a, boolean b);
 	
+	
+	
 	/**
 	 * @return The Input value specified by index {@link gates.GateIndex#TOP TOP}.
 	 */
@@ -47,6 +57,8 @@ public abstract class InputGate extends Gate {
 		try { return inputs.get(GateIndex.TOP).output();
 		} catch (NullPointerException e) { return false; }
 	}
+	
+	
 	
 	/**
 	 * @return The Input value specified by index {@link gates.GateIndex#BOTTOM BOTTOM}.

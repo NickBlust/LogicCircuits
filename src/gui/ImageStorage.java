@@ -9,8 +9,8 @@ import javax.imageio.ImageIO;
 
 /** This class maintains a mapping, which allows
  * to get the proper visualization of each 
- * {@link gates.gate gate} based on its
- * {@link gates.TileType type}.
+ * {@link gates.Gate gate} based on its
+ * {@link gui.TileType type}.
  * @author Dominik Baumann, Cameron McGregor
  * @version 2, July 2022
  */
@@ -23,6 +23,8 @@ public class ImageStorage {
     /** The GUI parent for displaying everything. */
     LogicBoardGUI boardGUI;
     
+    
+    
     /** Load the images from their files and set up the mapping.
      * @param boardGUI_ The GUI parent for displaying everything.
      */
@@ -32,12 +34,16 @@ public class ImageStorage {
     	loadTileImages();
     }
     
+    
+    
     /** Allow the GUI to get the proper visualization of a 
-     * {@link gates.gate gate} based on its {@link gates.TileType type}.
+     * {@link gates.Gate gate} based on its {@link gui.TileType type}.
      * @param t Identifier for the gate to be visualized.
      * @return The proper image (tile) for visualizing the given gate.
      */
     public BufferedImage getImage(TileType t) { return imageMap.get(t); }
+    
+    
     
     /**Loads tiles images from a fixed folder location within the project directory. */
     private void loadTileImages() {

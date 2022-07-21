@@ -31,6 +31,7 @@ public class PositionCalculator {
 	private LogicBoardGUI gui;
 	
 
+	
 	/** Create a calculator with the given parameters. 
 	 * @param tileWidth_ The width of a tile in the GUI.
 	 * @param tileHeight_ The height of a tile in the GUI.
@@ -42,6 +43,8 @@ public class PositionCalculator {
 		gui = gui_;
 	}
 	
+	
+	
 	/** Convert the position of the mouse on the GUI
 	 * to grid coordinates.
 	 * @param pos Position of a mouse click.
@@ -52,12 +55,14 @@ public class PositionCalculator {
 				(int) Math.ceil(pos.y / tileHeight));
 	}
 	
+	
+	
 	/** Check if a given position is over the output or an input
 	 * of a gate.
 	 * @param t Type of tile / gate
 	 * @param pos Position (of a mouse click) relative to the board's upper left corner. 
 	 * @param coord Coordinate of the tile on the Board in (row, column)-format
-	 * @return true iff the click was on an input or the output of the tile.
+	 * @return True iff the click was on an input or the output of the tile.
 	 */
 	public BoolGateIndexTuple validStartPositionOnTile(TileType t, Vector2Int pos, Vector2Int coord) {
 		if(t == TileType.TRUE || t == TileType.FALSE) {
@@ -78,6 +83,8 @@ public class PositionCalculator {
 		return new BoolGateIndexTuple(false, null);
 	}
 	
+	
+	
 	/** Check if the mouse is over an output.
 	 * @param pos Position of the mouse click.
 	 * @param coord Grid position of a gate / tile.
@@ -89,6 +96,7 @@ public class PositionCalculator {
 		double dist = target.squaredDistance(pos);
 		return new BoolGateIndexTuple(dist <= maxDistance * maxDistance, null);
 	}
+	
 	
 	
 	/** Check if the mouse is over the input of a 
@@ -106,6 +114,8 @@ public class PositionCalculator {
 		}
 		return new BoolGateIndexTuple(false, null);
 	}
+	
+	
 	
 	/** Check if the mouse is over one of the inputs of a 
 	 * gate / tile with two inputs.
@@ -141,11 +151,13 @@ public class PositionCalculator {
 	 * @param t The type of tile / gate.
 	 * @param v The position of the mouse.
 	 * @param pos Coordinate of the tile / gate on the board as (row, column).
-	 * @return
+	 * @return True iff the click was on an input or the output of the tile.
 	 */
 	public BoolGateIndexTuple validEndPositionOnTile(TileType t, Vector2Int v, Vector2Int pos) {
 		return validStartPositionOnTile(t, v, pos);
 	}
+	
+	
 	
 	/** Find out which input / output the mouse is at.
 	 * @param t The type of tile / gate.
@@ -172,6 +184,8 @@ public class PositionCalculator {
 		System.out.println("ERROR (PositionCalculator): Could not determine GateIndex " + t + " at " + v);
 		return null;
 	}
+	
+	
 	
 	/** Compute the position at the center of an input / output on a tile.
 	 * @param t The type of tile / gate.
@@ -200,6 +214,8 @@ public class PositionCalculator {
 			return new Vector2Int(tileWidth * (coord.x + 1) - 4, tileHeight * coord.y + (tileHeight / 2));
 		}
 	}
+	
+	
 	
 	/** Check if the mouse position actually is on the grid.
 	 * @param v Position of the mouse.
