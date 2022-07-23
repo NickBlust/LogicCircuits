@@ -11,6 +11,10 @@ import javax.imageio.ImageIO;
  * to get the proper visualization of each 
  * {@link gates.Gate gate} based on its
  * {@link gui.TileType type}.
+ * <p>
+ * Images are taken and modified from this
+ * <a href="https://en.wikipedia.org/wiki/Logic_gate#Symbols">Wikipedia-article</a>
+ * under the public domain.
  * @author Dominik Baumann, Cameron McGregor
  * @version 2, July 2022
  */

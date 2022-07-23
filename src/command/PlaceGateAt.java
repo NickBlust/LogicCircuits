@@ -69,5 +69,7 @@ public class PlaceGateAt implements Command {
 			model.addConnection(previousInputTOP, targetPos, GateIndex.TOP);
 			model.addConnection(previousInputBOTTOM, targetPos, GateIndex.BOTTOM);
 		}
+		else
+			model.removeGate(targetPos);
 	}
 }

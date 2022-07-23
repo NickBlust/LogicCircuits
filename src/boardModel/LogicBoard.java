@@ -80,9 +80,12 @@ public class LogicBoard {
 			g.setInput(temp.getInput(GateIndex.BOTTOM), GateIndex.BOTTOM);
 			g.setInput(temp.getInput(GateIndex.TOP), GateIndex.TOP);
 			updateGateInputs(temp, g);
+			setOutputCount(g, getOutputCount(temp));
 		}
+		else
+			setOutputCount(g, 0);
 		gates.put(v, g);
-		addOutputGate(g);
+//		addOutputGate(g);
 		updateGUI();
 	}
 
@@ -97,7 +100,8 @@ public class LogicBoard {
 	public ArrayList<GateWithIndexTuple> removeGate(Vector2Int v) {
 		resetStatusOfGatesOnBoard();
 		Gate g = gates.get(v);
-		removeOutputGate(g);
+//		removeOutputGate(g);
+		outputGates.remove(g);
 		gates.remove(v, g);
 		ArrayList<GateWithIndexTuple> receivers = updateGateInputs(g, null);
 		updateGUI();
@@ -116,7 +120,8 @@ public class LogicBoard {
 		resetStatusOfGatesOnBoard();
 		
 		Gate givingOutput = gates.get(fromOutput);
-		addOutputGate(givingOutput);
+//		addOutputGate(givingOutput);
+		setOutputCount(givingOutput, getOutputCount(givingOutput) + 1);
 		gates.get(toInput).setInput(givingOutput, inputIndex);
 		updateGUI();
 	}
@@ -154,7 +159,8 @@ public class LogicBoard {
 			for(GateIndex ind : GateIndex.values()) {
 				if(clickedNearConnection(clickPos, temp, key, ind)) {
 					command.setInfo(key, getPositionOfGate(temp.getInput(ind)), ind);
-					removeOutputGate(temp.getInput(ind));
+//					removeOutputGate(temp.getInput(ind));
+					setOutputCount(temp.getInput(ind), getOutputCount(temp.getInput(ind)) - 1);
 					resetStatusOfGatesOnBoard(); // TODO: only if this action was successful
 					removeConnection(key, ind);
 					return true;					
@@ -196,14 +202,15 @@ public class LogicBoard {
 	
 	
 	
-	/** TODO => currently all gates are outputgates ...
+	/**
 	 * Call the function for computing a gate's output on
-	 * all gates which do not serve as input to another gate.
+	 * all gates which do not serve as input to another gate
+	 * (i.e. when their outputCount is 0).
 	 */
 	public void evaluate() {
 		for(Gate g : outputGates.keySet()) {
-			System.out.println( getPositionOfGate(g) + " " + Converter.getTypeFromGate(g) + " " + outputGates.get(g));
-			g.output();
+			if(outputGates.get(g) == 0) 
+				g.output();
 		}
 		inEvaluatedState = true;
 		updateGUI();
@@ -236,31 +243,28 @@ public class LogicBoard {
 	}
 
 
-	
-	/** TODO
-	 * @param g
+
+	/** Given a gate, keep track of how often its output is used as input on other gates. 
+	 * Note that one gate may provide its output for both inputs of another gate.
+	 * @param g A gate which has the count of inputs it provides for increased or reduced.
+	 * @param count The number of gates this gate is serving as input for.
 	 */
-	private void removeOutputGate(Gate g) {
-		if(outputGates.get(g) > 1)
-			outputGates.put(g, outputGates.get(g) - 1);		
-		else if(outputGates.get(g) == 1)
-			outputGates.remove(g);
+	private void setOutputCount(Gate g, int count) {
+		if(count >= 0)
+			outputGates.put(g, count);
 		else {
-			System.out.println("ERROR (LogicBoard): something went wrong with the outputgates: " 
-					+ "g serves as output for " + outputGates.get(g) + " gate(s)");
+			System.out.println("ERROR: Tried to set number of gates receiving output from gate "
+		+ g + " at " + getPositionOfGate(g) + " to a negative value: " + count);
 		}
 	}
 	
-	
-
-	/** TODO
-	 * @param g
+	/** Find out for how many inputs this gate's output is used.
+	 * @param g A gate on the board.
+	 * @return The number of inputs for which this gate's output is used.
 	 */
-	private void addOutputGate(Gate g) {
-		if(!outputGates.containsKey(g))
-			outputGates.put(g, 1);
-		else
-			outputGates.put(g, outputGates.get(g) + 1);
+	private int getOutputCount(Gate g) {
+		try { return outputGates.get(g); }
+		catch(java.lang.NullPointerException ex) { return 0; }
 	}
 
 

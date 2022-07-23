@@ -1,14 +1,25 @@
 package gui;
 
-import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import app.Controller;
@@ -44,13 +55,13 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	private final int DEFAULT_BOARD_WIDTH = 8;
 	
 	/** Specifies the default number of rows in the model. */
-	private final int DEFAULT_BOARD_HEIGHT = 5;
+	private final int DEFAULT_BOARD_HEIGHT = 11;
 	
 	/** Stores the current number of columns in the model. */
 	private int boardWidth = 8;
 	
 	/** Stores the current number of rows in the model. */
-	private int boardHeight = 5;
+	private int boardHeight = 11;
 		
 	/**	The GUI informs the controller over user interactions,
 	 * which the controller then processes.
@@ -83,29 +94,67 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	public LogicBoardGUI(Controller controller_) {
 		controller = controller_;
 		images = new ImageStorage(this);
+		positionCalculator = new PositionCalculator(TILE_WIDTH, TILE_HEIGHT, this);
 		
-		setSize(816, 615);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Logic Circuits Simulator");
 		setLocationRelativeTo(null); //sets position of frame on screen
 		
-		getContentPane().add(canvas = new TiledCanvas(this, images));
 		setJMenuBar(menuBar = new LogicBoardMenu(controller));
-		getContentPane().add(buttonPalette = new ButtonPalette(images, controller), BorderLayout.EAST);
-        
-        JScrollPane scroll = new JScrollPane(buttonPalette);
-        getContentPane().add(scroll, BorderLayout.EAST);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.getVerticalScrollBar().setUnitIncrement(16);
+		buttonPalette = new ButtonPalette(images, controller);
+		buttonPalette.setPreferredSize(new Dimension(160, 704)); // 704 = 64*11
 
-        positionCalculator = new PositionCalculator(TILE_WIDTH, TILE_HEIGHT, this);
+		canvas = new TiledCanvas(this, images);
+		canvas.setPreferredSize(new Dimension(boardWidth * TILE_WIDTH, boardHeight * TILE_HEIGHT));
+
+        // initialize the layout, the scroll panes and their constraints
+		GridBagLayout gbl_TiledCanvas = new GridBagLayout();
+		gbl_TiledCanvas.columnWidths = new int[]{280, 148, 0};
+		gbl_TiledCanvas.rowHeights = new int[]{261, 0};
+		gbl_TiledCanvas.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
+		gbl_TiledCanvas.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		getContentPane().setLayout(gbl_TiledCanvas);
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setVisible(true);
-		/* get the position of mouse (events) relative 
-		 * to the canvas representing the board */
+		JScrollPane scrollPane_TiledCanvas = new JScrollPane();
+		scrollPane_TiledCanvas.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane_TiledCanvas.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollPane_TiledCanvas.getHorizontalScrollBar().setUnitIncrement(16);
+		scrollPane_TiledCanvas.getVerticalScrollBar().setUnitIncrement(16);
+		// NOTE: set size of window to width (height) of all tiles + width (height) of a scrollbar - 1
+		// to allow scrolling without having to resize the window
+		scrollPane_TiledCanvas.setPreferredSize(new Dimension(526, 718)); 
+		
+		JScrollPane scrollPane_ButtonPalette = new JScrollPane();
+		scrollPane_ButtonPalette.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane_ButtonPalette.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane_ButtonPalette.getVerticalScrollBar().setUnitIncrement(16);
+		
+		GridBagConstraints gbc_scroll_TiledCanvas = new GridBagConstraints();
+		gbc_scroll_TiledCanvas.fill = GridBagConstraints.BOTH;
+		gbc_scroll_TiledCanvas.insets = new Insets(0, 0, 0, 5);
+		gbc_scroll_TiledCanvas.gridx = 0;
+		gbc_scroll_TiledCanvas.gridy = 0;
+		
+		GridBagConstraints gbc_scroll_ButtonPalette = new GridBagConstraints();
+		gbc_scroll_ButtonPalette.fill = GridBagConstraints.BOTH;
+		gbc_scroll_ButtonPalette.gridx = 1;
+		gbc_scroll_ButtonPalette.gridy = 0;
+		
+		
+		// actually add the components to the frame
+		scrollPane_TiledCanvas.setViewportView(canvas);
+		getContentPane().add(scrollPane_TiledCanvas, gbc_scroll_TiledCanvas);
+		
+		getContentPane().add(scrollPane_ButtonPalette, gbc_scroll_ButtonPalette);
+		scrollPane_ButtonPalette.setViewportView(buttonPalette);	
+		
+		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
+		/* get the position of mouse (events) relative to the canvas representing the board */
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
+		setKeyBindings();
 	}
 
 
@@ -211,7 +260,43 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 		menuBar.updateUndoMenu(undoCount);
 	}
 	
+	
+	
+	/********************* KEY BINDINGS *********************/
+	
+	private void setKeyBindings() {
+		JRootPane rootPane = getRootPane();
 
+		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E,
+                java.awt.event.InputEvent.CTRL_DOWN_MASK), "evaluate");
+		rootPane.getActionMap().put("evaluate",
+				new AbstractAction(){
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("CTRL + E");
+				controller.evaluateCircuits(); } });
+
+		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R,
+                java.awt.event.InputEvent.CTRL_DOWN_MASK), "reset");
+		rootPane.getActionMap().put("reset",
+				new AbstractAction(){
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("CTRL + R");
+				controller.resetBoard(); } });
+		
+		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
+                java.awt.event.InputEvent.CTRL_DOWN_MASK), "undo");
+		rootPane.getActionMap().put("undo",
+				new AbstractAction(){
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("CTRL + Z");
+				controller.undoCommand(); } });	
+	}
+	
+
+	
 	/********************* GETTERS *********************/
 
 	/** Get the current number of rows in the grid.

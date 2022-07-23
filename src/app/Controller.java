@@ -277,6 +277,7 @@ public class Controller {
 	public void undoCommand() {
 		if(pastCommands.size() > 0) {
 			Command c = pastCommands.pop();
+			System.out.println("Undoing " + c.getClass());
 			c.undo();
 			theGUI.updateUndoMenu(pastCommands.size());
 		}
@@ -316,7 +317,5 @@ public class Controller {
 		} catch(NullPointerException ex) { // selectedTileToPlace was null
 			return t == null;
 		}
-	}
-	
-	
+	}	
 }

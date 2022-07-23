@@ -1,13 +1,12 @@
 package gui;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.TreeMap;
-
 import javax.swing.JPanel;
-
 import utility.PointTuple;
 import utility.Vector2Int;
 
@@ -72,8 +71,6 @@ public class TiledCanvas extends JPanel {
 	 * (i.e. the current mouse cursor position). */
 	public Vector2Int lineEnd;
 
-	
-	
 	/** Constructor for the visualization of a grid,
 	 * on which the user can place gates and draw connection.
 	 * @param boardGUI_ The {@link gui.LogicBoardGUI GUI parent} this GUI element sits on.
@@ -88,6 +85,10 @@ public class TiledCanvas extends JPanel {
 		emptyTileImage = images.getImage(TileType.EMPTY);
 		tilesToDraw = new TreeMap<Vector2Int, TileType>();
 		connectionsToDraw = new ArrayList<PointTuple>();
+//		setPreferredSize(new Dimension(boardGUI.getWidth() * boardGUI.getTileWidth(), 
+//				boardGUI.getHeight() * boardGUI.getTileHeight()));
+//		System.out.println(new Vector2Int(boardGUI.getBoardGUIWidth() * boardGUI.getTileWidth(), 
+//				boardGUI.getBoardGUIHeight() * boardGUI.getTileHeight()));
 		repaint();
 	}
 
@@ -97,6 +98,10 @@ public class TiledCanvas extends JPanel {
 	
 	@Override
 	public void paintComponent(Graphics g) {
+		setPreferredSize(new Dimension(boardGUI.getBoardGUIWidth() * boardGUI.getTileWidth(),
+				boardGUI.getBoardGUIHeight() * boardGUI.getTileHeight()));
+//		scrollPane.setPreferredSize(new Dimension(boardGUI.getBoardGUIWidth() * boardGUI.getTileWidth(),
+//				boardGUI.getBoardGUIHeight() * boardGUI.getTileHeight()));
 		super.paintComponent(g);
 		drawBoard(g); // draw an empty board 
 		drawTiles(g); // draw the gates onto the board

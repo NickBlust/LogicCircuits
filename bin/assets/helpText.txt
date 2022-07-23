@@ -1,1 +1,23 @@
 Help, Eclipse keeps deleting my folder ...
+
+A note about scrolling: When placing a 
+gate on the border of the current board,
+the board will extend by one row or 
+column or both, but the scroll bars
+will only adjust if the user actively
+scrolls afterwards => If you are all
+the way scrolled down and place a tile
+in the lowest row you have to scroll
+up a tiny bit before you can scroll 
+down to the new tile. Alternatively,
+you can just not scroll down fully
+before placing the new gate.
+Same for columns.
+
+A note about placing gates:
+You must not move your mouse between
+clicking and releasing the mouse button,
+because otherwise this will be 
+interpreted as mouse drag and an
+attempt to draw a connection 
+between gates.
