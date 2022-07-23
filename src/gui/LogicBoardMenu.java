@@ -92,7 +92,7 @@ public class LogicBoardMenu extends JMenuBar {
         fileMenu.add(menuItem_SaveToFile);
     	menuItem_SaveToFile.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.clickedSave();
+        		controller.saveToFile();
         	}
         });
         
@@ -100,7 +100,7 @@ public class LogicBoardMenu extends JMenuBar {
         fileMenu.add(menuItem_LoadFromFile);
         menuItem_LoadFromFile.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		controller.clickedLoad();
+        		controller.loadFromFile();
         	}
         });
 	}

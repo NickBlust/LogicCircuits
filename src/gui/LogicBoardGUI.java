@@ -23,7 +23,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import app.Controller;
-import utility.PointTuple;
+import utility.PointTupleWithStatus;
 import utility.PositionCalculator;
 import utility.Vector2Int;
 
@@ -216,7 +216,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	 * @param connections The connections in the model.
 	 */
 	public void setTilesAndConnections(TreeMap<Vector2Int, TileType> tiles,
-			ArrayList<PointTuple> connections) {
+			ArrayList<PointTupleWithStatus> connections) {
 		canvas.tilesToDraw = tiles;
 		canvas.connectionsToDraw = connections;
 		repaint();
@@ -276,6 +276,15 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 				System.out.println("CTRL + E");
 				controller.evaluateCircuits(); } });
 
+		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_O,
+                java.awt.event.InputEvent.CTRL_DOWN_MASK), "open");
+		rootPane.getActionMap().put("open",
+				new AbstractAction(){
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("CTRL + O");
+				controller.loadFromFile(); } });
+		
 		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R,
                 java.awt.event.InputEvent.CTRL_DOWN_MASK), "reset");
 		rootPane.getActionMap().put("reset",
@@ -284,6 +293,15 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("CTRL + R");
 				controller.resetBoard(); } });
+		
+		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+                java.awt.event.InputEvent.CTRL_DOWN_MASK), "save");
+		rootPane.getActionMap().put("save",
+				new AbstractAction(){
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("CTRL + S");
+				controller.saveToFile(); } });
 		
 		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
                 java.awt.event.InputEvent.CTRL_DOWN_MASK), "undo");

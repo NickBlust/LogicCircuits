@@ -9,7 +9,7 @@ package gates;
 public class FALSEgate extends ConstGate {
 
 	/** This gate uses no input values. */
-	public FALSEgate() {}
+	public FALSEgate() { resetStatus(); }
 
 	/** Always returns false.
 	 * @return false
@@ -25,4 +25,7 @@ public class FALSEgate extends ConstGate {
 
 	@Override
 	public String name() { return "FALSE";}
+	
+	@Override
+	public void resetStatus() { status = Status.FALSE; }
 }

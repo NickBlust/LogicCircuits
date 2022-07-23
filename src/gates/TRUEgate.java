@@ -10,7 +10,7 @@ package gates;
 public class TRUEgate extends ConstGate {
 	
 	/** This gate uses no input values. */
-	public TRUEgate() {}
+	public TRUEgate() { resetStatus(); }
 		
 	/** Always returns true.
 	 * @return true
@@ -26,4 +26,7 @@ public class TRUEgate extends ConstGate {
 
 	@Override
 	public String name() { return "TRUE";}
+	
+	@Override
+	public void resetStatus() { status = Status.TRUE; }
 }

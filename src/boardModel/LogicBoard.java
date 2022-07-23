@@ -9,7 +9,7 @@ import gates.*;
 import gui.LogicBoardGUI;
 import gui.TileType;
 import utility.GateWithIndexTuple;
-import utility.PointTuple;
+import utility.PointTupleWithStatus;
 import utility.PositionCalculator;
 import utility.Vector2Int;
 import utility.Vector3Int;
@@ -179,7 +179,7 @@ public class LogicBoard {
 	// looks like extra work, but the gui should not be allowed to modify the model.
 	private void updateGUI() {
 		TreeMap<Vector2Int, TileType> tiles = new TreeMap<Vector2Int, TileType>();
-		ArrayList<PointTuple> connections = new ArrayList<PointTuple>();
+		ArrayList<PointTupleWithStatus> connections = new ArrayList<PointTupleWithStatus>();
 		Vector2Int dim = new Vector2Int(0, 0);
 		for(Vector2Int key : gates.keySet()) {
 			Gate temp = gates.get(key);
@@ -190,9 +190,10 @@ public class LogicBoard {
 			for(GateIndex ind : GateIndex.values())  {
 				Gate input = temp.getInput(ind);
 				if(input != null) {
-					connections.add(new PointTuple(
+					connections.add(new PointTupleWithStatus(
 							positionCalculator.getLinePoint(Converter.getTypeFromGate(input), getPositionOfGate(input), null), 
-							positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, ind)));
+							positionCalculator.getLinePoint(Converter.getTypeFromGate(temp), key, ind),
+							input.status()));
 				}
 			}
 		} // end for
@@ -374,7 +375,7 @@ public class LogicBoard {
 
 		// reset gui
 		boardGUI.setDimensions(-1, -1);
-		boardGUI.setTilesAndConnections(new TreeMap<Vector2Int, TileType>(), new ArrayList<PointTuple>());
+		boardGUI.setTilesAndConnections(new TreeMap<Vector2Int, TileType>(), new ArrayList<PointTupleWithStatus>());
 	}
 	
 

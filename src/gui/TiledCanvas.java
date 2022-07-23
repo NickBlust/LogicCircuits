@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -7,7 +8,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import javax.swing.JPanel;
-import utility.PointTuple;
+
+import gates.Status;
+import utility.PointTupleWithStatus;
 import utility.Vector2Int;
 
 /** This class implements a board with grids ("tiles")
@@ -34,7 +37,7 @@ public class TiledCanvas extends JPanel {
 	 * to be drawn. That information is provided by the
 	 * {@link boardModel.LogicBoard model}.
 	 */
-	public ArrayList<PointTuple> connectionsToDraw;
+	public ArrayList<PointTupleWithStatus> connectionsToDraw;
 	
 	/** The {@link gui.LogicBoardGUI GUI parent} this GUI element sits on. */
 	LogicBoardGUI boardGUI;
@@ -71,6 +74,12 @@ public class TiledCanvas extends JPanel {
 	 * (i.e. the current mouse cursor position). */
 	public Vector2Int lineEnd;
 
+	/** Color used for connections, where the output at the start of the connection is TRUE. */
+	private Color customGreen = new Color(95, 208, 84);
+
+	/** Color used for connections, where the output at the start of the connection is FALSE. */
+	private Color customRed = new Color(208, 84, 84);
+	
 	/** Constructor for the visualization of a grid,
 	 * on which the user can place gates and draw connection.
 	 * @param boardGUI_ The {@link gui.LogicBoardGUI GUI parent} this GUI element sits on.
@@ -84,11 +93,7 @@ public class TiledCanvas extends JPanel {
 		tileHeight = boardGUI.getTileHeight();
 		emptyTileImage = images.getImage(TileType.EMPTY);
 		tilesToDraw = new TreeMap<Vector2Int, TileType>();
-		connectionsToDraw = new ArrayList<PointTuple>();
-//		setPreferredSize(new Dimension(boardGUI.getWidth() * boardGUI.getTileWidth(), 
-//				boardGUI.getHeight() * boardGUI.getTileHeight()));
-//		System.out.println(new Vector2Int(boardGUI.getBoardGUIWidth() * boardGUI.getTileWidth(), 
-//				boardGUI.getBoardGUIHeight() * boardGUI.getTileHeight()));
+		connectionsToDraw = new ArrayList<PointTupleWithStatus>();
 		repaint();
 	}
 
@@ -100,16 +105,15 @@ public class TiledCanvas extends JPanel {
 	public void paintComponent(Graphics g) {
 		setPreferredSize(new Dimension(boardGUI.getBoardGUIWidth() * boardGUI.getTileWidth(),
 				boardGUI.getBoardGUIHeight() * boardGUI.getTileHeight()));
-//		scrollPane.setPreferredSize(new Dimension(boardGUI.getBoardGUIWidth() * boardGUI.getTileWidth(),
-//				boardGUI.getBoardGUIHeight() * boardGUI.getTileHeight()));
 		super.paintComponent(g);
 		drawBoard(g); // draw an empty board 
 		drawTiles(g); // draw the gates onto the board
 		drawConnections(g); // draw the connections between the gates
 		/* when the user clicked somewhere without releasing and is dragging the mouse
 		 * draw a line between the original click position and the current mouse position. */
-        if(drawTentativeLine) { 
-        	g.drawLine(lineStart.x, lineStart.y,  lineEnd.x, lineEnd.y);
+		if(drawTentativeLine) { 
+			g.setColor(Color.BLACK);
+			g.drawLine(lineStart.x, lineStart.y,  lineEnd.x, lineEnd.y);
         }
 	}
 
@@ -152,7 +156,14 @@ public class TiledCanvas extends JPanel {
 	 * @param g ()
 	 */
 	private void drawConnections(Graphics g) {
-		for(PointTuple c : connectionsToDraw) {
+		for(PointTupleWithStatus c : connectionsToDraw) {
+			// fit the color according to the gate's output's status
+			if(c.status.equals(Status.UNEVALUATED))
+				g.setColor(Color.BLACK);
+			else if(c.status.equals(Status.TRUE))
+					g.setColor(customGreen);
+			else 
+				g.setColor(customRed);
 			g.drawLine(c.a.x, c.a.y, c.b.x, c.b.y);
 		}		
 	}

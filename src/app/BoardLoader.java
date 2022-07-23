@@ -47,8 +47,7 @@ public class BoardLoader {
     	Scanner fileInfo;
     
     	try {
-    		// TODO: validate save File (i.e. check if this is a valid input file
-    		saveFile = chooser.getSelectedFile();
+	    		saveFile = chooser.getSelectedFile();
 	    		fileInfo = new Scanner(saveFile);
 	    		int cols = fileInfo.nextInt();
 	    		int rows = fileInfo.nextInt();
@@ -76,13 +75,18 @@ public class BoardLoader {
 	    		fileInfo.close();	
 	    		return true;
     	} catch (FileNotFoundException 
-    			| java.lang.NullPointerException 
     			| java.util.NoSuchElementException ex) {
+    		System.out.println(ex);
     		// open window with error message but do nothing else
     		EventQueue.invokeLater(new Runnable()
             { @Override public void run() { openLoadingFailedWindow(); } });    		
 			return false;
+    	} catch(java.lang.NullPointerException ex) { 
+    		/* If the user cancels the process of opening a file,
+    		 * don't display an error message. */
+    		return false;
     	}
+    	
 	}
 	/** Open a small window displaying a message that saving the board failed. */
 	private void openLoadingFailedWindow() {

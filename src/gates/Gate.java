@@ -47,7 +47,7 @@ public abstract class Gate {
 	public abstract void setInput(Gate g, GateIndex i);
 	
 	/** The status of a gate is relevant for displayint it in the GUI. */
-	private Status status = Status.UNEVALUATED;
+	protected Status status = Status.UNEVALUATED;
 	
 	/**
 	 * @return The Status of this gate.
@@ -55,8 +55,8 @@ public abstract class Gate {
 	public Status status() { return status; }
 	
 	/** Reset the status to {@link gates.Status#UNEVALUATED UNEVALUATED}. */
-	public void resetStatus() { status = Status.UNEVALUATED; }
-	
+	public abstract void resetStatus();
+
 	/** Set the status of this gate to 
 	 * {@link gates.Status#TRUE TRUE} or 
 	 * {@link gates.Status#FALSE FALSE} depending

@@ -67,4 +67,7 @@ public abstract class InputGate extends Gate {
 		try { return inputs.get(GateIndex.BOTTOM).output();
 		} catch (NullPointerException e) { return false; }
 	}
+	
+	@Override
+	public void resetStatus() { status = Status.UNEVALUATED; }
 }

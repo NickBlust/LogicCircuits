@@ -180,7 +180,7 @@ public class Controller {
 	/************** IMPLEMENT COMMANDS FROM MENUS **************/
 	
 	/** Save the current board to a file. */
-	public void clickedSave() {
+	public void saveToFile() {
 		boardSaver.save(theBoard, theGUI.getBoardGUIWidth(), theGUI.getBoardGUIHeight());
 	}
 
@@ -191,7 +191,7 @@ public class Controller {
 	 * <P>
 	 * Successful loading empties the {@link app.Controller#pastCommands stack of undoable commands}.
 	 */
-	public void clickedLoad() {
+	public void loadFromFile() {
 		resetBoard(); // issue command to clear the board / GUI
 		if(boardLoader.load(theBoard, theGUI))
 			resetUndoableCommands();
