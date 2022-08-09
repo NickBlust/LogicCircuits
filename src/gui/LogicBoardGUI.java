@@ -260,6 +260,10 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 		menuBar.updateUndoMenu(undoCount);
 	}
 	
+	public void updateRedoMenu(int redoCount) {
+		menuBar.updateRedoMenu(redoCount);
+	}
+	
 	
 	
 	/********************* KEY BINDINGS *********************/
@@ -311,6 +315,15 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("CTRL + Z");
 				controller.undoCommand(); } });	
+		
+		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
+                java.awt.event.InputEvent.CTRL_DOWN_MASK), "redo");
+		rootPane.getActionMap().put("redo",
+				new AbstractAction(){
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("CTRL + Y");
+				controller.redoCommand(); } });	
 	}
 	
 

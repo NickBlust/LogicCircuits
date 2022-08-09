@@ -43,6 +43,11 @@ public class LogicBoardMenu extends JMenuBar {
 	 */
 	JMenuItem menuItem_Undo;
 	
+	/** The menu item in the "Edit" menu which can be 
+	 * used to redo undone commands (like placing gates etc.).
+	 */
+	JMenuItem menuItem_Redo;
+	
 	
 	
 	/** Construct the menu bar and menus + menu items for the GUI.
@@ -112,7 +117,7 @@ public class LogicBoardMenu extends JMenuBar {
 	 * <li> resetting the board
 	 * <li> evaluating circuits on the board
 	 * <li> undoing commands
-	 * <li> TODO redoing commands
+	 * <li> redoing commands
 	 * </ul>
 	 */
 	private void initEditMenu() {
@@ -127,14 +132,13 @@ public class LogicBoardMenu extends JMenuBar {
         	}
         });
         
-        // TODO
-//        JMenuItem menuItem_Redo = new JMenuItem("Redo");
-//        editMenu.add(menuItem_Redo);
-//        menuItem_Redo.addActionListener(new ActionListener() {
-//        	public void actionPerformed(ActionEvent e) {
-//        		controller.redoCommand();
-//        	}
-//        });
+        menuItem_Redo = new JMenuItem("Redo");
+        editMenu.add(menuItem_Redo);
+        menuItem_Redo.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		controller.redoCommand();
+        	}
+        });
         
         JMenuItem menuItem_ResetBoard = new JMenuItem("Reset Board");
         editMenu.add(menuItem_ResetBoard);
@@ -207,6 +211,10 @@ public class LogicBoardMenu extends JMenuBar {
 	 */
 	public void updateUndoMenu(int undoCount) {
 		menuItem_Undo.setEnabled(undoCount > 0);
+	}
+	
+	public void updateRedoMenu(int redoCount) {
+		menuItem_Redo.setEnabled(redoCount > 0);
 	}
 	
 	/** This is just here because Eclipse complained about it. */

@@ -49,6 +49,7 @@ public class Controller {
 	 * </ol>
 	 */
 	private Stack<Command> pastCommands;
+	private Stack<Command> undoneCommands;
 	
 	/**	What is the current type of {@link gates.Gate Gate} to be added to the model?
 	 * Equals "null" if no tile is to be placed when clicking on the GUI. 
@@ -65,6 +66,7 @@ public class Controller {
 		boardLoader = new BoardLoader();
 		boardSaver = new BoardSaver();
 		resetUndoableCommands();
+		resetRedoableCommands();
 	}
 
 
@@ -277,8 +279,31 @@ public class Controller {
 	public void undoCommand() {
 		if(pastCommands.size() > 0) {
 			Command c = pastCommands.pop();
+			try { 
+				undoneCommands.push(c);				
+			} catch (StackOverflowError ex) {
+				undoneCommands = new Stack<Command>();
+				undoneCommands.push(c);				
+			}
 			System.out.println("Undoing " + c.getClass());
 			c.undo();
+			theGUI.updateUndoMenu(pastCommands.size());
+			theGUI.updateRedoMenu(undoneCommands.size());
+		}
+	}
+	
+	public void redoCommand() {
+		if (undoneCommands.size() > 0) {
+			Command c = undoneCommands.pop();
+			System.out.println("Redoing " + c.getClass());
+			try { 
+				pastCommands.push(c);				
+			} catch (StackOverflowError ex) {
+				pastCommands = new Stack<Command>();
+				pastCommands.push(c);				
+			}
+			c.execute();
+			theGUI.updateRedoMenu(undoneCommands.size());
 			theGUI.updateUndoMenu(pastCommands.size());
 		}
 	}
@@ -290,6 +315,13 @@ public class Controller {
 	private void resetUndoableCommands() {
 		pastCommands = new Stack<Command>();
 		theGUI.updateUndoMenu(pastCommands.size());
+	}
+	
+	/** Empty the stack with redoable commands
+	 * and disable the "Redo" button in the "Edit" menu. */
+	private void resetRedoableCommands() {
+		undoneCommands = new Stack<Command>();
+		theGUI.updateRedoMenu(undoneCommands.size());
 	}
 
 
