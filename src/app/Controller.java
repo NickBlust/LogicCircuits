@@ -195,8 +195,10 @@ public class Controller {
 	 */
 	public void loadFromFile() {
 		resetBoard(); // issue command to clear the board / GUI
-		if(boardLoader.load(theBoard, theGUI))
+		if(boardLoader.load(theBoard, theGUI)) {
 			resetUndoableCommands();
+			resetRedoableCommands();
+		}
 		else // if loading fails, undo resetting the board 
 			undoCommand();
 	}
@@ -219,6 +221,7 @@ public class Controller {
 	public void evaluateCircuits() { 
 		theBoard.evaluate(); 
 		resetUndoableCommands();
+		resetRedoableCommands();
 	}
 
 	
@@ -268,6 +271,7 @@ public class Controller {
 				pastCommands.push(c);				
 			}
 			theGUI.updateUndoMenu(pastCommands.size());
+			resetRedoableCommands();
 		}
 	}
 
