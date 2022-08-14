@@ -316,7 +316,7 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 				System.out.println("CTRL + Z");
 				controller.undoCommand(); } });	
 		
-		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
+		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
                 java.awt.event.InputEvent.CTRL_DOWN_MASK), "redo");
 		rootPane.getActionMap().put("redo",
 				new AbstractAction(){
