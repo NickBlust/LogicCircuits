@@ -92,6 +92,6 @@ public class BoardLoader {
 	private void openLoadingFailedWindow() {
 		if(loadingFailedWindow != null) // only allow one open window at a time
 			loadingFailedWindow.dispatchEvent(new WindowEvent(loadingFailedWindow, WindowEvent.WINDOW_CLOSING));
-		loadingFailedWindow = new InfoWindow("Saving Failed", 400, 120, "  Loading the board failed ... \n  Please make sure that the file is a .txt-file \n  and has the correct formatting!");
+		loadingFailedWindow = new InfoWindow("Loading Failed", 400, 120, "  Loading the board failed ... \n  Please make sure that the file is a .txt-file \n  and has the correct formatting!");
 	}
 }
