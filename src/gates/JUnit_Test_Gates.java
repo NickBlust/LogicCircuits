@@ -40,7 +40,8 @@ public class JUnit_Test_Gates extends TestCase {
 		assertFalse(f.output());
 	}
 	
-	/** Test method for the {@link gates.ANDgate ANDgate}. */
+	/** Test method for the {@link gates.ANDgate ANDgate}. 
+	 * Only general output and other inherited methods tested here; concrete methods of gates tested in single classes*/
 	@Test
 	public void test_ANDGate() {
 		Gate g = new ANDgate();
