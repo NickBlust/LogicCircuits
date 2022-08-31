@@ -92,6 +92,6 @@ public class BoardLoader {
 	private void openLoadingFailedWindow() {
 		if(loadingFailedWindow != null) // only allow one open window at a time
 			loadingFailedWindow.dispatchEvent(new WindowEvent(loadingFailedWindow, WindowEvent.WINDOW_CLOSING));
-		loadingFailedWindow = new InfoWindow("Loading Failed", 400, 120, "  Loading the board failed ... \n  Please make sure that the file is a .txt-file \n  and has the correct formatting!");
+		loadingFailedWindow = new InfoWindow("Loading Failed", 600, 420, "  Loading the board failed ... \n  Please make sure that the file is a .txt-file \n  and has the correct formatting, which is as follows: \n \n  In the first line should be three integers which \n  represent the number of coloumns, rows and gates. \n \n  In the next lines are specified the gates (type) and their \n  position by two ints (row, coloumn). \n \n  After that, all connections are specified, by stating one \n  connection in each line in the way \n  that four integers specify the row and coloumn of output and \n  input gate, and a TOP or BOTTOM specified if it reaches \n  the gate at top or bottom input.");
 	}
 }
