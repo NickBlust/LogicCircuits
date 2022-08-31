@@ -46,7 +46,26 @@ public class NOTgateTest extends TestCase {
 	 */
 	@Test
 	public void testSetInput() {
-		fail("Not yet implemented");
+		NOTgate not1 = new NOTgate();
+		TRUEgate t = new TRUEgate();
+		assertEquals(not1.inputs.get(GateIndex.BOTTOM), null);
+		assertEquals(not1.inputs.get(GateIndex.TOP), null);
+		assertEquals(not1.output(), true);
+		
+		not1.setInput(t, null);
+		assertEquals(not1.inputs.get(GateIndex.BOTTOM), null);
+		assertEquals(not1.inputs.get(GateIndex.TOP), null);
+		assertEquals(not1.output(), true);
+		
+		not1.setInput(t, GateIndex.BOTTOM);
+		assertEquals(not1.inputs.get(GateIndex.BOTTOM), t);
+		assertEquals(not1.inputs.get(GateIndex.TOP), null);
+		assertEquals(not1.output(), true);
+		
+		not1.setInput(t, GateIndex.TOP);
+		assertEquals(not1.inputs.get(GateIndex.TOP), t);
+		assertEquals(not1.inputs.get(GateIndex.BOTTOM), null);
+		assertEquals(not1.output(), false);
 	}
 
 	/**

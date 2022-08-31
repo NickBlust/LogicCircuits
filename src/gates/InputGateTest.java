@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author philb
+ * @author Philipp Grzywaczyk
  *
  */
 public class InputGateTest extends TestCase {
