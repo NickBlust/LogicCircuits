@@ -43,7 +43,14 @@ public class JUnit_Test_Gates extends TestCase {
 	/** Test method for the {@link gates.ANDgate ANDgate}. */
 	@Test
 	public void test_ANDGate() {
-		Gate g = new ANDgate();
+		ANDgate g = new ANDgate();
+		assertEquals("AND", g.name()); 
+		
+		assertEquals(true, g.computeOutput(true, true));
+		assertEquals(false, g.computeOutput(false, true));
+		assertEquals(false, g.computeOutput(true, false));
+		assertEquals(false, g.computeOutput(false, false));
+		
 		g.setInput(new TRUEgate(), GateIndex.TOP);
 		g.setInput(new TRUEgate(), GateIndex.BOTTOM);
 		assertTrue(g.output());
