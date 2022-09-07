@@ -5,10 +5,17 @@ package boardModel;
 
 import static org.junit.Assert.*;
 import junit.framework.TestCase;
+import utility.Vector2Int;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import app.Controller;
+import gates.ANDgate;
+import gates.GateIndex;
+import gates.TRUEgate;
+import gui.LogicBoardGUI;
 
 /**
  * @author philb
@@ -36,8 +43,45 @@ public class LogicBoardTest extends TestCase {
 	 * Test method for {@link boardModel.LogicBoard#addGate(gates.Gate, utility.Vector2Int)}.
 	 */
 	@Test
-	public void testAddGate() {
-		fail("Not yet implemented");
+	public void testAddGate_getOutputGates() {
+		Controller ctrl = new Controller();
+		LogicBoardGUI gui = new LogicBoardGUI(ctrl);
+		LogicBoard board = new LogicBoard(gui);
+		
+		// Make a new gate and assert it is not yet contained anywhere
+		ANDgate and = new ANDgate();
+		Vector2Int v = new Vector2Int(3,4);
+		assertEquals(board.gates.containsValue(and), false);
+		assertEquals(board.outputGates.containsKey(and), false);
+		
+		// Add the Gate and check it is added to the corresponding maps
+		board.addGate(and, v);
+		assertEquals(board.gates.containsValue(and), true);
+		assertEquals(board.gates.get(v), and);
+		assertEquals(board.outputGates.containsKey(and), true);
+		assertEquals(board.outputGates.get(and), (Integer)0);
+		assertEquals(board.getOutputGates(), board.outputGates);
+		
+		// Add a second gate and check the same
+		TRUEgate t = new TRUEgate();
+		Vector2Int w = new Vector2Int(1,1);
+		board.addGate(t,w);
+		assertEquals(board.gates.containsValue(t), true);
+		assertEquals(board.gates.get(w), t);
+		assertEquals(board.outputGates.containsKey(t), true);
+		assertEquals(board.outputGates.get(t), (Integer)0);
+		assertEquals(board.getOutputGates().size(), 2);
+		
+		// Connect these gates and check the connection
+		board.addConnection(w, v, GateIndex.TOP);
+		assertEquals(board.gates.get(v).getInput(GateIndex.TOP), t);
+		
+		
+		
+		
+		
+		
+		
 	}
 
 	/**
@@ -117,14 +161,6 @@ public class LogicBoardTest extends TestCase {
 	 */
 	@Test
 	public void testGetGates() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link boardModel.LogicBoard#getOutputGates()}.
-	 */
-	@Test
-	public void testGetOutputGates() {
 		fail("Not yet implemented");
 	}
 
