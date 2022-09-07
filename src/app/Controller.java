@@ -14,6 +14,7 @@ import java.util.Stack;
 import boardModel.LogicBoard;
 
 /**
+ * Central part of the program
  * @author Dominik Baumann, Philipp Grzywaczyk
  * @version 2, July 2022
  * <p>

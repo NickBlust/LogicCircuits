@@ -10,7 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author philipp
+ * Test class for the class FALSEgate
+ * @author philipp grzywaczyk
+ * @version 2, September 2022
+ * <p>
  * Test class for the FALSEgate
  * This tests the methods which are coded within the class FALSEgate for their "isolated"
  * functionality; while general gate methods are tested in {@link gates.GateTest GateTest}

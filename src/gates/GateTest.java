@@ -11,7 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author philipp
+ * Test class for the class Gate
+ * @author philipp grzywaczyk
+ * @version 2, September 2022
+ * <p>
  * Test class for the Gate class.
  * All "general" gate methoda are tested here, while abstract methods are tested where they
  * are implemented.
