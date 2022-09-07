@@ -10,7 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author philb
+ * @author philipp grzywaczyk
+ * Test class for the TRUEgate
+ * This tests the methods which are coded within the class TRUEgate for their "isolated"
+ * functionality; while general gate methods are tested in {@link gates.JUnit_Test_Gates.java JUnit_Test_Gates}
  *
  */
 public class TRUEgateTest extends TestCase {

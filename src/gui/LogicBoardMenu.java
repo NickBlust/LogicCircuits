@@ -213,6 +213,11 @@ public class LogicBoardMenu extends JMenuBar {
 		menuItem_Undo.setEnabled(undoCount > 0);
 	}
 	
+	/** Only have the "{@link gui.LogicBoardMenu#menuItem_Redo Redo}"
+	 *  menu item enabled, if the number
+	 * of commands that can be redone is positive.
+	 * @param redoCount The current number of redoable commands.
+	 */
 	public void updateRedoMenu(int redoCount) {
 		menuItem_Redo.setEnabled(redoCount > 0);
 	}

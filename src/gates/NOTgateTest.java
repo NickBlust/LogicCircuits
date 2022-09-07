@@ -11,7 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author philipp
+ * @author philipp grzywaczyk
+ * Test class for the NOTgate
+ * This tests the methods which are coded within the class NOTgate for their "isolated"
+ * functionality; while general gate methods are tested in {@link gates.JUnit_Test_Gates.java JUnit_Test_Gates}
  *
  */
 public class NOTgateTest extends TestCase {

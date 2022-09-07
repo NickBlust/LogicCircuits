@@ -23,8 +23,14 @@ import gui.LogicBoardGUI;
 import gui.TileType;
 
 /**
- * @author philb
- *
+ * @author Philipp Grzywaczyk
+ * @version 2, September 2022
+ * <p>
+ * The test class for the underlying model of a logic board.
+ * <p>
+ * Since there would be a lot of doubling in testing each method on its own,
+ * we have one test method where we go through the procedure of building a circuit
+ * and test all (good testable) methods along the way.
  */
 public class LogicBoardTest extends TestCase {
 

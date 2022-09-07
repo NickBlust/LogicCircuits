@@ -11,7 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author Philipp Grzywaczyk
+ * @author philipp grzywaczyk
+ * Test class for the InputGate
+ * This tests the methods which are coded within the class InputGate for their "isolated"
+ * functionality; while general gate methods are tested in {@link gates.JUnit_Test_Gates.java JUnit_Test_Gates}
+ * and methods which are left abstract are again tested where tey're implemented.
  *
  */
 public class InputGateTest extends TestCase {

@@ -41,7 +41,7 @@ public class Controller {
 	private PositionCalculator positionCalculator;
 	
 	/** Stores commands that have been executed, such as placing tiles or drawing connections. 
-	 * <p> Such commands can be undone (see "Edit"-menu) and TODO redone.
+	 * <p> Such commands can be undone (see "Edit"-menu).
 	 * <p> The storage of commands is emptied when
 	 * <ol>
 	 * <li> the board is evaluated, and
@@ -49,6 +49,15 @@ public class Controller {
 	 * </ol>
 	 */
 	private Stack<Command> pastCommands;
+	
+	/** Stores commands that have been undone, such as placing tiles or drawing connections. 
+	 * <p> Such commands can be redone again (see "Edit"-menu)
+	 * <p> The storage of commands is emptied when
+	 * <ol>
+	 * <li> the board is evaluated, and
+	 * <li> when a board is successfully loaded from a file.
+	 * </ol>
+	 */
 	private Stack<Command> undoneCommands;
 	
 	/**	What is the current type of {@link gates.Gate Gate} to be added to the model?
@@ -278,7 +287,7 @@ public class Controller {
 	
 	
 	/** Undo the most recent command on the stack (if there is any).
-	 * TODO place undone commands on the redo stack
+	 * And places undone commands on the redo stack, and update the GUI.
 	 */
 	public void undoCommand() {
 		if(pastCommands.size() > 0) {
@@ -296,6 +305,9 @@ public class Controller {
 		}
 	}
 	
+	/** Redo the most recent undone commands on the stack (if there are any).
+	 * And places redone commands on the undo stack, and update the GUI.
+	 */
 	public void redoCommand() {
 		if (undoneCommands.size() > 0) {
 			Command c = undoneCommands.pop();
