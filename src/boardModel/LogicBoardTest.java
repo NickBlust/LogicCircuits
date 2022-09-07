@@ -23,6 +23,7 @@ import gui.LogicBoardGUI;
 import gui.TileType;
 
 /**
+ * The test class for the underlying model of a logic board.
  * @author Philipp Grzywaczyk
  * @version 2, September 2022
  * <p>

@@ -15,6 +15,7 @@ import utility.Vector2Int;
 import utility.Vector3Int;
 
 /**
+ * The underlying model of a logic board.
  * @author Dominik Baumann
  * @version 2, July 2022
  * <p>

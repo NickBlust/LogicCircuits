@@ -17,6 +17,7 @@ import gui.LogicBoardGUI;
 import utility.Vector2Int;
 
 /**
+ * This class provides the functionality to load a board
  * @author Dominik Baumann
  * @version 2, July 2022
  * <p>

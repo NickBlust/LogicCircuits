@@ -4,6 +4,7 @@ import gates.*;
 import gui.TileType;
 
 /**
+ * Helper class
  * @author Dominik Baumann
  * @version 2, July 2022
  * <p>

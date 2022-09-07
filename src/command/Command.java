@@ -2,9 +2,9 @@ package command;
 
 /** A command wraps a task - like placing a gate in the model -
  * into an object, storing the necessary information to
- * undo and (TODO) redo the task.
+ * undo and redo the task.
  * 
- * @author Dominik Baumann
+ * @author Dominik Baumann, Philipp Grzywaczyk
  * @version 2, July 2022
  * @see app.Controller
  */

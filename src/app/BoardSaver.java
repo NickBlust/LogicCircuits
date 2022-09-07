@@ -11,6 +11,7 @@ import boardModel.LogicBoard;
 import gui.InfoWindow;
 
 /**
+ * This class provides the functionality to save a board
  * @author Dominik Baumann
  * @version 2, July 2022
  * <p>
