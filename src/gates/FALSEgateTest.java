@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author philipp
  * Test class for the FALSEgate
  * This tests the methods which are coded within the class FALSEgate for their "isolated"
- * functionality; while general gate methods are tested in {@link gates.JUnit_Test_Gates.java JUnit_Test_Gates}
+ * functionality; while general gate methods are tested in {@link gates.GateTest GateTest}
  *
  */
 public class FALSEgateTest extends TestCase {

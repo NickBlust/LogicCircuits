@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author philipp
  * Testclass for the ANDgate
  * This tests the methods which are coded within the class ANDgate for their "isolated"
- * functionality; while general gate methods are tested in {@link gates.JUnit_Test_Gates.java JUnit_Test_Gates}
+ * functionality; while general gate methods are tested in {@link gates.GateTest GateTest}
  *
  */
 public class ANDgateTest extends TestCase {

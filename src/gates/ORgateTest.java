@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author philipp grzywaczyk
  * Test class for the ORgate
  * This tests the methods which are coded within the class ORgate for their "isolated"
- * functionality; while general gate methods are tested in {@link gates.JUnit_Test_Gates.java JUnit_Test_Gates}
+ * functionality; while general gate methods are tested in {@link gates.GateTest GateTest}
  *
  */
 public class ORgateTest extends TestCase {
