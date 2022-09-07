@@ -19,7 +19,7 @@ import boardModel.LogicBoard;
  * @version 2, July 2022
  * <p>
  * The central part of the program, which facilitates communication between
- * the gui and the model, but the gui cannot change the model /view-model-controller model and stuff ... TODO
+ * the gui and the model, but the gui cannot change the model /view-model-controller model
  */
 public class Controller {
 	
