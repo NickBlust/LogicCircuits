@@ -175,9 +175,9 @@ public class LogicBoard {
 	
 	/******* COMMUNICATION WITH GUI *******/
 	
-	// create a list of tiles to paint
-	// a list of points for which to draw lines + boolean with one input or two inputs
-	// looks like extra work, but the gui should not be allowed to modify the model.
+	/** 
+	 * Draws the tiles representing gates and their connections. 
+	 */
 	private void updateGUI() {
 		TreeMap<Vector2Int, TileType> tiles = new TreeMap<Vector2Int, TileType>();
 		ArrayList<PointTupleWithStatus> connections = new ArrayList<PointTupleWithStatus>();

@@ -50,4 +50,9 @@ public class ResetBoard implements Command {
 	public void undo() {
 		model.setGates(gates_, outputGates_);
 	}
+
+	@Override
+	public boolean redo() {
+		return execute();
+	}
 }

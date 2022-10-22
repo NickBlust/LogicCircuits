@@ -64,6 +64,12 @@ public class TryToRemoveConnection implements Command {
 		model.addConnection(providesInput, getsInput, index);
 	}
 	
+
+	@Override
+	public boolean redo() {
+		return model.attemptConnectionRemoval(pos, this);
+	}
+	
 	/** This command actually is passed on by the controller to the model,
 	 * to facilitate the storage of the positions of the gates
 	 * between which a connection was removed (the input's index also 

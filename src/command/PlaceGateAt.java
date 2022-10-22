@@ -66,10 +66,16 @@ public class PlaceGateAt implements Command {
 	public void undo() {
 		if(previousGateAtPosition != null) {
 			model.addGate(previousGateAtPosition, targetPos);	
-			model.addConnection(previousInputTOP, targetPos, GateIndex.TOP);
-			model.addConnection(previousInputBOTTOM, targetPos, GateIndex.BOTTOM);
+			if(previousInputTOP != null) { model.addConnection(previousInputTOP, targetPos, GateIndex.TOP); }
+			if(previousInputTOP != null) { model.addConnection(previousInputBOTTOM, targetPos, GateIndex.BOTTOM); }
 		}
 		else
 			model.removeGate(targetPos);
+	}
+	
+
+	@Override
+	public boolean redo() {
+		return execute();
 	}
 }

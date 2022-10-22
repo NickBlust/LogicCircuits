@@ -18,8 +18,13 @@ public interface Command {
 	 */
 	public boolean execute();
 	
-	/** Reverses the effect of the task carried out
-	 * by this command.
-	 */
+	/** Reverses the effect of the task carried out by this command. */
 	public void undo();
+	
+	/** Repeats the effect of the task carried out by this command
+	 * after that command has been undone. 
+	 * @return "true" iff this operation was completed successfully 
+	 * (and thus pushed onto the stack for redoable commands) 
+	 */
+	public boolean redo();
 }

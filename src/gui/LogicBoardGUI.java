@@ -264,7 +264,6 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 	 * "Redo" menu item enabled, when there actually is
 	 * an undone command to redo.
 	 * @param redoCount The current number of redoable commands.
-	 * <p>
 	 */
 	public void updateRedoMenu(int redoCount) {
 		menuBar.updateRedoMenu(redoCount);

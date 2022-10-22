@@ -53,4 +53,9 @@ public class RemoveGateAt implements Command {
 					oldConnections.get(i).ind);
 		}
 	}
+	
+	@Override
+	public boolean redo() {
+		return execute();
+	}
 }

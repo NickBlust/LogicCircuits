@@ -49,7 +49,7 @@ public class Controller {
 	 * <li> when a board is successfully loaded from a file.
 	 * </ol>
 	 */
-	private Stack<Command> pastCommands;
+	private Stack<Command> undoableCommands;
 	
 	/** Stores commands that have been undone, such as placing tiles or drawing connections. 
 	 * <p> Such commands can be redone again (see "Edit"-menu)
@@ -59,7 +59,7 @@ public class Controller {
 	 * <li> when a board is successfully loaded from a file.
 	 * </ol>
 	 */
-	private Stack<Command> undoneCommands;
+	private Stack<Command> redoableCommands;
 	
 	/**	What is the current type of {@link gates.Gate Gate} to be added to the model?
 	 * Equals "null" if no tile is to be placed when clicking on the GUI. 
@@ -201,7 +201,7 @@ public class Controller {
 	/** Empties the board and tries to load a board model from a .txt-file.
 	 * If loading fails, restore the board that was present before loading was attempted.
 	 * <P>
-	 * Successful loading empties the {@link app.Controller#pastCommands stack of undoable commands}.
+	 * Successful loading empties the {@link app.Controller#undoableCommands stack of undoable commands}.
 	 */
 	public void loadFromFile() {
 		resetBoard(); // issue command to clear the board / GUI
@@ -275,12 +275,12 @@ public class Controller {
 	private void executeCommand(Command c) {
 		if(c.execute()) {
 			try { 
-				pastCommands.push(c);				
+				undoableCommands.push(c);				
 			} catch (StackOverflowError ex) {
-				pastCommands = new Stack<Command>();
-				pastCommands.push(c);				
+				undoableCommands = new Stack<Command>();
+				undoableCommands.push(c);				
 			}
-			theGUI.updateUndoMenu(pastCommands.size());
+			theGUI.updateUndoMenu(undoableCommands.size());
 			resetRedoableCommands();
 		}
 	}
@@ -291,18 +291,18 @@ public class Controller {
 	 * And places undone commands on the redo stack, and update the GUI.
 	 */
 	public void undoCommand() {
-		if(pastCommands.size() > 0) {
-			Command c = pastCommands.pop();
+		if(undoableCommands.size() > 0) {
+			Command c = undoableCommands.pop();
 			try { 
-				undoneCommands.push(c);				
+				redoableCommands.push(c);				
 			} catch (StackOverflowError ex) {
-				undoneCommands = new Stack<Command>();
-				undoneCommands.push(c);				
+				redoableCommands = new Stack<Command>();
+				redoableCommands.push(c);				
 			}
 			System.out.println("Undoing " + c.getClass());
 			c.undo();
-			theGUI.updateUndoMenu(pastCommands.size());
-			theGUI.updateRedoMenu(undoneCommands.size());
+			theGUI.updateUndoMenu(undoableCommands.size());
+			theGUI.updateRedoMenu(redoableCommands.size());
 		}
 	}
 	
@@ -310,18 +310,19 @@ public class Controller {
 	 * And places redone commands on the undo stack, and update the GUI.
 	 */
 	public void redoCommand() {
-		if (undoneCommands.size() > 0) {
-			Command c = undoneCommands.pop();
+		if (redoableCommands.size() > 0) {
+			Command c = redoableCommands.pop();
 			System.out.println("Redoing " + c.getClass());
-			try { 
-				pastCommands.push(c);				
-			} catch (StackOverflowError ex) {
-				pastCommands = new Stack<Command>();
-				pastCommands.push(c);				
+			if(c.redo()) {
+				try { 
+					undoableCommands.push(c);				
+				} catch (StackOverflowError ex) {
+					undoableCommands = new Stack<Command>();
+					undoableCommands.push(c);				
+				}
 			}
-			c.execute();
-			theGUI.updateRedoMenu(undoneCommands.size());
-			theGUI.updateUndoMenu(pastCommands.size());
+			theGUI.updateRedoMenu(redoableCommands.size());
+			theGUI.updateUndoMenu(undoableCommands.size());
 		}
 	}
 
@@ -330,21 +331,21 @@ public class Controller {
 	/** Empty the stack with undoable commands
 	 * and disable the "Undo" button in the "Edit" menu. */
 	private void resetUndoableCommands() {
-		pastCommands = new Stack<Command>();
-		theGUI.updateUndoMenu(pastCommands.size());
+		undoableCommands = new Stack<Command>();
+		theGUI.updateUndoMenu(undoableCommands.size());
 	}
 	
 	/** Empty the stack with redoable commands
 	 * and disable the "Redo" button in the "Edit" menu. */
 	private void resetRedoableCommands() {
-		undoneCommands = new Stack<Command>();
-		theGUI.updateRedoMenu(undoneCommands.size());
+		redoableCommands = new Stack<Command>();
+		theGUI.updateRedoMenu(redoableCommands.size());
 	}
 
 
 	
 	/** @return The count of undoable commands on the corresponding stack of commands. */
-	public int numberOfUndoableCommands() { return pastCommands.size(); }
+	public int numberOfUndoableCommands() { return undoableCommands.size(); }
 
 	
 	

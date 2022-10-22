@@ -21,6 +21,15 @@ public class ConnectGates implements Command {
 	/** The input of a gate the connection is leads to. */
 	private Vector2Int toInput;
 	
+	/** If there already existed a connection to the input
+	 * that is being connected to by this command, then
+	 * the position of that old input-gate is stored here.
+	 * Default value is (-1, -1), which indicates
+	 * no previous input (as the upper left tile on the board
+	 * has coordinates (0, 0).
+	 */
+	private Vector2Int oldInput = new Vector2Int(-1, -1);
+	
 	
 	/** Specify which of the inputs was connected to. */
 	private GateIndex inputIndex;
@@ -38,12 +47,31 @@ public class ConnectGates implements Command {
 
 	@Override
 	public boolean execute() {
+		// check if another connection already existed
+		// if so, store it so that you can recreate it
+		if(model.getGate(toInput).getInput(inputIndex) != null) {
+			oldInput = model.getPositionOfGate(model.getGate(toInput).getInput(inputIndex));
+			System.out.println(oldInput);
+		}
+		
 		model.addConnection(fromOutput, toInput, inputIndex);
 		return true;
 	}
 
 	@Override
 	public void undo() {
-		model.removeConnection(toInput, inputIndex);	
+		model.removeConnection(toInput, inputIndex);
+		// recreate connection if applicable
+		System.out.println("Recreating? " + oldInput);
+		if(!oldInput.equals(new Vector2Int(-1, -1)))
+			model.addConnection(oldInput, toInput, inputIndex);
+	}
+	
+	@Override
+	public boolean redo() {
+		if(!oldInput.equals(new Vector2Int(-1, -1)))
+			model.removeConnection(toInput, inputIndex);
+		model.addConnection(fromOutput, toInput, inputIndex);
+		return true;
 	}
 }
