@@ -23,6 +23,7 @@ import org.junit.Test;
 public class NOTgateTest extends TestCase {
 
 	/**
+	 * Set Up Method, uses set up of super class
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -31,6 +32,7 @@ public class NOTgateTest extends TestCase {
 	}
 
 	/**
+	 * Tear Down Method, uses tear down of super class
 	 * @throws java.lang.Exception
 	 */
 	@After
@@ -40,6 +42,7 @@ public class NOTgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.NOTgate#name()}.
+	 * Checks that name() returns the correct string
 	 */
 	@Test
 	public void testName() {
@@ -49,6 +52,9 @@ public class NOTgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.NOTgate#setInput(gates.Gate, gates.GateIndex)}.
+	 * checks that setting the input at position TOP always works and returns the correct (negated) value,
+	 * and that setting something at the BOTTOM Index does not do anything, as it is not a valid
+	 * input for this type of Gate.
 	 */
 	@Test
 	public void testSetInput() {
@@ -76,6 +82,7 @@ public class NOTgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.NOTgate#computeOutput(boolean, boolean)}.
+	 * Tests that the Output of the NOT Gate is correct, always negation of Input in TOP
 	 */
 	@Test
 	public void testComputeOutput() {

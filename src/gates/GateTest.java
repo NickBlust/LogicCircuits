@@ -16,13 +16,14 @@ import org.junit.Test;
  * @version 2, September 2022
  * <p>
  * Test class for the Gate class.
- * All "general" gate methoda are tested here, while abstract methods are tested where they
+ * All "general" gate methods are tested here, while abstract methods are tested where they
  * are implemented.
  *
  */
 public class GateTest extends TestCase {
 
 	/**
+	 * Set Up Method, uses set up of super class
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -31,6 +32,7 @@ public class GateTest extends TestCase {
 	}
 
 	/**
+	 * Tear Down Method, uses tear down of super class
 	 * @throws java.lang.Exception
 	 */
 	@After
@@ -40,6 +42,7 @@ public class GateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.Gate#status()}.
+	 * Tests that status is uneval at creation, and when changed, the method returns correct status.
 	 */
 	@Test
 	public void testStatus() {
@@ -51,6 +54,7 @@ public class GateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.Gate#setStatus(boolean)}.
+	 * Tests that setting the status works.
 	 */
 	@Test
 	public void testSetStatus() {

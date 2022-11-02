@@ -22,6 +22,7 @@ import org.junit.Test;
 public class NORgateTest extends TestCase {
 
 	/**
+	 * Set Up Method, uses set up of super class
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -30,6 +31,7 @@ public class NORgateTest extends TestCase {
 	}
 
 	/**
+	 * Tear Down Method, uses tear down of super class
 	 * @throws java.lang.Exception
 	 */
 	@After
@@ -39,6 +41,7 @@ public class NORgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.NORgate#name()}.
+	 * Checks that name() returns the correct string
 	 */
 	@Test
 	public void testName() {
@@ -48,6 +51,7 @@ public class NORgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.NORgate#computeOutput(boolean, boolean)}.
+	 * Checks that our object behaves such as a NOR Gate should.
 	 */
 	@Test
 	public void testComputeOutput() {

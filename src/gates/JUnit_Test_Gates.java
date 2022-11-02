@@ -15,13 +15,17 @@ import junit.framework.TestCase;
 public class JUnit_Test_Gates extends TestCase {
 
 
-	/** @throws java.lang.Exception */
+	/** 
+	 * Set Up Method, uses set up of super class
+	 * @throws java.lang.Exception */
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
 	}
 
-	/** @throws java.lang.Exception */
+	/** 
+	 * Tear Down Method, uses tear down of super class
+	 * @throws java.lang.Exception */
 	@After
 	public void tearDown() throws Exception {
 		super.tearDown();

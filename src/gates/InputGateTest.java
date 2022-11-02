@@ -24,6 +24,7 @@ import org.junit.Test;
 public class InputGateTest extends TestCase {
 
 	/**
+	 * Set Up Method, uses set up of super class
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -32,6 +33,7 @@ public class InputGateTest extends TestCase {
 	}
 
 	/**
+	 * Tear Down Method, uses tear down of super class
 	 * @throws java.lang.Exception
 	 */
 	@After
@@ -59,7 +61,7 @@ public class InputGateTest extends TestCase {
 		assertEquals(g.status, Status.TRUE);
 		
 		/**
-		 * This tests seting the inputs and getting the inputs 
+		 * This tests setting the inputs and getting the inputs 
 		 */
 		g.setInput(f, GateIndex.BOTTOM);
 		g.setInput(t, GateIndex.TOP);
@@ -80,7 +82,7 @@ public class InputGateTest extends TestCase {
 		assertEquals(g.status, Status.FALSE);
 		
 		/**
-		 * tests resetStatus
+		 * tests resetStatus. after reseting, status should be uneval.
 		 */
 		g.resetStatus();
 		assertEquals(g.status, Status.UNEVALUATED);

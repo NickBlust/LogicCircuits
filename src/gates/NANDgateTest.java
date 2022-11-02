@@ -22,6 +22,7 @@ import org.junit.Test;
 public class NANDgateTest extends TestCase {
 
 	/**
+	 * Set Up Method, uses set up of super class
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -30,6 +31,7 @@ public class NANDgateTest extends TestCase {
 	}
 
 	/**
+	 * Tear Down Method, uses tear down of super class
 	 * @throws java.lang.Exception
 	 */
 	@After
@@ -39,6 +41,7 @@ public class NANDgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.NANDgate#name()}.
+	 * Checks that name() returns the correct string
 	 */
 	@Test
 	public void testName() {
@@ -48,6 +51,7 @@ public class NANDgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.ANDgate#computeOutput(boolean, boolean)}.
+	 * checks that our object NAND behaves such as an NAND Gate should.
 	 */
 	@Test
 	public void testComputeOutput() {

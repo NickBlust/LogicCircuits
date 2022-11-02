@@ -22,6 +22,7 @@ import org.junit.Test;
 public class XORgateTest extends TestCase {
 
 	/**
+	 * Set Up Method, uses set up of super class
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -30,6 +31,7 @@ public class XORgateTest extends TestCase {
 	}
 
 	/**
+	 * Tear Down Method, uses tear down of super class
 	 * @throws java.lang.Exception
 	 */
 	@After
@@ -39,6 +41,7 @@ public class XORgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.XORgate#name()}.
+	 * Checks that name() returns the correct string
 	 */
 	@Test
 	public void testName() {
@@ -48,6 +51,7 @@ public class XORgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.XORgate#computeOutput(boolean, boolean)}.
+	 * Tests that this object behaves correctly for a XOR gate.
 	 */
 	@Test
 	public void testComputeOutput() {

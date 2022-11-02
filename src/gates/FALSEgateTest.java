@@ -22,6 +22,7 @@ import org.junit.Test;
 public class FALSEgateTest extends TestCase {
 
 	/**
+	 * Set Up Method, uses set up of super class
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -30,6 +31,7 @@ public class FALSEgateTest extends TestCase {
 	}
 
 	/**
+	 * Tear Down Method, uses tear down of super class
 	 * @throws java.lang.Exception
 	 */
 	@After
@@ -39,6 +41,7 @@ public class FALSEgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.FALSEgate#name()}.
+	 * Checks that name() returns the correct string
 	 */
 	@Test
 	public void testName() {
@@ -48,6 +51,7 @@ public class FALSEgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.FALSEgate#output()}.
+	 * Checks that the output is always 'false'
 	 */
 	@Test
 	public void testOutput() {
@@ -57,6 +61,7 @@ public class FALSEgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.FALSEgate#getInput(gates.GateIndex)}.
+	 * Checks that both Input getters return 'null', as this gate is not supposed to get input values.
 	 */
 	@Test
 	public void testGetInput() {
@@ -67,6 +72,7 @@ public class FALSEgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.FALSEgate#resetStatus()}.
+	 * Checks that upon creation and also after reseting the status is false.
 	 */
 	@Test
 	public void testResetStatus() {

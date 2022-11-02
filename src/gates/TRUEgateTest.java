@@ -22,6 +22,7 @@ import org.junit.Test;
 public class TRUEgateTest extends TestCase {
 
 	/**
+	 * Set Up Method, uses set up of super class
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -30,6 +31,7 @@ public class TRUEgateTest extends TestCase {
 	}
 
 	/**
+	 * Tear Down Method, uses tear down of super class
 	 * @throws java.lang.Exception
 	 */
 	@After
@@ -39,6 +41,7 @@ public class TRUEgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.TRUEgate#name()}.
+	 * Checks that name() returns the correct string
 	 */
 	@Test
 	public void testName() {
@@ -48,6 +51,7 @@ public class TRUEgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.TRUEgate#output()}.
+	 * Checks that output is always 'true'
 	 */
 	@Test
 	public void testOutput() {
@@ -57,6 +61,7 @@ public class TRUEgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.TRUEgate#getInput(gates.GateIndex)}.
+	 * Tests that the get input works correctly, and that a new gate has no input
 	 */
 	@Test
 	public void testGetInput() {
@@ -67,6 +72,8 @@ public class TRUEgateTest extends TestCase {
 
 	/**
 	 * Test method for {@link gates.TRUEgate#resetStatus()}.
+	 * Tests that reseting of the status works correctly and that at creation and after
+	 * reseting it is 'true'
 	 */
 	@Test
 	public void testResetStatus() {
