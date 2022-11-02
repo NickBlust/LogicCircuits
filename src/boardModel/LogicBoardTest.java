@@ -1,6 +1,3 @@
-/**
- * 
- */
 package boardModel;
 
 import static org.junit.Assert.*;
@@ -36,6 +33,7 @@ import gui.TileType;
 public class LogicBoardTest extends TestCase {
 
 	/**
+	 * Set Up Method, uses the super-class method
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -44,6 +42,7 @@ public class LogicBoardTest extends TestCase {
 	}
 
 	/**
+	 * Tear down Method, uses the super-class method
 	 * @throws java.lang.Exception
 	 */
 	@After
@@ -68,6 +67,17 @@ public class LogicBoardTest extends TestCase {
 	 * {@link boardModel.LogicBoard#getGate(Vector2Int v)}.
 	 * {@link boardModel.LogicBoard#getGateType(Vector2Int v)}.
 	 * {@link boardModel.LogicBoard#getPositionOfGate(Gate g)}.
+	 * 
+	 * The Test proceeds by first creating a new gate and asserting it is not yet connected or contained anywhere.
+	 * Then we add this new gate to the board, and check it is indeed added and
+	 * all maps have the right values. After that, we add a second gate, check the same,
+	 * and then connect these gates, checking the connection is added correctly.
+	 * We then substitute one gate through another and check the connection still holds.
+	 * We remove an input Gate, and check how this changes the input value of the gate it was connected to.
+	 * After that, we use the Reset function and check everything is indeed empty.
+	 * Then we add new gates, check everything is right with them, and build a cycle.
+	 * We use this to check for cycles and removing connection functions.
+	 * Then we complete it to a valid circuit and evaluate this, checking everything works.
 	 */
 	@Test
 	public void test_LogicBoard() {
