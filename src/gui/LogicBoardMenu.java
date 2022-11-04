@@ -69,13 +69,13 @@ public class LogicBoardMenu extends JMenuBar {
 	 */
 	private void setHelpAndAboutText() {
     	try {
-			helpText = Files.readString(Path.of("bin\\assets\\helpText.txt"));
+			helpText = Files.readString(Path.of("assets\\helpText.txt"));
 		} catch (IOException e1) {
 			helpText = "Failed to load \'Help\' text"; 
 			e1.printStackTrace();
 		}
     	try {
-			aboutText = Files.readString(Path.of("bin\\assets\\aboutText.txt"));
+			aboutText = Files.readString(Path.of("assets\\aboutText.txt"));
 		} catch (IOException e1) {
 			aboutText = "Failed to load \'About\' text"; 
 			e1.printStackTrace();
