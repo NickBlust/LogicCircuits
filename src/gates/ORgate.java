@@ -1,11 +1,9 @@
-/**
- * 
- */
 package gates;
 
 /**
  * This gate returns true iff at least one of its input values was treu.
  * @author Dominik Baumann, Philipp Grzywaczyk
+<<<<<<< HEAD
  */
 public class ORgate extends InputGate {
 
@@ -41,4 +39,20 @@ public class ORgate extends InputGate {
 		if(i != 0 && i != 1) { return; }
 		inputs[i] = g;
 	}
+=======
+ * @version 2, July 2022
+ */
+public class ORgate extends InputGate {
+
+	/** By default, this gate uses two input values. */
+	public ORgate() { }
+
+	@Override
+	protected boolean computeOutput(boolean a, boolean b) {
+		return a || b;
+	}
+
+	@Override
+	public String name() { return "OR";}
+>>>>>>> total_refactor_philipp_additions
 }

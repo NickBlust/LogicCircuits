@@ -1,16 +1,19 @@
-/**
- * 
- */
 package gates;
 
 /**
+<<<<<<< HEAD
  * @author Dominik Baumann, Philipp Grzywaczyk
+=======
+>>>>>>> total_refactor_philipp_additions
  * This gate always returns false!
- * Use this internally for user input.
+ * <p> Use this internally for user input.
+ * @author Dominik Baumann, Philipp Grzywaczyk
+ * @version 2, July 2022
  */
 public class FALSEgate extends ConstGate {
 
 	/** This gate uses no input values. */
+<<<<<<< HEAD
 	public FALSEgate() {}
 		
 	/** Always returns null, as this gate has no input. */
@@ -22,6 +25,10 @@ public class FALSEgate extends ConstGate {
 //		}
 	}
 	
+=======
+	public FALSEgate() { resetStatus(); }
+
+>>>>>>> total_refactor_philipp_additions
 	/** Always returns false.
 	 * @return false
 	 */
@@ -33,5 +40,18 @@ public class FALSEgate extends ConstGate {
 	 * @param i (ignored)
 	 */
 	@Override
+<<<<<<< HEAD
 	public void setInput(Gate g, int i) { /*do nothing*/ }
+=======
+	public Gate getInput(GateIndex i) { return null; }
+
+	@Override
+	public void setInput(Gate g, GateIndex i) { /* do nothing */ }
+
+	@Override
+	public String name() { return "FALSE";}
+	
+	@Override
+	public void resetStatus() { status = Status.FALSE; }
+>>>>>>> total_refactor_philipp_additions
 }

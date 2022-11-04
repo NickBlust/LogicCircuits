@@ -1,0 +1,15 @@
+ --- Logic Circuits ---
+
+by Dominik Baumann, Philipp Grzywaczyk, Cameron McGregor
+
+Final Project for Practical Software Technology 2022
+
+This program enables the user to build a logical circuit from scratch by using the standard
+gates, these are: NOT, AND, NAND, OR, NOR, XOR; as well as constant TRUE and FALSE inputs, 
+and by connecting these via cables.
+The resulting circuits can be evaluated with regard to their truth value at each position.
+For further information on how to use the program, please consult "Help".
+
+Version 1.1
+Large Refactor compared to Version 1.0, mainly completely new GUI
+Added functionality, among others Undo / Redo Buttons

@@ -1,11 +1,9 @@
-/**
- * 
- */
 package gates;
 
 /**
  * This gate returns true iff all input values are true.
  * @author Dominik Baumann, Philipp Grzywaczyk
+<<<<<<< HEAD
  */
 public class ANDgate extends InputGate {
 
@@ -22,19 +20,27 @@ public class ANDgate extends InputGate {
 		}
 	}
 	
+=======
+ * @version 2, July 2022
+ */
+public class ANDgate extends InputGate {
+
+	/** By default, this gate uses two input values. */
+	public ANDgate() { }
+
+>>>>>>> total_refactor_philipp_additions
 	@Override
-	public boolean output() {
-		try {
-			return inputs[0].output() && inputs[1].output();
-		} catch (NullPointerException e) {
-			System.out.println("ERROR: Input gates not specified!");
-			return false;
-		}
+	protected boolean computeOutput(boolean a, boolean b) {
+		return a && b;
 	}
 
 	@Override
+<<<<<<< HEAD
 	public void setInput(Gate g, int i) {
 		if(i != 0 && i != 1) { return; }
 		inputs[i] = g;
 	}
+=======
+	public String name() { return "AND";}
+>>>>>>> total_refactor_philipp_additions
 }
