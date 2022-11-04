@@ -1,12 +1,5 @@
 app
-<<<<<<< HEAD
 gates
 gui
 logicCircuits
-=======
-boardModel
-command
-gates
-gui
->>>>>>> total_refactor_philipp_additions
 utility
