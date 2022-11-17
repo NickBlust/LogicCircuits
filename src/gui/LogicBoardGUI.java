@@ -282,7 +282,6 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 				new AbstractAction(){
 			private static final long serialVersionUID = 1L;
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("CTRL + E");
 				controller.evaluateCircuits(); } });
 
 		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_O,
@@ -291,7 +290,6 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 				new AbstractAction(){
 			private static final long serialVersionUID = 1L;
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("CTRL + O");
 				controller.loadFromFile(); } });
 		
 		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R,
@@ -300,7 +298,6 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 				new AbstractAction(){
 			private static final long serialVersionUID = 1L;
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("CTRL + R");
 				controller.resetBoard(); } });
 		
 		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S,
@@ -309,7 +306,6 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 				new AbstractAction(){
 			private static final long serialVersionUID = 1L;
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("CTRL + S");
 				controller.saveToFile(); } });
 		
 		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Z,
@@ -318,7 +314,6 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 				new AbstractAction(){
 			private static final long serialVersionUID = 1L;
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("CTRL + Z");
 				controller.undoCommand(); } });	
 		
 		rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_Y,
@@ -327,7 +322,6 @@ public class LogicBoardGUI extends JFrame implements MouseListener, MouseMotionL
 				new AbstractAction(){
 			private static final long serialVersionUID = 1L;
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("CTRL + Y");
 				controller.redoCommand(); } });	
 	}
 	

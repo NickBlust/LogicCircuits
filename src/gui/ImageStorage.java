@@ -94,7 +94,7 @@ public class ImageStorage {
             }
 
         } catch (IOException e) {
-            System.out.println("Exception loading images: " + e.getMessage());
+            System.out.println("ERROR: Exception loading images: " + e.getMessage());
             e.printStackTrace(System.out);
         }
     }

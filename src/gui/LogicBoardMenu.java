@@ -192,14 +192,14 @@ public class LogicBoardMenu extends JMenuBar {
 	private void openHelpMenu() { // TODO: complete help text
 		if(helpWindow != null) // only allow one open help window at a time
 			helpWindow.dispatchEvent(new WindowEvent(helpWindow, WindowEvent.WINDOW_CLOSING));
-		helpWindow = new InfoWindow("Help", 700, 250, helpText);
+		helpWindow = new InfoWindow("Help", 820, 500, helpText);
 	}
 	
 	/** Open a window that displays information about this program. */
 	private void showInformationAboutProgram() {
 		if(aboutWindow != null) // only allow one open about window at a time
 			aboutWindow.dispatchEvent(new WindowEvent(aboutWindow, WindowEvent.WINDOW_CLOSING));
-        aboutWindow = new InfoWindow("About", 700, 220, aboutText);
+        aboutWindow = new InfoWindow("About", 820, 375, aboutText);
 	}
 	
 	

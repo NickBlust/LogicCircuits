@@ -1,6 +1,5 @@
 package boardModel;
 
-import static org.junit.Assert.*;
 import junit.framework.TestCase;
 import utility.Vector2Int;
 

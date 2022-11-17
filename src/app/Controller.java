@@ -210,7 +210,10 @@ public class Controller {
 			resetRedoableCommands();
 		}
 		else // if loading fails, undo resetting the board 
+		{
 			undoCommand();
+			resetRedoableCommands();
+		}
 	}
 
 	
@@ -299,7 +302,6 @@ public class Controller {
 				redoableCommands = new Stack<Command>();
 				redoableCommands.push(c);				
 			}
-			System.out.println("Undoing " + c.getClass());
 			c.undo();
 			theGUI.updateUndoMenu(undoableCommands.size());
 			theGUI.updateRedoMenu(redoableCommands.size());
@@ -312,7 +314,6 @@ public class Controller {
 	public void redoCommand() {
 		if (redoableCommands.size() > 0) {
 			Command c = redoableCommands.pop();
-			System.out.println("Redoing " + c.getClass());
 			if(c.redo()) {
 				try { 
 					undoableCommands.push(c);				

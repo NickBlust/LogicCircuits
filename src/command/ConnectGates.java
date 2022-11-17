@@ -51,7 +51,6 @@ public class ConnectGates implements Command {
 		// if so, store it so that you can recreate it
 		if(model.getGate(toInput).getInput(inputIndex) != null) {
 			oldInput = model.getPositionOfGate(model.getGate(toInput).getInput(inputIndex));
-			System.out.println(oldInput);
 		}
 		
 		model.addConnection(fromOutput, toInput, inputIndex);
@@ -62,7 +61,6 @@ public class ConnectGates implements Command {
 	public void undo() {
 		model.removeConnection(toInput, inputIndex);
 		// recreate connection if applicable
-		System.out.println("Recreating? " + oldInput);
 		if(!oldInput.equals(new Vector2Int(-1, -1)))
 			model.addConnection(oldInput, toInput, inputIndex);
 	}
