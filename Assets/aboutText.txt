@@ -12,5 +12,7 @@ For further information on how to use the program, please consult "Help".
 
 Version 2
 Large Refactor compared to Version 1.0.
-The implementation now makes use of design patterns such as VMC or Command,
+The implementation now makes use of design patterns such as Command and MVC,
 resulting (among other things) in an overhaul of the GUI and enabling Undo / Redo functionality.
+
+Copyright notice: Images for the gates were taken from Wikipedia and modified.

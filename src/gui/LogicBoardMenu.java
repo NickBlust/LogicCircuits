@@ -199,7 +199,7 @@ public class LogicBoardMenu extends JMenuBar {
 	private void showInformationAboutProgram() {
 		if(aboutWindow != null) // only allow one open about window at a time
 			aboutWindow.dispatchEvent(new WindowEvent(aboutWindow, WindowEvent.WINDOW_CLOSING));
-        aboutWindow = new InfoWindow("About", 820, 375, aboutText);
+        aboutWindow = new InfoWindow("About", 820, 400, aboutText);
 	}
 	
 	
