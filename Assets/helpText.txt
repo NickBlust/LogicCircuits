@@ -13,7 +13,8 @@ connection would constitute a loop.
 
 Creating a connection with an input that already receives another gate's output value will remove that old connection.
 
-One gate's output can serve as input for multiple other gates.
+One gate's output can serve as input for multiple other gates. 
+Any input not specified by another gate's output will default to FALSE upon evaluation.
 
 You can undo any board action by clicking on Edit -> Undo or by pressing "CTRL + Z", and redo undone actions
 by clicking on Edit -> Redo or by pressing "CTRL + Y".

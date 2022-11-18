@@ -119,7 +119,6 @@ public class LogicBoard {
 	 */
 	public void addConnection(Vector2Int fromOutput, Vector2Int toInput, GateIndex inputIndex) {
 		resetStatusOfGatesOnBoard();
-		
 		Gate givingOutput = gates.get(fromOutput);
 //		addOutputGate(givingOutput);
 		setOutputCount(givingOutput, getOutputCount(givingOutput) + 1);
