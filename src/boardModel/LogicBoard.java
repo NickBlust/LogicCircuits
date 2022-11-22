@@ -81,7 +81,20 @@ public class LogicBoard {
 			g.setInput(temp.getInput(GateIndex.BOTTOM), GateIndex.BOTTOM);
 			g.setInput(temp.getInput(GateIndex.TOP), GateIndex.TOP);
 			updateGateInputs(temp, g);
+
 			setOutputCount(g, getOutputCount(temp));
+				
+			
+//			// bugfix: getOutputCount seems unreliable and is probably
+//			// not properly implemented
+//			// setOutputCount(g, getOutputCount(temp));
+//			int count = 0;
+//			if(temp.getInput(GateIndex.BOTTOM) != null)
+//				count++;
+//			if(temp.getInput(GateIndex.TOP) != null)
+//				count++;
+//			setOutputCount(g, count);
+//			// end bugfix
 		}
 		else
 			setOutputCount(g, 0);
@@ -137,7 +150,14 @@ public class LogicBoard {
 	 * @param ind The input identifier for the connection on this gate.
 	 */
 	public void removeConnection(Vector2Int pos, GateIndex ind) {
-		gates.get(pos).setInput(null, ind);
+		if(gates.get(pos).getClass() == (new NOTgate()).getClass())
+		{
+			gates.get(pos).setInput(null, GateIndex.TOP);
+			gates.get(pos).setInput(null, GateIndex.BOTTOM);			
+		}
+		else {
+			gates.get(pos).setInput(null, ind);
+		}
 		updateGUI();
 	}
 	
@@ -253,10 +273,12 @@ public class LogicBoard {
 	private void setOutputCount(Gate g, int count) {
 		if(count >= 0)
 			outputGates.put(g, count);
-		else {
-			System.out.println("ERROR: Tried to set number of gates receiving output from gate "
-		+ g + " at " + getPositionOfGate(g) + " to a negative value: " + count);
-		}
+//		else {
+//			System.out.println("ERROR: Tried to set number of gates receiving output from gate "
+//		+ g + " at " + getPositionOfGate(g) + " to a negative value: " + count);
+//		}
+		else 
+			outputGates.put(g, 0);
 	}
 	
 	/** Find out for how many inputs this gate's output is used.
